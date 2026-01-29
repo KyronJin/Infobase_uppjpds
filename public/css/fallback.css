@@ -1,0 +1,88 @@
+/* Fallback styles so homepage looks good without Tailwind build */
+:root{
+  --green-700:#057a60; /* main hero green */
+  --green-600:#0a8f6b;
+  --muted:#6b7280;
+  --white:#ffffff;
+  /* layout tokens */
+  --space-sm:12px;
+  --space-md:20px;
+  --space-lg:32px;
+  --container-max:1100px;
+  --surface-radius:12px;
+  --card-shadow:0 8px 24px rgba(9,30,63,0.08);
+}
+*{box-sizing:border-box}
+.body-fallback{font-family:Inter, Arial, sans-serif;margin:0;color:#07203a}
+.navbar{display:flex;align-items:center;justify-content:center;padding:12px 0;background:#fff;box-shadow:0 6px 24px rgba(3,17,24,0.08);position:fixed;top:0;left:0;right:0;height:64px;z-index:60}
+.logo{font-family:Cairo, Arial, sans-serif;font-weight:700;color:var(--green-700);font-size:20px;margin-right:12px}
+/* navbar states and link styles (kept simple) */
+.nav-links{list-style:none;margin:0;padding:0;display:flex;gap:20px;align-items:center}
+.nav-links li{display:inline}
+/* ensure links are readable when navbar is transparent over light hero */
+.nav-link{color:#07203a;text-decoration:none;font-weight:600}
+.navbar.solid .nav-link{color:#07203a}
+.nav-cta{background:var(--white);color:var(--green-700);padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700}
+.navbar.solid .nav-cta{background:var(--green-600);color:#fff}
+.nav-toggle{background:transparent;border-radius:8px;padding:6px;border:1px solid rgba(7,32,58,0.06)}
+.nav-toggle svg{stroke:#07203a}
+main{padding-top:72px}
+
+/* Responsive behavior: hide desktop links on small screens, show toggle */
+.nav-links{display:none}
+.mobile-menu{display:none}
+.mobile-menu.hidden{display:none}
+
+@media(min-width:768px){
+  .nav-links{display:flex}
+  .nav-toggle{display:none}
+  .mobile-menu{display:none}
+}
+
+@media(max-width:767px){
+  .mobile-menu{display:block;position:fixed;top:64px;right:12px;background:#fff;border-radius:10px;box-shadow:0 10px 30px rgba(3,17,24,0.12);padding:10px 12px;min-width:180px}
+  .mobile-links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .mobile-links a{color:#07203a;text-decoration:none;font-weight:600;padding:8px 6px;display:block}
+}
+/* Hero */
+.section-hero{background:var(--white);color:#07203a;padding:48px 24px;position:relative;overflow:hidden}
+.hero-wrap{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:40px;position:relative}
+
+/* green hero panel behind text to emulate PPT while page remains white */
+.hero-panel{position:absolute;right:0;top:0;bottom:0;width:48%;background:linear-gradient(180deg, rgba(5,122,96,0.95), rgba(10,143,107,0.95));border-bottom-left-radius:160px;border-top-left-radius:160px;z-index:0}
+.hero-image{flex:0 0 360px}
+.image-container{width:320px;height:320px;border-radius:50%;overflow:hidden;border:8px solid rgba(255,255,255,0.12);box-shadow:0 16px 24px rgba(0,0,0,0.12)}
+.image-container img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-text{flex:1;padding-right:20px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.98);color:var(--green-700);padding:6px 14px;border-radius:10px;font-weight:700;margin-bottom:14px}
+.huge-title{font-size:42px;line-height:1.04;margin:0 0 14px;font-weight:800;letter-spacing:0.4px}
+.huge-title .highlight{display:inline-block;border-bottom:8px solid rgba(255,255,255,0.2);}
+.lead{font-size:20px;color:rgba(255,255,255,0.9);margin-bottom:28px}
+.cta-row{display:flex;gap:18px;align-items:center}
+.btn-cta{background:var(--brand-action, #F85E38);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700}
+.cta-muted{color:rgba(255,255,255,0.85)}
+.footer-note{position:absolute;left:40px;bottom:24px;color:rgba(255,255,255,0.85)}
+/* Features */
+.features{max-width:1200px;margin:48px auto;padding:0 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feature-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);}
+.feature-card h4{margin:0 0 8px}
+.feature-card p{margin:0;color:var(--muted)}
+/* responsive */
+@media(max-width:1024px){.hero-wrap{flex-direction:column-reverse;align-items:center}.image-container{width:280px;height:280px}.huge-title{font-size:44px;text-align:center}.hero-text{text-align:center;padding:0}.features{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){
+  .image-container{width:200px;height:200px}
+  .huge-title{font-size:30px}
+  .features{grid-template-columns:1fr;padding:0 12px}
+  /* ensure fixed top-right navbar doesn't overlap hero */
+  main{padding-top:140px}
+  .navbar{top:12px;right:12px}
+  .hero-wrap{margin-top:6px}
+}
+
+/* Design refinements for fallback: unify spacing, cards, buttons, forms */
+.site-container{max-width:var(--container-max);margin:0 auto;padding:0 16px}
+.feature-card{border-radius:var(--surface-radius);box-shadow:var(--card-shadow);transition:transform .18s ease,box-shadow .18s ease}
+.feature-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(9,30,63,0.12)}
+.btn-cta{background:var(--brand-action,#F85E38);color:#fff;padding:12px 24px;border-radius:10px}
+.form-control{padding:10px 12px;border-radius:10px;border:1px solid rgba(7,32,58,0.06)}
+.nav-toggle svg{stroke:#07203a}

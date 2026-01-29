@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Pengumuman extends Model
+{
+    protected $table = 'pengumumans';
+
+    protected $fillable = [
+        'title',
+        'body',
+        'published_at',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'published_at' => 'datetime',
+        'is_active' => 'boolean',
+    ];
+}
