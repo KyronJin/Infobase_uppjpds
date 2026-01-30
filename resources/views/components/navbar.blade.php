@@ -119,6 +119,28 @@
               </a>
               @endif
 
+              @if(Route::has('admin.profil_pegawai.index'))
+              <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-id-card text-[#00425A] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Profil Pegawai</p>
+                  <p class="text-xs text-gray-500">Kelola data pegawai</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              </a>
+              @endif
+
+              @if(Route::has('admin.staff.index'))
+              <a href="{{ route('admin.staff.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-star text-[#f85e38] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Staff of Month</p>
+                  <p class="text-xs text-gray-500">Kelola staff terbaik</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              </a>
+              @endif
+
               <form action="{{ route('admin.logout') }}" method="POST" class="mt-2">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50 transition duration-200 font-semibold text-sm relative group/item">
@@ -216,6 +238,20 @@
               <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
                 <i class="fas fa-book text-[#f85e38]"></i>
                 Tata Tertib
+              </a>
+              @endif
+
+              @if(Route::has('admin.profil_pegawai.index'))
+              <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-id-card text-[#00425A]"></i>
+                Profil Pegawai
+              </a>
+              @endif
+
+              @if(Route::has('admin.staff.index'))
+              <a href="{{ route('admin.staff.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-star text-[#f85e38]"></i>
+                Staff of Month
               </a>
               @endif
 

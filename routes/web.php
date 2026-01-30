@@ -9,6 +9,7 @@ use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileRuanganController;
 use App\Http\Controllers\ProfilPegawaiController;
+use App\Http\Controllers\StaffOfMonthController;
 
 Route::get('/', function () {
     return view('home');
@@ -50,12 +51,23 @@ Route::resource('admin/calendar', CalendarEventController::class)->names('admin.
 Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.tata_tertib')->middleware('auth');
 
 // Admin Profile Ruangan CRUD (protected)
-Route::resource('admin/profile', ProfileRuanganController::class)->names('admin.profile')->middleware('auth');
+Route::resource('admin/profile', ProfileRuanganController::class)
+    ->names('admin.profile')
+    ->parameters(['profile' => 'profile_ruangan'])
+    ->middleware('auth');
+
+// Modal edit endpoint
+Route::get('admin/profile/{profile_ruangan}/edit-modal', [ProfileRuanganController::class, 'editModal'])
+    ->name('admin.profile.edit-modal')
+    ->middleware('auth');
 
 // Admin Profil Pegawai CRUD (protected)
 Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('admin.profil_pegawai')->middleware('auth');
 Route::post('admin/profil-pegawai/store-jabatan', [ProfilPegawaiController::class, 'storeJabatan'])->name('admin.profil_pegawai.store-jabatan')->middleware('auth');
 Route::post('admin/profil-pegawai/update-order', [ProfilPegawaiController::class, 'updateOrder'])->name('admin.profil_pegawai.update-order')->middleware('auth');
+
+// Admin Staff of Month CRUD (protected)
+Route::resource('admin/staff', StaffOfMonthController::class)->names('admin.staff')->middleware('auth');
 
 // Public route
 Route::get('infobase/profil-pegawai', [ProfilPegawaiController::class, 'publicIndex'])->name('infobase.profil-pegawai');

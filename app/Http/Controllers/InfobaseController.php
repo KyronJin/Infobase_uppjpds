@@ -6,6 +6,7 @@ use App\Models\ProfileRuangan;
 use App\Models\CalendarEvent;
 use App\Models\Pengumuman;
 use App\Models\JenisTataTertib;
+use App\Models\StaffOfMonth;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -90,15 +91,11 @@ class InfobaseController extends Controller
 
     public function staffOfMonth(): View
     {
-        $staff = [
-            'name'    => 'Nama Staff Terbaik',
-            'photo'   => asset('images/staff/best.jpg'),
-            'reason'  => 'Alasan dipilih sebagai staff terbaik bulan ini...',
-        ];
+        $items = StaffOfMonth::where('is_active', true)->orderBy('created_at', 'desc')->get();
 
         return view('infobase.staff-of-month', [
             'title' => 'Staff of The Month',
-            'staff' => $staff,
+            'items' => $items,
         ]);
     }
 

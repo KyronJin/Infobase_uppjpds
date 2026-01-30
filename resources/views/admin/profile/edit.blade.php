@@ -3,17 +3,60 @@
 @section('content')
 <div class="container mx-auto px-6 py-12">
     <div class="admin-section">
-        <h1 class="admin-header">Edit Profile Ruangan</h1>
-        <form action="{{ route('admin.profile.update', $profile_ruangan) }}" method="POST">
+        <h1 class="admin-header">Edit Pengumuman</h1>
+
+        @if($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('admin.pengumuman.update', $pengumuman) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            <div class="form-group"><label class="form-label">Room Name</label><input name="room_name" class="form-control" value="{{ old('room_name', $profile_ruangan->room_name) }}" required></div>
-            <div class="form-group"><label class="form-label">Floor</label><input name="floor" class="form-control" value="{{ old('floor', $profile_ruangan->floor) }}"></div>
-            <div class="form-group"><label class="form-label">Capacity</label><input name="capacity" type="number" class="form-control" value="{{ old('capacity', $profile_ruangan->capacity) }}"></div>
-            <div class="form-group"><label class="form-label">Description</label><textarea name="description" class="form-control">{{ old('description', $profile_ruangan->description) }}</textarea></div>
-            <div class="form-group"><label class="form-label">Photo Link</label><input name="photo_link" class="form-control" value="{{ old('photo_link', $profile_ruangan->photo_link) }}"></div>
-            <div class="form-group"><label class="form-label inline-flex items-center"><input type="checkbox" name="is_active" {{ $profile_ruangan->is_active ? 'checked' : '' }} class="mr-2"> Active</label></div>
-            <button class="form-submit">Save</button>
+            <div class="form-group">
+                <label class="form-label">Judul</label>
+                <input type="text" name="title" class="form-control" value="{{ old('title', $pengumuman->title) }}" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Deskripsi</label>
+                <textarea name="description" class="form-control" rows="8">{{ old('description', $pengumuman->description) }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Gambar Pengumuman</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Publikasi</label>
+                <input type="datetime-local" name="published_at" class="form-control" value="{{ old('published_at', $pengumuman->published_at) }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Unpublikasi</label>
+                <input type="datetime-local" name="unpublished_at" class="form-control" value="{{ old('unpublished_at', $pengumuman->unpublished_at) }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Pengumuman Berlaku</label>
+                <input type="datetime-local" name="valid_from" class="form-control" value="{{ old('valid_from', $pengumuman->valid_from) }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Berakhir Pengumuman</label>
+                <input type="datetime-local" name="valid_until" class="form-control" value="{{ old('valid_until', $pengumuman->valid_until) }}">
+            </div>
+
+            <div>
+                <button class="form-submit">Simpan</button>
+                <a href="{{ route('admin.pengumuman.index') }}" class="inline-block ml-3">Batal</a>
+            </div>
         </form>
     </div>
 </div>

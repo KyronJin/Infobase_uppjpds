@@ -11,7 +11,7 @@
         <table class="table">
             <thead><tr><th>Name</th><th>Position</th><th>Month</th><th>Active</th><th>Actions</th></tr></thead>
             <tbody>
-            @foreach($items as $item)
+            @forelse($items as $item)
                 <tr>
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->position }}</td>
@@ -28,7 +28,11 @@
                         </div>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center text-gray-500 py-8">Belum ada data Staff of The Month</td>
+                </tr>
+            @endforelse
             </tbody>
         </table>
     </div>

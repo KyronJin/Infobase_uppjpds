@@ -19,7 +19,7 @@
                     <td>{{ $item->is_active ? 'Ya' : 'Tidak' }}</td>
                     <td>
                         <div class="actions">
-                            <a href="{{ route('admin.profile.edit', $item) }}" class="btn btn-sm btn-secondary">Edit</a>
+                            <button onclick="openEditModal({{ $item->id }})" class="btn btn-sm btn-secondary">Edit</button>
                             <form action="{{ route('admin.profile.destroy', $item) }}" method="POST" style="margin:0">
                                 @csrf
                                 @method('DELETE')
@@ -33,4 +33,6 @@
         </table>
     </div>
 </div>
+
+@include('admin.profile.modal-edit')
 @endsection

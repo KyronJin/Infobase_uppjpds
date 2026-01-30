@@ -5,31 +5,53 @@
     <div class="admin-section">
         <h1 class="admin-header">Edit Pengumuman</h1>
 
-        <form action="{{ route('admin.pengumuman.update', $item) }}" method="POST">
-        @csrf
-        @method('PUT')
+        @if($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <div class="form-group">
-            <label class="form-label">Judul</label>
-            <input type="text" name="title" class="form-control" value="{{ old('title', $item->title) }}" required>
-        </div>
+        <form action="{{ route('admin.pengumuman.update', $item) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="form-group">
+                <label class="form-label">Judul</label>
+                <input type="text" name="title" class="form-control" value="{{ old('title', $item->title) }}" required>
+            </div>
 
-        <div class="form-group">
-            <label class="form-label">Konten</label>
-            <textarea name="body" class="form-control" rows="8">{{ old('body', $item->body) }}</textarea>
-        </div>
+            <div class="form-group">
+                <label class="form-label">Deskripsi</label>
+                <textarea name="description" class="form-control" rows="8">{{ old('description', $item->description) }}</textarea>
+            </div>
 
-        <div class="form-group">
-            <label class="form-label">Tanggal Terbit</label>
-            <input type="datetime-local" name="published_at" class="form-control" value="{{ optional($item->published_at)->format('Y-m-d\TH:i') }}">
-        </div>
+            <div class="form-group">
+                <label class="form-label">Gambar Pengumuman</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
+            </div>
 
-        <div class="form-group">
-            <label class="inline-flex items-center">
-                <input type="checkbox" name="is_active" {{ $item->is_active ? 'checked' : '' }}>
-                <span class="ml-2">Aktif</span>
-            </label>
-        </div>
+            <div class="form-group">
+                <label class="form-label">Tanggal Publikasi</label>
+                <input type="datetime-local" name="published_at" class="form-control" value="{{ old('published_at', $item->published_at) }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Unpublikasi</label>
+                <input type="datetime-local" name="unpublished_at" class="form-control" value="{{ old('unpublished_at', $item->unpublished_at) }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Pengumuman Berlaku</label>
+                <input type="datetime-local" name="valid_from" class="form-control" value="{{ old('valid_from', $item->valid_from) }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tanggal Berakhir Pengumuman</label>
+                <input type="datetime-local" name="valid_until" class="form-control" value="{{ old('valid_until', $item->valid_until) }}">
+            </div>
 
             <div>
                 <button class="form-submit">Simpan</button>

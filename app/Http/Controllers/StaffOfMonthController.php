@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StaffOfMonth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StaffOfMonthController extends Controller
 {
@@ -26,11 +27,19 @@ class StaffOfMonthController extends Controller
             'month' => 'nullable|integer|min:1|max:12',
             'year' => 'nullable|integer',
             'bio' => 'nullable|string',
-            'photo_link' => 'nullable|url',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'sometimes|boolean',
         ]);
 
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->has('is_active') ? 1 : 0;
+
+        // Handle file upload
+        if ($request->hasFile('foto')) {
+            $data['foto_path'] = $request->file('foto')->store('staff_of_months', 'public');
+        }
+        
+        // Remove 'foto' key from array karena bukan di database, sudah jadi 'foto_path'
+        unset($data['foto']);
 
         StaffOfMonth::create($data);
 
@@ -50,11 +59,23 @@ class StaffOfMonthController extends Controller
             'month' => 'nullable|integer|min:1|max:12',
             'year' => 'nullable|integer',
             'bio' => 'nullable|string',
-            'photo_link' => 'nullable|url',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'sometimes|boolean',
         ]);
 
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->has('is_active') ? 1 : 0;
+
+        // Handle file upload
+        if ($request->hasFile('foto')) {
+            // Delete old file if exists
+            if ($staff_of_month->foto_path) {
+                Storage::disk('public')->delete($staff_of_month->foto_path);
+            }
+            $data['foto_path'] = $request->file('foto')->store('staff_of_months', 'public');
+        }
+        
+        // Remove 'foto' key from array
+        unset($data['foto']);
 
         $staff_of_month->update($data);
 
@@ -69,7 +90,8 @@ class StaffOfMonthController extends Controller
 
     public function publicIndex()
     {
-        $items = StaffOfMonth::where('is_active', true)->orderBy('created_at', 'desc')->get();
+        // Show all staff regardless of active status (for debugging and display)
+        $items = StaffOfMonth::orderBy('created_at', 'desc')->get();
         return view('infobase.staff-of-month', compact('items'));
     }
 }

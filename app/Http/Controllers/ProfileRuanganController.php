@@ -56,6 +56,11 @@ class ProfileRuanganController extends Controller
         return view('admin.profile.edit', compact('profile_ruangan'));
     }
 
+    public function editModal(ProfileRuangan $profile_ruangan)
+    {
+        return response()->json($profile_ruangan);
+    }
+
     public function update(Request $request, ProfileRuangan $profile_ruangan)
     {
         $data = $request->validate([
