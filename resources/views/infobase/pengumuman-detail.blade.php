@@ -45,14 +45,19 @@
                         {{ $pengumuman->published_at?->format('d M Y') ?? 'Baru' }}
                     </div>
 
+                    @if($pengumuman->image_path)
+                        <img src="{{ asset('storage/' . $pengumuman->image_path) }}" alt="{{ $pengumuman->title }}" class="w-full h-64 object-cover rounded-lg mb-6">
+                    @endif
+
                     <div class="prose prose-slate max-w-none text-slate-700 text-lg leading-relaxed">
-                        {!! nl2br(e($pengumuman->body)) !!}
+                        {!! nl2br(e($pengumuman->description)) !!}
                     </div>
 
                     <div class="mt-12 pt-8 border-t border-slate-50">
                         <div class="flex items-center space-x-2 text-slate-400 text-sm">
                             <span class="w-2 h-2 rounded-full bg-green-400"></span>
                             <span>Dipublikasikan pada {{ $pengumuman->published_at?->format('d F Y') ?? 'Sekarang' }}</span>
+                            <span>Berlaku: {{ $pengumuman->valid_from?->format('d/m/Y') ?? '-' }} - {{ $pengumuman->valid_until?->format('d/m/Y') ?? '-' }}</span>
                         </div>
                     </div>
                 </div>

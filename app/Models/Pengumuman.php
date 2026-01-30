@@ -10,13 +10,33 @@ class Pengumuman extends Model
 
     protected $fillable = [
         'title',
-        'body',
+        'description',
+        'image_path',
         'published_at',
-        'is_active',
+        'unpublished_at',
+        'valid_from',
+        'valid_until',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
-        'is_active' => 'boolean',
+        'unpublished_at' => 'datetime',
+        'valid_from' => 'datetime',
+        'valid_until' => 'datetime',
     ];
+
+    // Scope untuk cek aktif berdasarkan tanggal
+    public function scopeActive($query)
+    {
+        $now = now();
+        return $query->where(function ($q) use ($now) {
+            $q->whereNull('published_at')->orWhere('published_at', '<=', $now);
+        })->where(function ($q) use ($now) {
+            $q->whereNull('unpublished_at')->orWhere('unpublished_at', '>=', $now);
+        })->where(function ($q) use ($now) {
+            $q->whereNull('valid_from')->orWhere('valid_from', '<=', $now);
+        })->where(function ($q) use ($now) {
+            $q->whereNull('valid_until')->orWhere('valid_until', '>=', $now);
+        });
+    }
 }

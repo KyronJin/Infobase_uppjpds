@@ -7,17 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('tata_tertibs', function (Blueprint $table) {
+        Schema::create('profile_ruangan_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jenis_tata_tertib_id')->constrained('jenis_tata_tertibs')->onDelete('cascade');
-            $table->text('content');
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('profile_ruangan_id')->constrained('profile_ruangans')->onDelete('cascade');
+            $table->string('image_path'); // Path ke file gambar
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tata_tertibs');
+        Schema::dropIfExists('profile_ruangan_images');
     }
 };

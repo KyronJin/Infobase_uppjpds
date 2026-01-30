@@ -3,68 +3,93 @@
 namespace App\Http\Controllers;
 
 use App\Models\TataTertib;
+use App\Models\JenisTataTertib;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TataTertibController extends Controller
 {
     public function index()
     {
-        $items = TataTertib::orderBy('created_at', 'desc')->get();
-        return view('admin.tata_tertib.index', compact('items'));
+        $items = TataTertib::with('jenisTataTertib')->orderBy('created_at', 'desc')->get();
+        $jenis = JenisTataTertib::all();
+        return view('admin.tata_tertib.index', compact('items', 'jenis'));
     }
 
-    public function create()
+    public function storeJenis(Request $request)
     {
-        return view('admin.tata_tertib.create');
+        $request->validate(['name' => 'required|string|max:255']);
+        JenisTataTertib::create($request->only('name'));
+        return redirect()->back()->with('success', 'Jenis Tata Tertib berhasil ditambahkan.');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'nullable|string',
-            'document_link' => 'nullable|url',
-            'is_active' => 'sometimes|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'jenis_tata_tertib_id' => 'required|exists:jenis_tata_tertibs,id',
+                'content' => 'required|string',
+                'is_active' => 'sometimes|boolean',
+            ]);
 
-        $data['is_active'] = $request->has('is_active');
+            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
-        TataTertib::create($data);
+            // Split content by lines and create multiple records
+            $lines = explode("\n", trim($validated['content']));
+            $createdCount = 0;
 
-        return redirect()->route('admin.tata_tertib.index')->with('success', 'Tata Tertib created.');
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (!empty($line)) {
+                    TataTertib::create([
+                        'jenis_tata_tertib_id' => $validated['jenis_tata_tertib_id'],
+                        'content' => $line,
+                        'is_active' => $validated['is_active'],
+                    ]);
+                    $createdCount++;
+                }
+            }
+
+            return redirect()->route('admin.tata_tertib.index')
+                ->with('success', "Tata Tertib berhasil ditambahkan ($createdCount item).");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function edit(TataTertib $tata_tertib)
     {
-        return view('admin.tata_tertib.edit', compact('tata_tertib'));
+        $jenis = JenisTataTertib::all();
+        return view('admin.tata_tertib.edit', compact('tata_tertib', 'jenis'));
     }
 
     public function update(Request $request, TataTertib $tata_tertib)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'nullable|string',
-            'document_link' => 'nullable|url',
-            'is_active' => 'sometimes|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'jenis_tata_tertib_id' => 'required|exists:jenis_tata_tertibs,id',
+                'content' => 'required|string',
+                'is_active' => 'sometimes|boolean',
+            ]);
 
-        $data['is_active'] = $request->has('is_active');
+            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+            $tata_tertib->update($validated);
 
-        $tata_tertib->update($data);
-
-        return redirect()->route('admin.tata_tertib.index')->with('success', 'Tata Tertib updated.');
+            return redirect()->route('admin.tata_tertib.index')
+                ->with('success', 'Tata Tertib berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function destroy(TataTertib $tata_tertib)
     {
         $tata_tertib->delete();
-        return redirect()->route('admin.tata_tertib.index')->with('success', 'Deleted.');
-    }
-
-    // Public listing
-    public function publicIndex()
-    {
-        $items = TataTertib::where('is_active', true)->orderBy('created_at', 'desc')->get();
-        return view('infobase.tata-tertib', compact('items'));
+        return redirect()->route('admin.tata_tertib.index')
+            ->with('success', 'Tata Tertib berhasil dihapus.');
     }
 }

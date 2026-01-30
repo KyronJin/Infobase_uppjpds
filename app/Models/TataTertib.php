@@ -9,13 +9,17 @@ class TataTertib extends Model
     protected $table = 'tata_tertibs';
 
     protected $fillable = [
-        'title',
+        'jenis_tata_tertib_id',
         'content',
-        'document_link',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function jenisTataTertib()
+    {
+        return $this->belongsTo(JenisTataTertib::class, 'jenis_tata_tertib_id', 'id');
+    }
 }

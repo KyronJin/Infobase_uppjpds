@@ -43,7 +43,7 @@
             @endcan
         </div>
 
-        <a href="{{ route('infobase') }}" class="inline-block mt-8 text-teal-600 hover:underline">
+        <a href="{{ route('infobase.index') }}" class="inline-block mt-8 text-teal-600 hover:underline">
             ← Kembali
         </a>
     </div>

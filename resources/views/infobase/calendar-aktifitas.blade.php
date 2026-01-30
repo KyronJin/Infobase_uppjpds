@@ -1,76 +1,662 @@
 @extends('layouts.app')
 
-@push('styles')
-<!-- Local accents for calendar layout (keeps Cairo for badges) -->
-<style>
-    .glass-card { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); }
-    .calendar-badge { background: white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); }
-</style>
-@endpush
-
 @section('content')
 
-<div class="bg-gradient-to-br from-teal-800 via-teal-700 to-emerald-800 min-h-screen py-24 pt-28">
-    <div class="max-w-4xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
-            <div>
-                <h1 class="h2 text-white">{{ $title ?? 'Calendar Aktifitas' }}</h1>
-                <div class="h-1.5 w-24 bg-teal-400 mt-3 rounded-full"></div>
+<style>
+    .glass-card { 
+        background: rgba(255,255,255,0.95);
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
+    }
+
+    .event-card {
+        transition: all 0.3s ease;
+        background: white;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(248, 94, 56, 0.15);
+        border-color: #f85e38;
+    }
+
+    .room-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    .filter-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn.active {
+        background: #f85e38;
+        color: white;
+        border-color: #f85e38;
+    }
+
+    .filter-btn:hover {
+        border-color: #f85e38;
+        color: #f85e38;
+    }
+
+    .filter-btn.active:hover {
+        background: #d94e2e;
+    }
+
+    .pagination-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #f85e38;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+        border-color: #f85e38;
+        background: #f85e38;
+        color: white;
+    }
+
+    .pagination-btn.active {
+        background: #f85e38;
+        color: white;
+        border-color: #f85e38;
+    }
+
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="min-h-screen bg-[#f8fafc] pt-32 pb-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-gray-200 pb-8">
+            <div class="space-y-4">
+                <div class="inline-block">
+                    <span class="inline-block px-4 py-2 bg-orange-50 text-[#f85e38] text-sm font-bold rounded-full border border-orange-200">
+                        <i class="fas fa-calendar mr-2"></i>Aktivitas Perpustakaan
+                    </span>
+                </div>
+                <div>
+                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
+                        <i class="fas fa-calendar-alt mr-3 text-[#f85e38]"></i>Calendar Aktifitas
+                    </h1>
+                    <p class="text-gray-600 text-lg mt-2">Jadwal lengkap event, workshop, dan kegiatan perpustakaan.</p>
+                </div>
             </div>
 
-            <a href="{{ route('infobase') }}" class="group inline-flex items-center text-teal-100 hover:text-white transition-all font-semibold">
+            <a href="{{ route('infobase.index') }}" class="group inline-flex items-center text-[#f85e38] hover:text-[#d94e2e] transition-all font-semibold">
                 <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
                 Kembali ke Infobase
             </a>
+        </header>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="space-y-6">
+            <!-- Summary Cards Skeleton -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="skeleton h-24 rounded-xl"></div>
+            </div>
+            
+            <!-- Filter Skeleton -->
+            <div class="skeleton h-12 rounded-xl mb-8"></div>
+
+            <!-- Event List Skeleton -->
+            <div class="space-y-4">
+                <div class="skeleton h-32 rounded-xl"></div>
+                <div class="skeleton h-32 rounded-xl"></div>
+                <div class="skeleton h-32 rounded-xl"></div>
+            </div>
         </div>
 
-        @if(isset($events) && $events->count())
-            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-12 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-teal-400/30 before:to-transparent">
-                @foreach($events as $ev)
-                <article class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-teal-800 bg-teal-400 absolute left-7 md:left-1/2 -translate-x-1/2 shadow-xl z-10 group-hover:scale-105 transition-transform"></div>
+        <!-- Error State -->
+        <div id="errorState" class="hidden">
+            <div class="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1"></i>
+                    <div>
+                        <h3 class="text-lg font-bold text-red-900 mb-2">Gagal Memuat Agenda</h3>
+                        <p class="text-red-700 mb-4" id="errorMessage"></p>
+                        <button onclick="location.reload()" class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition font-semibold">
+                            <i class="fas fa-sync-alt mr-2"></i> Coba Lagi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="w-[calc(100%-4rem)] md:w-[45%] glass-card p-6 rounded-3xl transition-all duration-300 hover:bg-white/10 hover:shadow-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="calendar-badge flex-shrink-0 flex flex-col items-center justify-center rounded-2xl p-3 min-w-[70px] h-fit">
-                                <span class="text-2xl font-black text-teal-700 leading-none">{{ $ev->start_at?->format('d') }}</span>
-                                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-tighter">{{ $ev->start_at?->format('M Y') }}</span>
-                            </div>
-
-                            <div class="flex-1">
-                                <div class="flex items-center text-teal-200 text-xs mb-2 font-semibold">
-                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    {{ $ev->start_at?->format('H:i') }} WIB
-                                    @if($ev->location)
-                                        <span class="mx-2 opacity-40">|</span>
-                                        <span class="truncate">{{ $ev->location }}</span>
-                                    @endif
-                                </div>
-                                <h3 class="h3 text-white mb-2">{{ $ev->title }}</h3>
-                                <div class="text-teal-50/70 text-sm leading-relaxed line-clamp-3">
-                                    {!! nl2br(e($ev->description)) !!}
-                                </div>
-                            </div>
+        <!-- Content State -->
+        <div id="contentState" class="hidden space-y-8">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide">Total Event</p>
+                            <p class="text-4xl font-bold text-[#f85e38] mt-2" id="eventCount">0</p>
+                        </div>
+                        <div class="text-5xl opacity-30 text-orange-500">
+                            <i class="fas fa-chart-bar"></i>
                         </div>
                     </div>
-                </article>
-                @endforeach
-
-            </div>
-        @else
-            <div class="glass-card rounded-3xl p-16 text-center">
-                <div class="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                    <svg class="w-12 h-12 text-teal-200 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
                 </div>
-                <h3 class="h3 text-white mb-2">Belum ada event terjadwal</h3>
-                <p class="text-teal-100/60 max-w-xs mx-auto">Kalender saat ini masih kosong. Silakan kembali lagi nanti untuk pembaruan aktifitas.</p>
             </div>
-        @endif
 
+            <!-- Filter Section -->
+            <div class="glass-card rounded-xl p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-filter text-[#f85e38]"></i>
+                    Filter Jadwal
+                </h3>
+                <div class="flex flex-wrap gap-3">
+                    <button class="filter-btn active" onclick="setFilter('all')">
+                        <i class="fas fa-calendar mr-2"></i>Semua Event
+                    </button>
+                    <button class="filter-btn" onclick="setFilter('week')">
+                        <i class="fas fa-calendar-week mr-2"></i>Minggu Depan
+                    </button>
+                    <button class="filter-btn" onclick="setFilter('month')">
+                        <i class="fas fa-calendar-days mr-2"></i>Bulan Ini
+                    </button>
+                </div>
+            </div>
+
+            <!-- Events Section -->
+            <div id="eventsSection" class="hidden">
+                <div class="mb-6 flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                        <i class="fas fa-thumbtack text-3xl text-orange-500"></i>
+                        Event
+                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-semibold ml-2" id="eventCountBadge">0</span>
+                    </h2>
+                </div>
+                <div id="eventsList" class="space-y-4"></div>
+                
+                <!-- Pagination -->
+                <div id="eventsPagination" class="mt-8 flex items-center justify-center gap-2"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-16">
+                <i class="fas fa-inbox text-gray-300 text-6xl mb-4 block"></i>
+                <p class="text-gray-600 text-lg font-semibold">Tidak ada agenda untuk periode ini</p>
+                <p class="text-gray-400 mt-2">Silakan pilih filter lain untuk melihat jadwal lainnya</p>
+            </div>
+        </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+<script>
+  dayjs.extend(window.dayjs_plugin_utc);
+  dayjs.extend(window.dayjs_plugin_timezone);
+</script>
+<script>
+    // ===== KONFIGURASI =====
+    const API_BASE_URL = 'https://agenda-cerdas.dimasp.app';
+    const ITEMS_PER_PAGE = 8;
+
+    let currentFilter = 'all';
+    let currentPage = {
+        events: 1
+    };
+    let allData = null;
+
+    // ===== SET FILTER =====
+    function setFilter(filter) {
+        currentFilter = filter;
+        currentPage = { events: 1 };
+
+        // Update button states
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.closest('.filter-btn').classList.add('active');
+
+        // Re-render
+        if (allData) {
+            renderAgenda(allData);
+        }
+    }
+
+    function to24Hour(timeStr) {
+    if (!timeStr) return '';
+    // Jika sudah format 24 jam (misal: 13:00), langsung return
+    if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
+    // Jika format 12 jam (misal: 1:00 PM)
+    const d = new Date('1970-01-01T' + timeStr);
+    if (!isNaN(d)) {
+        return d.toTimeString().slice(0,5);
+    }
+    return timeStr;
+}
+
+function toLocal24Hour(utcString) {
+    if (!utcString || typeof utcString !== 'string') return '';
+    
+    try {
+        const trimmed = utcString.trim();
+        
+        // Jika format ISO dengan Z (UTC), parse sebagai UTC
+        if (trimmed.includes('T') && trimmed.includes('Z')) {
+            return dayjs(trimmed).utc().tz('Asia/Jakarta').format('HH:mm');
+        }
+        
+        // Jika hanya jam (HH:mm), return as-is
+        if (/^\d{2}:\d{2}/.test(trimmed)) {
+            return trimmed.substring(0, 5);
+        }
+        
+        // Fallback: coba parse langsung
+        const parsed = dayjs(trimmed);
+        if (parsed.isValid()) {
+            return parsed.tz('Asia/Jakarta').format('HH:mm');
+        }
+        
+        return '';
+    } catch (error) {
+        console.warn('toLocal24Hour error:', utcString, error.message);
+        return '';
+    }
+}
+
+    // ===== FETCH AGENDA =====
+    async function fetchAgenda() {
+        try {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('contentState').classList.add('hidden');
+
+            const response = await fetch(`${API_BASE_URL}/api/v1/events`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || 'Gagal mengambil data agenda');
+            }
+
+            console.log('📥 Data agenda berhasil diambil:', data);
+
+            const filteredData = filterEventsFromToday(data);
+            allData = filteredData;
+            renderAgenda(filteredData);
+
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('contentState').classList.remove('hidden');
+
+        } catch (error) {
+            console.error('❌ Error:', error);
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = 
+                `${error.message}. Pastikan URL API sudah benar: ${API_BASE_URL}`;
+        }
+    }
+
+    // ===== FILTER DATA: HANYA DARI HARI INI KE DEPAN =====
+    // ...existing code...
+        // ===== FILTER DATA: HANYA DARI HARI INI KE DEPAN =====
+        function filterEventsFromToday(data) {
+            // Hitung batas waktu hari ini (Start of Day Jakarta) dalam Timestamp (ms)
+            // Timestamp adalah angka, jadi perbandingannya pasti aman & cepat
+            let cutoffTimestamp;
+            try {
+                cutoffTimestamp = dayjs().tz('Asia/Jakarta').startOf('day').valueOf();
+            } catch (e) {
+                console.warn("Fallback cutoff to local time");
+                cutoffTimestamp = dayjs().startOf('day').valueOf();
+            }
+            
+            const filteredData = { ...data };
+            if (!filteredData.data) filteredData.data = {};
+        
+            filteredData.data.events = (data.data.events || []).filter((event) => {
+                try {
+                    // Ambil string tanggal
+                    const eventDateStr = (event.startTime || event.date || '').trim();
+                    if (!eventDateStr) return false;
+                    
+                    // STRATEGI AMAN: Bandingkan Timestamp (ms)
+                    let eventTimestamp;
+                    
+                    if (eventDateStr.includes('T')) {
+                        // ISO Format (e.g. 2026-01-30T03:00:00Z)
+                        // dayjs(str).valueOf() sangat aman & standard
+                        eventTimestamp = dayjs(eventDateStr).valueOf();
+                    } else if (/^\d{4}-\d{2}-\d{2}$/.test(eventDateStr)) {
+                        // Date Format (2026-01-30)
+                        // Coba parse sebagai Jakarta time, fallback ke local jika error
+                        try {
+                            eventTimestamp = dayjs.tz(eventDateStr, 'Asia/Jakarta').startOf('day').valueOf();
+                        } catch (e) {
+                            eventTimestamp = dayjs(eventDateStr).startOf('day').valueOf();
+                        }
+                    } else {
+                        return false;
+                    }
+    
+                    if (!eventTimestamp || isNaN(eventTimestamp)) return false;
+                    
+                    // Bandingkan angka timestamp (Event >= Hari Ini)
+                    return eventTimestamp >= cutoffTimestamp;
+                    
+                } catch (error) {
+                    console.warn("Filter skip event:", event.title);
+                    return false;
+                }
+            });
+        
+            if (filteredData.summary) {
+                filteredData.summary.totalEvents = filteredData.data.events.length;
+            }
+        
+            return filteredData;
+        }
+    
+        // ===== APPLY FILTER BY DATE RANGE =====
+        function applyDateFilter(items) {
+            if (currentFilter === 'all') return items;
+        
+            // Siapkan range waktu (timestamp)
+            let startTimestamp, endTimestamp;
+            try {
+                const now = dayjs().tz('Asia/Jakarta').startOf('day');
+                startTimestamp = now.valueOf();
+                if (currentFilter === 'week') {
+                    endTimestamp = now.add(7, 'day').valueOf();
+                }
+            } catch (e) {
+                const now = dayjs().startOf('day');
+                startTimestamp = now.valueOf();
+                if (currentFilter === 'week') {
+                    endTimestamp = now.add(7, 'day').valueOf();
+                }
+            }
+        
+            return items.filter(item => {
+                try {
+                    const eventDateStr = (item.startTime || item.date || '').trim();
+                    if (!eventDateStr) return false;
+                    
+                    let eventTimestamp; // ms
+                    
+                    if (eventDateStr.includes('T')) {
+                        eventTimestamp = dayjs(eventDateStr).valueOf();
+                    } else {
+                        try {
+                            eventTimestamp = dayjs.tz(eventDateStr, 'Asia/Jakarta').startOf('day').valueOf();
+                        } catch (e) {
+                            eventTimestamp = dayjs(eventDateStr).startOf('day').valueOf();
+                        }
+                    }
+                    
+                    if (!eventTimestamp || isNaN(eventTimestamp)) return false;
+    
+                    if (currentFilter === 'week') {
+                        return eventTimestamp >= startTimestamp && eventTimestamp <= endTimestamp;
+                    }
+    
+                    if (currentFilter === 'month') {
+                        // Logika bulan butuh extraksi komponen
+                        let d;
+                        // Parse ulang ke object dayjs yg aman
+                        if (eventDateStr.includes('T')) d = dayjs(eventTimestamp); 
+                        else d = dayjs(eventTimestamp);
+    
+                        // Konversi ke Jakarta jika bisa, biar bulan akurat
+                        try { d = d.tz('Asia/Jakarta'); } catch(e) {}
+                        
+                        let nowD = dayjs(startTimestamp);
+                        try { nowD = nowD.tz('Asia/Jakarta'); } catch(e) {}
+    
+                        return d.month() === nowD.month() && d.year() === nowD.year();
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            });
+        }
+    // ...existing code...
+
+    // ===== PAGINATION HELPER =====
+    function paginate(items, page) {
+        const start = (page - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        return items.slice(start, end);
+    }
+
+    function createPagination(totalItems, currentPage, pageChangeCallback, containerId) {
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        const container = document.getElementById(containerId);
+        
+        if (!container || totalPages <= 1) return;
+
+        let html = '';
+
+        // Previous button
+        html += `<button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="${pageChangeCallback}(${currentPage - 1})">
+            <i class="fas fa-chevron-left"></i>
+        </button>`;
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="${pageChangeCallback}(${i})">${i}</button>`;
+            } else if (i === 2 || i === totalPages - 1) {
+                html += `<span class="text-gray-400">...</span>`;
+            }
+        }
+
+        // Next button
+        html += `<button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="${pageChangeCallback}(${currentPage + 1})">
+            <i class="fas fa-chevron-right"></i>
+        </button>`;
+
+        container.innerHTML = html;
+    }
+
+    // ===== PAGE CHANGE FUNCTIONS =====
+    function changeEventsPage(page) {
+        currentPage.events = page;
+        renderEvents();
+    }
+
+    // ===== RENDER AGENDA =====
+    function renderAgenda(data) {
+        const { events } = data.data;
+        const { totalEvents } = data.summary;
+
+        document.getElementById('eventCount').textContent = totalEvents;
+
+        const hasData = totalEvents > 0;
+
+        if (!hasData) {
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('eventsSection').classList.add('hidden');
+            return;
+        }
+
+        document.getElementById('emptyState').classList.add('hidden');
+
+        // Filter by date range
+        const filteredEvents = applyDateFilter(events);
+
+        if (filteredEvents.length > 0) {
+            document.getElementById('eventsSection').classList.remove('hidden');
+            document.getElementById('eventCountBadge').textContent = filteredEvents.length;
+            renderEvents(filteredEvents);
+        } else {
+            document.getElementById('eventsSection').classList.add('hidden');
+        }
+    }
+
+    // ===== RENDER EVENTS =====
+    function renderEvents(events = []) {
+        if (!allData) return;
+        
+        const filtered = applyDateFilter(allData.data.events || []);
+        const sorted = filtered.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+        const paginatedEvents = paginate(sorted, currentPage.events);
+
+        const eventsList = document.getElementById('eventsList');
+        eventsList.innerHTML = paginatedEvents.map(event => `
+            <div class="event-card rounded-xl p-6 border-l-4 border-orange-500 hover:border-[#f85e38]">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-[#f85e38]">${escapeHtml(event.title)}</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm">
+                            <div class="flex items-center gap-2 text-gray-600">
+                                <i class="fas fa-calendar-alt w-4 text-orange-500"></i>
+                                <span>${formatDate(event.date)}</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 text-gray-600">
+                                <i class="fas fa-clock w-4 text-orange-500"></i>
+                                <span>
+                                  ${toLocal24Hour(event.startTime)} - 
+                                  ${event.endTime ? toLocal24Hour(event.endTime) : 'Selesai'}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-2 text-gray-600">
+                                <i class="fas fa-door-open w-4 text-orange-500"></i>
+                                <div>
+                                    <span class="room-badge" style="background-color: ${event.room.color}22; color: ${event.room.color}; border: 1px solid ${event.room.color};">
+                                        ${escapeHtml(event.room.name)}
+                                    </span>
+                                    ${event.room.capacity ? `<span class="text-xs text-gray-500 ml-2">(Kapasitas: ${event.room.capacity})</span>` : ''}
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 text-gray-600">
+                                <i class="fas fa-users w-4 text-orange-500"></i>
+                                <span>${event.participants || 0} peserta</span>
+                            </div>
+
+                            ${event.organizer && event.organizer !== '-' ? `
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <i class="fas fa-user w-4 text-orange-500"></i>
+                                    <span>${escapeHtml(event.organizer)}</span>
+                                </div>
+                            ` : ''}
+
+                            ${event.contact && event.contact !== '-' ? `
+                                <div class="flex items-center gap-2 text-gray-600">
+                                    <i class="fas fa-phone w-4 text-orange-500"></i>
+                                    <a href="tel:${event.contact}" class="hover:text-[#f85e38]">${event.contact}</a>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${event.notes ? `
+                            <div class="mt-4 p-3 bg-orange-50 rounded-lg border-l-2 border-orange-300">
+                                <p class="text-sm text-gray-700"><strong>Catatan:</strong> ${escapeHtml(event.notes)}</p>
+                            </div>
+                        ` : ''}
+
+                        ${event.meetingLink ? `
+                            <div class="mt-3">
+                                <a href="${event.meetingLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-[#f85e38] text-white rounded-lg hover:bg-[#d94e2e] transition font-semibold">
+                                    <i class="fas fa-video"></i> Buka Link Meeting
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        const filtered_sorted = applyDateFilter(allData.data.events || []).sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+        createPagination(filtered_sorted.length, currentPage.events, 'changeEventsPage', 'eventsPagination');
+    }
+
+    // ===== HELPER: Format Date =====
+    function formatDate(dateString) {
+    if (!dateString || typeof dateString !== 'string') return 'Tanggal tidak valid';
+    
+    try {
+        const trimmed = dateString.trim();
+        
+        // Jika format YYYY-MM-DD saja (date only)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+            return dayjs.tz(trimmed, 'Asia/Jakarta').format('dddd, D MMMM YYYY');
+        }
+        
+        // Jika format ISO dengan T (full timestamp)
+        if (trimmed.includes('T')) {
+            return dayjs(trimmed).utc().tz('Asia/Jakarta').format('dddd, D MMMM YYYY');
+        }
+        
+        // Fallback: coba parse langsung
+        const parsed = dayjs(trimmed);
+        if (parsed.isValid()) {
+            return parsed.tz('Asia/Jakarta').format('dddd, D MMMM YYYY');
+        }
+        
+        return 'Tanggal tidak valid';
+    } catch (error) {
+        console.warn('formatDate error:', dateString, error.message);
+        return 'Tanggal tidak valid';
+    }
+}
+
+    // ===== HELPER: Escape HTML =====
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // ===== LOAD AGENDA SAAT PAGE LOAD =====
+    document.addEventListener('DOMContentLoaded', fetchAgenda);
+
+    // ===== AUTO REFRESH SETIAP 5 MENIT =====
+    setInterval(fetchAgenda, 5 * 60 * 1000);
+</script>
+
 @endsection

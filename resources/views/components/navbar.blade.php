@@ -1,119 +1,338 @@
-<header class="site-header">
-  <nav id="site-nav" class="navbar">
-    <div class="site-container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <a href="{{ route('home') }}" class="logo">INFOBASE</a>
-      </div>
+<header class="sticky top-0 z-50 bg-white shadow-md">
+  <nav class="max-w-7xl mx-auto px-6 lg:px-12 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+        <div class="w-12 h-12 bg-[#00425A] text-white rounded-lg flex items-center justify-center font-bold text-lg group-hover:bg-[#f85e38] transition duration-300">
+          <i class="fas fa-book"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-[#00425A] group-hover:text-[#f85e38] transition duration-300">INFOBASE</h1>
+          <p class="text-xs text-gray-600">Perpustakaan Jakarta</p>
+        </div>
+      </a>
 
-      <ul id="nav-links" class="nav-links" role="menubar" style="margin-left:auto;">
-        <li><a href="{{ route('home') }}" class="nav-link">Beranda</a></li>
-        <li><a href="{{ route('infobase') }}" class="nav-link">InfoBase</a></li>
-        <li><a href="{{ route('about') }}" class="nav-link">Tentang</a></li>
-        <li><a href="{{ route('contact') }}" class="nav-link">Kontak</a></li>
+      <!-- Desktop Navigation Links -->
+      <ul id="nav-links" class="hidden lg:flex items-center gap-12 ml-auto">
+        <li>
+          <a href="{{ route('home') }}" class="text-gray-700 font-medium hover:text-[#f85e38] p-2 transition duration-300 relative group/link">
+            Beranda
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('about') }}" class="text-gray-700 font-medium hover:text-[#f85e38] p-2 transition duration-300 relative group/link">
+            Tentang
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
+          </a>
+        </li>
+        <li class="relative">
+          <button id="data-info-btn" class="flex items-center gap-2 text-gray-700 font-medium hover:text-[#f85e38] p-2 transition duration-300 relative group/link cursor-pointer">
+            Data & Informasi
+            <i id="data-info-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="data-info-menu" class="absolute top-full left-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2">
+            <a href="{{ route('infobase.pengumuman') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              Pengumuman
+              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            </a>
+            <a href="{{ route('infobase.calendar-aktifitas') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              Calendar Aktivitas
+              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            </a>
+            <a href="{{ route('infobase.tata-tertib') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              Tata Tertib
+              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            </a>
+            <a href="{{ route('infobase.staff-of-month') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              Staff of Month
+              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            </a>
+            <a href="{{ route('infobase.profile-ruangan') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              Profile Ruangan
+              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            </a>
+            <a href="{{ route('infobase.profil-pegawai') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              Profil Pegawai
+              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            </a>
+          </div>
+        </li>
       </ul>
 
-      <button id="nav-toggle" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" style="margin-left:12px;padding:8px;display:flex;align-items:center;justify-content:center;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
-
-      <div style="display:flex;align-items:center;gap:10px;margin-left:18px;position:relative;">
+      <!-- Auth Section -->
+      <div class="hidden lg:flex items-center gap-4 ml-8">
         @auth
-          <div style="position:relative;display:inline-block;" class="admin-dropdown">
-            <button id="admin-btn" style="padding:8px 12px;background:#0f766e;color:white;border-radius:6px;font-weight:600;cursor:pointer;border:none;font-size:14px;display:flex;align-items:center;gap:6px;">
+          <div class="relative">
+            <button id="admin-btn" class="flex items-center gap-2 px-6 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg">
+              <i class="fas fa-user-shield"></i>
               Admin
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+              <i id="admin-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             </button>
-            <div id="admin-menu" style="position:absolute;top:100%;right:0;background:white;border:1px solid #e2e8f0;border-radius:8px;min-width:220px;box-shadow:0 10px 15px rgba(0,0,0,0.1);margin-top:8px;z-index:1000;display:none;">
+
+            <!-- Dropdown Menu -->
+            <div id="admin-menu" class="absolute top-full right-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2">
               @if(Route::has('admin.pengumuman.index'))
-              <a href="{{ route('admin.pengumuman.index') }}" style="display:block;padding:12px 16px;color:#111;text-decoration:none;border-bottom:1px solid #f1f5f9;font-size:14px;transition:background 0.2s;">
-                📢 Pengumuman
+              <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-bullhorn text-[#00425A] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Pengumuman</p>
+                  <p class="text-xs text-gray-500">Kelola pengumuman</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
               </a>
               @endif
+
               @if(Route::has('admin.calendar.index'))
-              <a href="{{ route('admin.calendar.index') }}" style="display:block;padding:12px 16px;color:#111;text-decoration:none;border-bottom:1px solid #f1f5f9;font-size:14px;transition:background 0.2s;">
-                📅 Calendar Events
+              <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-calendar-alt text-[#f85e38] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Calendar</p>
+                  <p class="text-xs text-gray-500">Kelola event aktivitas</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
               </a>
               @endif
+
               @if(Route::has('admin.profile.index'))
-              <a href="{{ route('admin.profile.index') }}" style="display:block;padding:12px 16px;color:#111;text-decoration:none;border-bottom:1px solid #f1f5f9;font-size:14px;transition:background 0.2s;">
-                🏢 Profile Ruangan
+              <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-door-open text-[#00425A] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Profile Ruangan</p>
+                  <p class="text-xs text-gray-500">Kelola ruang fasilitas</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
               </a>
               @endif
+
               @if(Route::has('admin.tata_tertib.index'))
-              <a href="{{ route('admin.tata_tertib.index') }}" style="display:block;padding:12px 16px;color:#111;text-decoration:none;border-bottom:1px solid #f1f5f9;font-size:14px;transition:background 0.2s;">
-                📋 Tata Tertib
+              <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-book text-[#f85e38] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Tata Tertib</p>
+                  <p class="text-xs text-gray-500">Kelola peraturan</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
               </a>
               @endif
-              <form action="{{ route('admin.logout') }}" method="POST" style="display:block;margin:0;">
+
+              <form action="{{ route('admin.logout') }}" method="POST" class="mt-2">
                 @csrf
-                <button style="width:100%;padding:12px 16px;color:#dc2626;text-decoration:none;border:none;background:transparent;cursor:pointer;font-size:14px;text-align:left;" onmouseover="this.style.backgroundColor='#fee2e2'" onmouseout="this.style.backgroundColor='transparent'">
-                  🚪 Keluar
+                <button type="submit" class="w-full flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50 transition duration-200 font-semibold text-sm relative group/item">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Keluar
+                  <span class="absolute left-0 top-1/2 w-1 h-0 bg-red-500 group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
                 </button>
               </form>
             </div>
           </div>
         @else
-          <a href="{{ Route::has('admin.login') ? route('admin.login') : '#' }}" class="nav-cta">Masuk</a>
+          <a href="{{ Route::has('admin.login') ? route('admin.login') : '#' }}" class="px-6 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg">
+            Masuk Admin
+          </a>
         @endauth
       </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button id="nav-toggle" aria-controls="mobile-menu" aria-expanded="false" class="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition duration-300">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+      <ul class="space-y-2">
+        <li>
+          <a href="{{ route('home') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
+            Beranda
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('about') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
+            Tentang
+          </a>
+        </li>
+        <li class="border-t border-gray-200 pt-4 mt-4">
+          <button id="mobile-data-info-btn" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition duration-300">
+            Data & Informasi
+            <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+          </button>
+
+          <div id="mobile-data-info-menu" class="hidden mt-2 space-y-2 pl-4">
+            <a href="{{ route('infobase.pengumuman') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              Pengumuman
+            </a>
+            <a href="{{ route('infobase.calendar-aktifitas') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              Calendar Aktivitas
+            </a>
+            <a href="{{ route('infobase.tata-tertib') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              Tata Tertib
+            </a>
+            <a href="{{ route('infobase.staff-of-month') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              Staff of Month
+            </a>
+            <a href="{{ route('infobase.profile-ruangan') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              Profile Ruangan
+            </a>
+          </div>
+        </li>
+
+        <li class="border-t border-gray-200 pt-4 mt-4">
+          @auth
+            <button id="mobile-admin-btn" class="w-full flex items-center justify-between px-4 py-3 bg-[#00425A] text-white rounded-lg font-semibold hover:bg-[#003144] transition duration-300">
+              <span class="flex items-center gap-2">
+                <i class="fas fa-user-shield"></i>
+                Admin
+              </span>
+              <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+            </button>
+
+            <div id="mobile-admin-menu" class="hidden mt-2 space-y-2">
+              @if(Route::has('admin.pengumuman.index'))
+              <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-bullhorn text-[#00425A]"></i>
+                Pengumuman
+              </a>
+              @endif
+
+              @if(Route::has('admin.calendar.index'))
+              <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-calendar-alt text-[#f85e38]"></i>
+                Calendar
+              </a>
+              @endif
+
+              @if(Route::has('admin.profile.index'))
+              <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-door-open text-[#00425A]"></i>
+                Profile Ruangan
+              </a>
+              @endif
+
+              @if(Route::has('admin.tata_tertib.index'))
+              <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-book text-[#f85e38]"></i>
+                Tata Tertib
+              </a>
+              @endif
+
+              <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-gray-200">
+                @csrf
+                <button type="submit" class="w-full flex items-center gap-2 px-4 py-3 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition duration-300 font-semibold text-sm">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Keluar
+                </button>
+              </form>
+            </div>
+          @else
+            <a href="{{ Route::has('admin.login') ? route('admin.login') : '#' }}" class="block w-full px-4 py-3 bg-[#00425A] text-white text-center font-semibold rounded-lg hover:bg-[#003144] transition duration-300">
+              Masuk Admin
+            </a>
+          @endauth
+        </li>
+      </ul>
     </div>
   </nav>
-
-  <!-- simple mobile menu (keeps markup minimal) -->
-  <div id="mobile-menu" class="mobile-menu hidden" aria-hidden="true">
-    <ul class="mobile-links" role="menu">
-      <li><a href="{{ route('home') }}" class="nav-link">Beranda</a></li>
-      <li><a href="{{ route('infobase') }}" class="nav-link">InfoBase</a></li>
-      <li><a href="{{ route('about') }}" class="nav-link">Tentang</a></li>
-      <li><a href="{{ route('contact') }}" class="nav-link">Kontak</a></li>
-    </ul>
-  </div>
-
-  <script>
-    (function(){
-      var toggle = document.getElementById('nav-toggle');
-      var mobile = document.getElementById('mobile-menu');
-      if(toggle && mobile){
-        toggle.addEventListener('click', function(){
-          var expanded = toggle.getAttribute('aria-expanded') === 'true';
-          toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-          mobile.classList.toggle('hidden');
-          mobile.setAttribute('aria-hidden', expanded ? 'true' : 'false');
-        });
-      }
-
-      // Admin dropdown menu handler
-      var adminBtn = document.getElementById('admin-btn');
-      var adminMenu = document.getElementById('admin-menu');
-      if(adminBtn && adminMenu){
-        adminBtn.addEventListener('click', function(e){
-          e.preventDefault();
-          e.stopPropagation();
-          adminMenu.style.display = adminMenu.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e){
-          if(!e.target.closest('.admin-dropdown')){
-            adminMenu.style.display = 'none';
-          }
-        });
-
-        // Add hover effects to menu items
-        var menuItems = adminMenu.querySelectorAll('a, button');
-        menuItems.forEach(function(item){
-          item.addEventListener('mouseenter', function(){
-            this.style.backgroundColor = '#f1f5f9';
-          });
-          item.addEventListener('mouseleave', function(){
-            this.style.backgroundColor = 'transparent';
-          });
-        });
-      }
-    })();
-  </script>
 </header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Menu Toggle
+    const navToggle = document.getElementById('nav-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    navToggle.addEventListener('click', function() {
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Desktop Data & Informasi Dropdown Hover
+    const dataInfoBtn = document.getElementById('data-info-btn');
+    const dataInfoMenu = document.getElementById('data-info-menu');
+    const dataInfoChevron = document.getElementById('data-info-chevron');
+
+    if (dataInfoBtn && dataInfoMenu) {
+      dataInfoBtn.addEventListener('mouseenter', function() {
+        dataInfoMenu.classList.remove('opacity-0', 'invisible');
+        dataInfoChevron.classList.add('rotate-180');
+      });
+
+      dataInfoBtn.addEventListener('mouseleave', function() {
+        dataInfoMenu.classList.add('opacity-0', 'invisible');
+        dataInfoChevron.classList.remove('rotate-180');
+      });
+
+      // Keep dropdown open when hovering over the menu itself
+      dataInfoMenu.addEventListener('mouseenter', function() {
+        dataInfoMenu.classList.remove('opacity-0', 'invisible');
+        dataInfoChevron.classList.add('rotate-180');
+      });
+
+      dataInfoMenu.addEventListener('mouseleave', function() {
+        dataInfoMenu.classList.add('opacity-0', 'invisible');
+        dataInfoChevron.classList.remove('rotate-180');
+      });
+    }
+
+    // Desktop Admin Dropdown Toggle
+    const adminBtn = document.getElementById('admin-btn');
+    const adminMenu = document.getElementById('admin-menu');
+    const adminChevron = document.getElementById('admin-chevron');
+
+    if (adminBtn && adminMenu) {
+      adminBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = !adminMenu.classList.contains('invisible');
+        
+        if (isVisible) {
+          adminMenu.classList.add('opacity-0', 'invisible');
+          adminChevron.classList.remove('rotate-180');
+        } else {
+          adminMenu.classList.remove('opacity-0', 'invisible');
+          adminChevron.classList.add('rotate-180');
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!adminBtn.contains(e.target) && !adminMenu.contains(e.target)) {
+          adminMenu.classList.add('opacity-0', 'invisible');
+          adminChevron.classList.remove('rotate-180');
+        }
+      });
+    }
+
+    // Mobile Data & Informasi Menu Toggle
+    const mobileDataInfoBtn = document.getElementById('mobile-data-info-btn');
+    const mobileDataInfoMenu = document.getElementById('mobile-data-info-menu');
+
+    if (mobileDataInfoBtn && mobileDataInfoMenu) {
+      mobileDataInfoBtn.addEventListener('click', function() {
+        mobileDataInfoMenu.classList.toggle('hidden');
+      });
+    }
+
+    // Mobile Admin Menu Toggle
+    const mobileAdminBtn = document.getElementById('mobile-admin-btn');
+    const mobileAdminMenu = document.getElementById('mobile-admin-menu');
+
+    if (mobileAdminBtn && mobileAdminMenu) {
+      mobileAdminBtn.addEventListener('click', function() {
+        mobileAdminMenu.classList.toggle('hidden');
+      });
+    }
+
+    // Close mobile menu when clicking on a link
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        mobileMenu.classList.add('hidden');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  });
+</script>

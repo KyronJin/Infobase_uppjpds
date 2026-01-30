@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileRuanganController;
+use App\Http\Controllers\ProfilPegawaiController;
 
 Route::get('/', function () {
     return view('home');
@@ -29,6 +30,8 @@ Route::prefix('infobase')->name('infobase.')->group(function () {
     Route::get('profile-ruangan', [InfobaseController::class, 'profileRuangan'])->name('profile-ruangan');
 });
 
+Route::post('admin/tata_tertib/store-jenis', [TataTertibController::class, 'storeJenis'])->name('admin.tata_tertib.store-jenis')->middleware('auth');
+
 // Pengumuman public detail view
 Route::get('pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.show');
 
@@ -49,6 +52,13 @@ Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.
 // Admin Profile Ruangan CRUD (protected)
 Route::resource('admin/profile', ProfileRuanganController::class)->names('admin.profile')->middleware('auth');
 
+// Admin Profil Pegawai CRUD (protected)
+Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('admin.profil_pegawai')->middleware('auth');
+Route::post('admin/profil-pegawai/store-jabatan', [ProfilPegawaiController::class, 'storeJabatan'])->name('admin.profil_pegawai.store-jabatan')->middleware('auth');
+Route::post('admin/profil-pegawai/update-order', [ProfilPegawaiController::class, 'updateOrder'])->name('admin.profil_pegawai.update-order')->middleware('auth');
+
+// Public route
+Route::get('infobase/profil-pegawai', [ProfilPegawaiController::class, 'publicIndex'])->name('infobase.profil-pegawai');
 
 // routes/web.php
 

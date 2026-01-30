@@ -17,7 +17,7 @@
                 <p class="text-slate-500 text-lg">Update informasi dan berita terbaru untuk Anda.</p>
             </div>
             
-            <a href="{{ route('infobase') }}" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+            <a href="{{ route('infobase.index') }}" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 Kembali
             </a>
@@ -49,18 +49,22 @@
                                     {{ $item->published_at?->format('d M Y') ?? 'Baru' }}
                                 </div>
 
+                                @if($item->image_path)
+                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="w-full h-48 object-cover rounded-lg mb-5">
+                                @endif
+
                                 <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-5 leading-tight group-hover:text-indigo-600 transition-colors">
                                     {{ $item->title }}
                                 </h2>
 
                                 <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed">
-                                    {!! nl2br(e($item->body)) !!}
+                                    {!! nl2br(e($item->description)) !!}
                                 </div>
 
                                 <div class="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between">
                                     <div class="flex items-center space-x-2 text-slate-400 text-sm">
                                         <span class="w-2 h-2 rounded-full bg-green-400"></span>
-                                        <span>Status: Publik</span>
+                                        <span>Berlaku: {{ $item->valid_from?->format('d/m/Y') ?? '-' }} - {{ $item->valid_until?->format('d/m/Y') ?? '-' }}</span>
                                     </div>
                                     <a href="{{ route('pengumuman.show', $item->id) }}" class="text-indigo-600 font-bold text-sm hover:underline">Baca Selengkapnya →</a>
                                 </div>

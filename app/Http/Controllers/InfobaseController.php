@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProfileRuangan;
 use App\Models\CalendarEvent;
 use App\Models\Pengumuman;
+use App\Models\JenisTataTertib;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -18,7 +19,7 @@ class InfobaseController extends Controller
         $todayOfficer = [
             'name'     => 'Fenty Afriyeni',
             'position' => 'Petugas Harian',
-            'image'    => asset('images/petugas/fenty.jpg'), // ganti dengan path asli atau dari DB nanti
+            'image'    => asset('images/petugas/fenty.jpg'),
         ];
 
         $infobaseData = [
@@ -59,13 +60,14 @@ class InfobaseController extends Controller
 
     public function tataTertib(): View
     {
-        // Nanti bisa ambil dari DB atau file MD
-        $data = [
-            'title'   => 'Tata Tertib dan Peraturan',
-            'content' => 'Isi lengkap tata tertib di sini... (bisa dari DB atau markdown)',
-        ];
+        $jenis = JenisTataTertib::with('tataTertibs')->whereHas('tataTertibs', function ($q) {
+            $q->where('is_active', true);
+        })->get();
+        
+        $title = 'Tata Tertib dan Peraturan';
+        $content = 'Berisi Tata Tertib dan Peraturan di Perpustakaan';
 
-        return view('infobase.tata-tertib', $data);
+        return view('infobase.tata-tertib', compact('jenis', 'title', 'content'));
     }
 
     public function calendarAktifitas(): View
@@ -80,21 +82,14 @@ class InfobaseController extends Controller
         ]);
     }
 
-    public function pengumuman(): View
+    public function pengumuman()
     {
-        $pengumumans = Pengumuman::where('is_active', true)
-            ->orderBy('published_at', 'desc')
-            ->get();
-
-        return view('infobase.pengumuman', [
-            'title'       => 'Pengumuman',
-            'pengumumans' => $pengumumans,
-        ]);
+        $pengumumans = Pengumuman::active()->latest('published_at')->get();
+        return view('infobase.pengumuman', compact('pengumumans'));
     }
 
     public function staffOfMonth(): View
     {
-        // Nanti ganti jadi ambil dari model StaffOfMonth atau User dengan flag
         $staff = [
             'name'    => 'Nama Staff Terbaik',
             'photo'   => asset('images/staff/best.jpg'),
