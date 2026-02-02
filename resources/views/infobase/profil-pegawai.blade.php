@@ -484,20 +484,103 @@
     }
 </style>
 
-<div class="min-h-screen bg-[#f8fafc] pt-32 pb-24">
+<style>
+    .modern-page-header {
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        padding: 4rem 0;
+        color: white;
+        margin-top: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modern-page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .modern-page-header .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .modern-page-header .header-left span {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        margin-bottom: 1rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .modern-page-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .modern-page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.125rem;
+        margin-top: 0.5rem;
+    }
+
+    .modern-page-header .back-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 0.5rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modern-page-header .back-link:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(-4px);
+    }
+</style>
+
+<div class="modern-page-header">
+    <div class="header-content">
+        <div class="header-left">
+            <span><i class="fas fa-users mr-2"></i>Tim Kami</span>
+            <h1><i class="fas fa-sitemap mr-3 text-white"></i>Profil Pegawai</h1>
+            <p>Daftar struktur organisasi dan personel perpustakaan.</p>
+        </div>
+        <a href="{{ route('infobase.index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        </a>
+    </div>
+</div>
+
+<div class="min-h-screen bg-[#f8fafc] pt-6 pb-24">
     <div class="max-w-7xl mx-auto px-6">
-        <!-- Header Section -->
-        <header class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-gray-200 pb-8">
-            <div class="space-y-4">
-                <div class="inline-block">
-                    <span class="inline-block px-4 py-2 bg-blue-50 text-[#00425A] text-sm font-bold rounded-full border border-blue-200">
-                        <i class="fas fa-users mr-2"></i>Tim Kami
-                    </span>
-                </div>
-                <div>
-                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">Profil Pegawai</h1>
-                    <p class="text-gray-600 text-lg mt-2">Daftar struktur organisasi dan personel perpustakaan.</p>
-                </div>
             </div>
 
             <!-- View Toggle Icons -->

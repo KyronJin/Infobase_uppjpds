@@ -1,87 +1,299 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-[#f8fafc] pt-32 pb-24"> 
-    <div class="max-w-4xl mx-auto px-6">
-        
-        <header class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div class="space-y-2">
-                <nav class="flex items-center space-x-2 text-sm text-indigo-600 font-medium mb-4">
-                    <a href="{{ route('home') }}" class="hover:underline">Home</a>
-                    <span class="text-gray-400">/</span>
-                    <span class="text-gray-500">Informasi</span>
-                </nav>
-                <h1 class="text-5xl font-black text-slate-900 tracking-tight">
-                    {{ $title ?? 'Pengumuman' }}
-                </h1>
-                <p class="text-slate-500 text-lg">Update informasi dan berita terbaru untuk Anda.</p>
-            </div>
-            
-            <a href="{{ route('infobase.index') }}" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Kembali
-            </a>
-        </header>
+<style>
+    * { box-sizing: border-box; }
+    body, html { padding: 0; margin: 0; }
 
-        <div class="space-y-10">
-            @if(isset($pengumumans) && $pengumumans->count())
-                @foreach($pengumumans as $item)
-                    <article class="group relative bg-white rounded-3xl p-8 md:p-10 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
-                        <div class="flex flex-col md:flex-row gap-8">
-                            
-                            <div class="hidden md:block w-32 flex-shrink-0">
-                                <div class="sticky top-0">
-                                    <div class="text-indigo-600 font-bold text-sm uppercase tracking-widest mb-1">
-                                        {{ $item->published_at?->format('M') ?? 'Jan' }}
-                                    </div>
-                                    <div class="text-3xl font-black text-slate-900">
-                                        {{ $item->published_at?->format('d') ?? '00' }}
-                                    </div>
-                                    <div class="text-slate-400 text-sm font-medium">
-                                        {{ $item->published_at?->format('Y') ?? '2024' }}
-                                    </div>
+    .page-header {
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        padding: 4rem 0;
+        color: white;
+        margin-top: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .page-header .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header .header-left span {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        margin-bottom: 1rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.125rem;
+        margin-top: 0.5rem;
+    }
+
+    .page-header .back-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 0.5rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .page-header .back-link:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(-4px);
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .content-wrapper {
+        padding: 3rem 0;
+    }
+
+    .pengumuman-card {
+        background: white;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(248, 94, 56, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .pengumuman-card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+    }
+
+    .pengumuman-header {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .pengumuman-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        color: white;
+        border-radius: 1rem;
+        font-weight: 700;
+    }
+
+    .pengumuman-date-day {
+        font-size: 1.75rem;
+        line-height: 1;
+    }
+
+    .pengumuman-date-month {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        opacity: 0.9;
+        margin-top: 0.25rem;
+    }
+
+    .pengumuman-date-year {
+        font-size: 0.75rem;
+        opacity: 0.8;
+        margin-top: 0.25rem;
+    }
+
+    .pengumuman-content {
+        flex: 1;
+    }
+
+    .pengumuman-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .pengumuman-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .pengumuman-card:hover .pengumuman-title {
+        color: #f85e38;
+    }
+
+    .pengumuman-description {
+        color: #374151;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+    }
+
+    .pengumuman-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .pengumuman-date-valid {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .pengumuman-date-valid::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+    }
+
+    .pengumuman-read-more {
+        color: #f85e38;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+    }
+
+    .pengumuman-read-more:hover {
+        gap: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f3 100%);
+        border-radius: 1.5rem;
+        border: 2px dashed #e5e7eb;
+    }
+
+    .empty-state i {
+        font-size: 5rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        color: #1f2937;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .empty-state p {
+        color: #6b7280;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<div class="page-header">
+    <div class="header-content">
+        <div class="header-left">
+            <span><i class="fas fa-bell mr-2"></i>Pengumuman</span>
+            <h1><i class="fas fa-megaphone mr-3 text-white"></i>Pengumuman & Informasi</h1>
+            <p>Dapatkan berita dan informasi terbaru dari perpustakaan kami.</p>
+        </div>
+        <a href="{{ route('infobase.index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content-wrapper">
+        @if(isset($pengumumans) && $pengumumans->count())
+            @foreach($pengumumans as $item)
+                <div class="pengumuman-card">
+                    <div class="pengumuman-header">
+                        <div class="pengumuman-date">
+                            <div class="pengumuman-date-day">{{ $item->published_at?->format('d') ?? '00' }}</div>
+                            <div class="pengumuman-date-month">{{ $item->published_at?->format('M') ?? 'Jan' }}</div>
+                            <div class="pengumuman-date-year">{{ $item->published_at?->format('Y') ?? '2024' }}</div>
+                        </div>
+                        <div class="pengumuman-content">
+                            @if($item->image_path)
+                                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="pengumuman-image">
+                            @endif
+                            <h2 class="pengumuman-title">{{ $item->title }}</h2>
+                            <p class="pengumuman-description">{!! nl2br(e($item->description)) !!}</p>
+                            <div class="pengumuman-footer">
+                                <div class="pengumuman-date-valid">
+                                    Berlaku: {{ $item->valid_from?->format('d/m/Y') ?? '-' }} - {{ $item->valid_until?->format('d/m/Y') ?? '-' }}
                                 </div>
-                            </div>
-
-                            <div class="flex-1">
-                                <div class="md:hidden flex items-center text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/></svg>
-                                    {{ $item->published_at?->format('d M Y') ?? 'Baru' }}
-                                </div>
-
-                                @if($item->image_path)
-                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="w-full h-48 object-cover rounded-lg mb-5">
-                                @endif
-
-                                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-5 leading-tight group-hover:text-indigo-600 transition-colors">
-                                    {{ $item->title }}
-                                </h2>
-
-                                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed">
-                                    {!! nl2br(e($item->description)) !!}
-                                </div>
-
-                                <div class="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between">
-                                    <div class="flex items-center space-x-2 text-slate-400 text-sm">
-                                        <span class="w-2 h-2 rounded-full bg-green-400"></span>
-                                        <span>Berlaku: {{ $item->valid_from?->format('d/m/Y') ?? '-' }} - {{ $item->valid_until?->format('d/m/Y') ?? '-' }}</span>
-                                    </div>
-                                    <a href="{{ route('pengumuman.show', $item->id) }}" class="text-indigo-600 font-bold text-sm hover:underline">Baca Selengkapnya →</a>
-                                </div>
+                                <a href="{{ route('pengumuman.show', $item->id) }}" class="pengumuman-read-more">
+                                    Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
-                    </article>
-                @endforeach
-            @else
-                <div class="bg-white rounded-[2rem] p-16 text-center border border-slate-100 shadow-sm">
-                    <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-800">Belum ada pengumuman</h3>
-                    <p class="text-slate-500 mt-2 max-w-xs mx-auto">Kami akan segera mengabari Anda jika ada informasi terbaru tersedia.</p>
                 </div>
-            @endif
-        </div>
+            @endforeach
+        @else
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Belum ada pengumuman</h3>
+                <p>Kami akan segera mengabari Anda jika ada informasi terbaru tersedia.</p>
+            </div>
+        @endif
     </div>
 </div>
 @endsection

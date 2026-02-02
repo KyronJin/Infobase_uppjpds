@@ -3,6 +3,89 @@
 @section('content')
 
 <style>
+    * { box-sizing: border-box; }
+    body, html { padding: 0; margin: 0; }
+
+    .page-header {
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        padding: 4rem 0;
+        color: white;
+        margin-top: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .page-header .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header .header-left span {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        margin-bottom: 1rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.125rem;
+        margin-top: 0.5rem;
+    }
+
+    .page-header .back-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 0.5rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .page-header .back-link:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(-4px);
+    }
+
     .glass-card { 
         background: rgba(255,255,255,0.95);
         border: 1px solid rgba(0,0,0,0.05);
@@ -96,31 +179,21 @@
     }
 </style>
 
-<div class="min-h-screen bg-[#f8fafc] pt-32 pb-24">
-    <div class="max-w-6xl mx-auto px-6">
-        <!-- Header Section -->
-        <header class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-gray-200 pb-8">
-            <div class="space-y-4">
-                <div class="inline-block">
-                    <span class="inline-block px-4 py-2 bg-orange-50 text-[#f85e38] text-sm font-bold rounded-full border border-orange-200">
-                        <i class="fas fa-calendar mr-2"></i>Aktivitas Perpustakaan
-                    </span>
-                </div>
-                <div>
-                    <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
-                        <i class="fas fa-calendar-alt mr-3 text-[#f85e38]"></i>Calendar Aktifitas
-                    </h1>
-                    <p class="text-gray-600 text-lg mt-2">Jadwal lengkap event, workshop, dan kegiatan perpustakaan.</p>
-                </div>
-            </div>
+<div class="page-header">
+    <div class="header-content">
+        <div class="header-left">
+            <span><i class="fas fa-calendar mr-2"></i>Aktivitas</span>
+            <h1><i class="fas fa-calendar-alt mr-3 text-white"></i>Calendar Aktifitas</h1>
+            <p>Jadwal lengkap event, workshop, dan kegiatan perpustakaan.</p>
+        </div>
+        <a href="{{ route('infobase.index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        </a>
+    </div>
+</div>
 
-            <a href="{{ route('infobase.index') }}" class="group inline-flex items-center text-[#f85e38] hover:text-[#d94e2e] transition-all font-semibold">
-                <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                Kembali ke Infobase
-            </a>
-        </header>
+<div class="min-h-screen bg-[#f8fafc] pt-0 pb-24">
+    <div class="max-w-6xl mx-auto px-6">
 
         <!-- Loading State -->
         <div id="loadingState" class="space-y-6">

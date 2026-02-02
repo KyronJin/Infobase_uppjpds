@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto px-6 py-12">
     <div class="admin-section">
-        <h1 class="admin-header">Buat Pengumuman</h1>
+        <h1 class="admin-header">Buat Profile Ruangan</h1>
 
         @if($errors->any())
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -15,46 +15,44 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.pengumuman.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.profile.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
-                <label class="form-label">Judul</label>
-                <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
+                <label class="form-label">Nama Ruangan</label>
+                <input type="text" name="room_name" class="form-control" value="{{ old('room_name') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Lantai</label>
+                <input type="number" name="floor" class="form-control" min="1" max="7" value="{{ old('floor') }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Kapasitas</label>
+                <input type="number" name="capacity" class="form-control" value="{{ old('capacity') }}">
             </div>
 
             <div class="form-group">
                 <label class="form-label">Deskripsi</label>
-                <textarea name="description" class="form-control" rows="8">{{ old('description') }}</textarea>
+                <textarea name="description" class="form-control" rows="6">{{ old('description') }}</textarea>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Gambar Pengumuman</label>
-                <input type="file" name="image" class="form-control" accept="image/*">
+                <label class="form-label">Gambar Ruangan</label>
+                <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
+                <small class="text-gray-500">Anda dapat memilih multiple gambar</small>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Tanggal Publikasi</label>
-                <input type="datetime-local" name="published_at" class="form-control" value="{{ old('published_at') }}">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Tanggal Unpublikasi</label>
-                <input type="datetime-local" name="unpublished_at" class="form-control" value="{{ old('unpublished_at') }}">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Tanggal Pengumuman Berlaku</label>
-                <input type="datetime-local" name="valid_from" class="form-control" value="{{ old('valid_from') }}">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Tanggal Berakhir Pengumuman</label>
-                <input type="datetime-local" name="valid_until" class="form-control" value="{{ old('valid_until') }}">
+                <label class="form-label inline-flex items-center">
+                    <input type="checkbox" name="is_active" class="mr-2" value="1">
+                    Aktif
+                </label>
             </div>
 
             <div>
-                <button class="form-submit">Simpan</button>
-                <a href="{{ route('admin.pengumuman.index') }}" class="inline-block ml-3">Batal</a>
+                <button type="submit" class="form-submit">Simpan</button>
+                <a href="{{ route('admin.profile.index') }}" class="inline-block ml-3">Batal</a>
             </div>
         </form>
     </div>

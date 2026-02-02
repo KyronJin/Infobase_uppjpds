@@ -7,15 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('jabatans', function (Blueprint $table) {
-            $table->integer('order')->default(0)->after('name');
+        Schema::create('jabatans', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('order')->default(0);
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::table('jabatans', function (Blueprint $table) {
-            $table->dropColumn('order');
-        });
+        Schema::dropIfExists('jabatans');
     }
 };

@@ -120,11 +120,8 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right space-x-2">
-                                <a href="{{ route('admin.tata_tertib.edit', $item) }}" class="inline-flex items-center px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-lg text-xs font-semibold transition-colors">Edit</a>
-                                <form action="{{ route('admin.tata_tertib.destroy', $item) }}" method="POST" class="inline-block">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors" onclick="return confirm('Hapus?')">Hapus</button>
-                                </form>
+                                <button type="button" onclick="editTataTertib({{ $item->id }})" class="inline-flex items-center px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-lg text-xs font-semibold transition-colors">Edit</button>
+                                <button type="button" onclick="deleteTataTertib({{ $item->id }}, '{{ $item->jenisTataTertib->name }}')" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors">Hapus</button>
                             </td>
                         </tr>
                         @empty
@@ -134,6 +131,66 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Modal Edit Tata Tertib -->
+        <div id="editTataTertibModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+            <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Edit Tata Tertib</h3>
+                    <button type="button" onclick="closeModal('editTataTertibModal')" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <form id="editTataTertibForm" method="POST" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Jenis Tata Tertib</label>
+                        <select id="edit-jenis_tata_tertib_id" name="jenis_tata_tertib_id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                            <option value="">-- Pilih Jenis --</option>
+                            @foreach($jenis as $j)
+                                <option value="{{ $j->id }}">{{ $j->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Isi Tata Tertib</label>
+                        <textarea id="edit-content" name="content" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input id="edit-is_active" type="checkbox" name="is_active" class="mr-2"> 
+                            <span class="text-sm text-gray-700">Aktif</span>
+                        </label>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" onclick="closeModal('editTataTertibModal')" class="px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Delete Tata Tertib -->
+        <div id="deleteTataTertibModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+            <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Hapus Tata Tertib</h3>
+                    <button type="button" onclick="closeModal('deleteTataTertibModal')" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <p class="text-gray-700 mb-4">Yakin ingin menghapus tata tertib "<span id="delete-jenis-name"></span>"?</p>
+                <form id="deleteTataTertibForm" method="POST" class="space-y-0">
+                    @csrf
+                    @method('DELETE')
+                    <div class="flex justify-end gap-3">
+                        <button type="button" onclick="closeModal('deleteTataTertibModal')" class="px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -147,6 +204,34 @@
     
     function closeModal(id) {
         document.getElementById(id).classList.add('hidden');
+    }
+
+    function editTataTertib(id) {
+        const modal = document.getElementById('editTataTertibModal');
+        const form = document.getElementById('editTataTertibForm');
+        
+        fetch(`/admin/tata-tertib/${id}/edit`, {
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('edit-jenis_tata_tertib_id').value = data.jenis_tata_tertib_id || '';
+            document.getElementById('edit-content').value = data.content || '';
+            document.getElementById('edit-is_active').checked = data.is_active || false;
+            form.action = `/admin/tata-tertib/${id}`;
+            modal.classList.remove('hidden');
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function deleteTataTertib(id, jenisName) {
+        const modal = document.getElementById('deleteTataTertibModal');
+        const form = document.getElementById('deleteTataTertibForm');
+        document.getElementById('delete-jenis-name').textContent = jenisName;
+        form.action = `/admin/tata-tertib/${id}`;
+        modal.classList.remove('hidden');
     }
     
     document.getElementById('dropdownButton').addEventListener('click', function() {

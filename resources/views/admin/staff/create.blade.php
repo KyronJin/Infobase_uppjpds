@@ -4,7 +4,7 @@
 <div class="container mx-auto px-6 py-12">
     <div class="admin-section">
         <h1 class="admin-header">Create Staff</h1>
-        <form action="{{ route('admin.staff.store') }}" method="POST">
+        <form action="{{ route('admin.staff-of-month.store') }}" method="POST">
             @csrf
             <div class="form-group"><label class="form-label">Name</label><input name="name" class="form-control" required></div>
             <div class="form-group"><label class="form-label">Position</label><input name="position" class="form-control"></div>

@@ -158,11 +158,8 @@
                                 <span class="text-sm text-gray-700">{{ Str::limit($item->deskripsi, 50) }}</span>
                             </td>
                             <td class="px-6 py-4 text-right space-x-2">
-                                <a href="{{ route('admin.profil_pegawai.edit', $item) }}" class="inline-flex items-center px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-lg text-xs font-semibold transition-colors">Edit</a>
-                                <form action="{{ route('admin.profil_pegawai.destroy', $item) }}" method="POST" class="inline-block">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors" onclick="return confirm('Hapus?')">Hapus</button>
-                                </form>
+                                <button type="button" onclick="editProfilPegawai({{ $item->id }})" class="inline-flex items-center px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-lg text-xs font-semibold transition-colors">Edit</button>
+                                <button type="button" onclick="deleteProfilPegawai({{ $item->id }}, '{{ $item->nama }}')" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors">Hapus</button>
                             </td>
                         </tr>
                         @empty
@@ -177,6 +174,70 @@
     </div>
 </div>
 
+<!-- Modal Edit Profil Pegawai -->
+<div id="editProfilPegawaiModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+    <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Edit Profil Pegawai</h3>
+            <button type="button" onclick="closeModal('editProfilPegawaiModal')" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <form id="editProfilPegawaiForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nama Pegawai</label>
+                <input type="text" id="edit-nama" name="nama" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Jabatan</label>
+                <select id="edit-jabatan_id" name="jabatan_id" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Pilih Jabatan --</option>
+                    @foreach($jabatans as $jabatan)
+                        <option value="{{ $jabatan->id }}">{{ $jabatan->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                <textarea id="edit-deskripsi" name="deskripsi" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Foto Pegawai</label>
+                <input type="file" id="edit-foto" name="foto" accept="image/*" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <p class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah. Format: JPEG, PNG, JPG, GIF. Maksimal 2MB.</p>
+            </div>
+            <div id="editFotoPreview" class="mt-2"></div>
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeModal('editProfilPegawaiModal')" class="px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Delete Profil Pegawai -->
+<div id="deleteProfilPegawaiModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+    <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Hapus Profil Pegawai</h3>
+            <button type="button" onclick="closeModal('deleteProfilPegawaiModal')" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <p class="text-gray-700 mb-4">Yakin ingin menghapus profil pegawai "<span id="delete-nama"></span>"?</p>
+        <form id="deleteProfilPegawaiForm" method="POST" class="space-y-0">
+            @csrf
+            @method('DELETE')
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeModal('deleteProfilPegawaiModal')" class="px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script>
@@ -188,7 +249,93 @@
     function closeModal(id) {
         document.getElementById(id).classList.add('hidden');
     }
+
+    function editProfilPegawai(id) {
+        const modal = document.getElementById('editProfilPegawaiModal');
+        const form = document.getElementById('editProfilPegawaiForm');
+        
+        fetch(`/admin/profil-pegawai/${id}/edit`, {
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('edit-nama').value = data.nama || '';
+            document.getElementById('edit-jabatan_id').value = data.jabatan_id || '';
+            document.getElementById('edit-deskripsi').value = data.deskripsi || '';
+            form.action = `/admin/profil-pegawai/${id}`;
+            modal.classList.remove('hidden');
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function deleteProfilPegawai(id, nama) {
+        const modal = document.getElementById('deleteProfilPegawaiModal');
+        const form = document.getElementById('deleteProfilPegawaiForm');
+        document.getElementById('delete-nama').textContent = nama;
+        form.action = `/admin/profil-pegawai/${id}`;
+        modal.classList.remove('hidden');
+    }
     
+    document.getElementById('dropdownButton').addEventListener('click', function() {
+        document.getElementById('dropdownMenu').classList.toggle('hidden');
+    });
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const jabatanModal = document.getElementById('jabatanModal');
+        const profilPegawaiModal = document.getElementById('profilPegawaiModal');
+        const orderModal = document.getElementById('orderModal');
+        const editProfilPegawaiModal = document.getElementById('editProfilPegawaiModal');
+        const deleteProfilPegawaiModal = document.getElementById('deleteProfilPegawaiModal');
+        
+        if (event.target == jabatanModal) {
+            jabatanModal.classList.add('hidden');
+        }
+        if (event.target == profilPegawaiModal) {
+            profilPegawaiModal.classList.add('hidden');
+        }
+        if (event.target == orderModal) {
+            orderModal.classList.add('hidden');
+        }
+        if (event.target == editProfilPegawaiModal) {
+            editProfilPegawaiModal.classList.add('hidden');
+        }
+        if (event.target == deleteProfilPegawaiModal) {
+            deleteProfilPegawaiModal.classList.add('hidden');
+        }
+    }
+
+    // Sortable for order modal
+    $(function() {
+        $("#sortable").sortable();
+        $("#sortable").disableSelection();
+    });
+
+    document.getElementById('saveOrder').addEventListener('click', function() {
+        const jabatanIds = [];
+        document.querySelectorAll('#sortable li').forEach(li => {
+            jabatanIds.push(parseInt(li.dataset.id));
+        });
+
+        fetch('{{ route("admin.profil_pegawai.update-order") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ jabatans: jabatanIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeModal('orderModal');
+                location.reload(); // Reload to reflect changes
+            }
+        });
+    });
+
     document.getElementById('dropdownButton').addEventListener('click', function() {
         document.getElementById('dropdownMenu').classList.toggle('hidden');
     });

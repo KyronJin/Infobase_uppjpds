@@ -1,132 +1,253 @@
 @extends('layouts.app')
 
-@push('styles')
-{{-- Memastikan font Cairo tersedia --}}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+@section('content')
 <style>
-    body { font-family: 'Cairo', sans-serif; }
-    
-    /* Efek Kaca (Glassmorphism) */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+    * { box-sizing: border-box; }
+    body, html { padding: 0; margin: 0; }
+
+    .page-header {
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        padding: 4rem 0;
+        color: white;
+        margin-top: 2rem;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* Animasi halus untuk gambar */
-    .img-hover {
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .page-header .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header span {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        margin-bottom: 1rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 0.5rem 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header .subtitle {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .content-wrapper {
+        padding: 3rem 0;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .section-title i {
+        color: #f85e38;
+        font-size: 1.75rem;
+    }
+
+    .infobase-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .infobase-card {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(248, 94, 56, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .infobase-card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        transform: translateY(-8px);
+    }
+
+    .infobase-card-header {
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .infobase-card-header i {
+        color: white;
+        font-size: 3.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .infobase-card:hover .infobase-card-header i {
+        transform: scale(1.15) rotateZ(5deg);
+    }
+
+    .infobase-card-body {
+        padding: 2rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .infobase-card-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin: 0 0 0.75rem 0;
+    }
+
+    .infobase-card-description {
+        color: #6b7280;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0 0 1.5rem 0;
+        flex: 1;
+    }
+
+    .infobase-card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #f85e38;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+
+    .infobase-card:hover .infobase-card-link {
+        gap: 1rem;
+    }
+
+    .officer-section {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(248, 94, 56, 0.1);
+    }
+
+    .officer-card {
+        text-align: center;
+    }
+
+    .officer-image {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #f85e38;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 10px 30px rgba(248, 94, 56, 0.2);
+    }
+
+    .officer-name {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .officer-position {
+        color: #f85e38;
+        font-weight: 700;
+        font-size: 1rem;
     }
 </style>
-@endpush
 
-@section('content')
-<x-navbar />
+<div class="page-header">
+    <div class="header-content">
+        <span><i class="fas fa-book-open mr-2"></i>Pusat Informasi</span>
+        <h1><i class="fas fa-info-circle mr-3 text-white"></i>INFOBASE UPPJPDS</h1>
+        <p class="subtitle">Pusat Informasi Perpustakaan Jakarta Pusat</p>
+    </div>
+</div>
 
-<div class="bg-gradient-to-br from-teal-800 via-teal-700 to-emerald-800 min-h-screen">
-    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-20">
-        
-        <div class="text-center mb-20">
-            <h1 class="text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-teal-200 tracking-tighter mb-4">
-                INFOBASE
-            </h1>
-            <div class="h-1.5 w-24 bg-teal-400 mx-auto rounded-full mb-6"></div>
-            <p class="text-xl text-teal-50 font-light tracking-wide uppercase">Pusat Informasi Perpustakaan UPPJPDS</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
-            <div class="lg:col-span-4 space-y-8">
-                <div class="flex items-center space-x-3 mb-2">
-                    <span class="flex h-3 w-3 rounded-full bg-teal-400 animate-ping"></span>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Today's Officer</h2>
-                </div>
-                
-                <div class="glass-card rounded-3xl p-8 transition-transform duration-500 hover:scale-[1.02]">
-                    <div class="flex flex-col items-center">
-                        <div class="relative group">
-                            <div class="absolute -inset-1 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                            <div class="relative w-44 h-44 rounded-full overflow-hidden border-4 border-white shadow-2xl mb-6">
-                                <img src="{{ $todayOfficer['image'] }}" alt="{{ $todayOfficer['name'] }}" class="w-full h-full object-cover img-hover group-hover:scale-110">
-                            </div>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white text-center">{{ $todayOfficer['name'] }}</h3>
-                        <p class="px-4 py-1 mt-3 bg-teal-500/30 text-teal-50 rounded-full text-sm font-medium border border-teal-400/30">
-                            {{ $todayOfficer['position'] }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-8">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Informasi Terbaru</h2>
-                    <div class="h-px flex-1 bg-white/10 ml-6"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @foreach($infobaseData as $item)
-                    <div class="glass-card rounded-2xl overflow-hidden group hover:bg-white/20 transition-all duration-300">
-                        <div class="relative aspect-video overflow-hidden">
-                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover img-hover group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-teal-900/60 to-transparent opacity-60"></div>
-                        </div>
-                        
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-teal-200 transition-colors">{{ $item['title'] }}</h3>
-                            <p class="text-teal-100/80 text-sm leading-relaxed mb-6 line-clamp-2">
-                                {{ $item['description'] }}
-                            </p>
-                            
-                            <a href="#" class="flex items-center justify-center w-full py-3 bg-white text-teal-800 font-bold rounded-xl hover:bg-teal-50 hover:shadow-lg transition-all active:scale-95">
-                                Lihat Detail
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
-                        </div>
-                    </div>
-                    @endforeach
+<div class="container">
+    <div class="content-wrapper">
+        <!-- Officer Section -->
+        <div style="margin-bottom: 4rem;">
+            <h2 class="section-title">
+                <i class="fas fa-user-tie"></i>Petugas Hari Ini
+            </h2>
+            <div class="officer-section" style="max-width: 300px; margin: 0 auto;">
+                <div class="officer-card">
+                    <img src="{{ $todayOfficer['image'] }}" alt="{{ $todayOfficer['name'] }}" class="officer-image">
+                    <h3 class="officer-name">{{ $todayOfficer['name'] }}</h3>
+                    <p class="officer-position">{{ $todayOfficer['position'] }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="mt-24">
-            <div class="flex items-center justify-between mb-8">
-                <h2 class="text-2xl font-bold text-white tracking-tight">Hubungi Kami</h2>
-                <div class="h-px flex-1 bg-white/10 ml-6"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-8 rounded-3xl flex flex-col items-center text-center group hover:bg-teal-500/20 transition-all duration-300">
-                    <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <!-- Info Sections -->
+        <div>
+            <h2 class="section-title">
+                <i class="fas fa-database"></i>Akses Informasi
+            </h2>
+            <div class="infobase-grid">
+                @foreach($infobaseData as $item)
+                <a href="{{ $item['route'] }}" class="infobase-card">
+                    <div class="infobase-card-header">
+                        <i class="{{ $item['icon'] ?? 'fas fa-file' }}"></i>
                     </div>
-                    <h4 class="text-lg font-bold text-white mb-2">Lokasi</h4>
-                    <p class="text-teal-100 text-sm leading-relaxed">
-                        Jl. Contoh No. 123, Gedung Perpustakaan UPPJPDS, Jakarta.
-                    </p>
-                </div>
-
-                <div class="glass-card p-8 rounded-3xl flex flex-col items-center text-center group hover:bg-teal-500/20 transition-all duration-300">
-                    <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <div class="infobase-card-body">
+                        <h3 class="infobase-card-title">{{ $item['title'] }}</h3>
+                        <p class="infobase-card-description">{{ $item['description'] }}</p>
+                        <div class="infobase-card-link">
+                            <span>Buka</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
                     </div>
-                    <h4 class="text-lg font-bold text-white mb-2">Email</h4>
-                    <p class="text-teal-100 text-sm italic">info@uppjpds.library.sch.id</p>
-                </div>
-
-                <div class="glass-card p-8 rounded-3xl flex flex-col items-center text-center group hover:bg-teal-500/20 transition-all duration-300">
-                    <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">Kontak</h4>
-                    <p class="text-teal-100 text-sm">+62 812 3456 7890</p>
-                </div>
+                </a>
+                @endforeach
             </div>
         </div>
-
     </div>
 </div>
 @endsection

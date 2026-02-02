@@ -6,6 +6,7 @@ use App\Models\ProfileRuangan;
 use App\Models\CalendarEvent;
 use App\Models\Pengumuman;
 use App\Models\JenisTataTertib;
+use App\Models\StaffOfMonth;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -84,21 +85,36 @@ class InfobaseController extends Controller
 
     public function pengumuman()
     {
-        $pengumumans = Pengumuman::active()->latest('published_at')->get();
+        $pengumumans = Pengumuman::where(function ($q) {
+            $now = now();
+            $q->whereNull('published_at')
+              ->orWhere('published_at', '<=', $now);
+        })->latest('published_at')->get();
         return view('infobase.pengumuman', compact('pengumumans'));
     }
 
     public function staffOfMonth(): View
     {
-        $staff = [
-            'name'    => 'Nama Staff Terbaik',
-            'photo'   => asset('images/staff/best.jpg'),
-            'reason'  => 'Alasan dipilih sebagai staff terbaik bulan ini...',
-        ];
+        // Get staff grouped by position
+        $staffByPosition = StaffOfMonth::where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('position')
+            ->map(function($group) {
+                return $group->first(); // Get the most recent staff for each position
+            });
+        
+        // Get all unique positions for tabs
+        $positions = $staffByPosition->keys();
+        
+        // Get first staff as default
+        $defaultStaff = $staffByPosition->first();
 
         return view('infobase.staff-of-month', [
             'title' => 'Staff of The Month',
-            'staff' => $staff,
+            'staffByPosition' => $staffByPosition,
+            'positions' => $positions,
+            'defaultStaff' => $defaultStaff,
         ]);
     }
 

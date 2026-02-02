@@ -11,7 +11,7 @@ class StaffOfMonth extends Model
 
     protected $table = 'staff_of_months';
 
-    protected $fillable = ['name', 'position', 'month', 'year', 'bio', 'photo_link', 'is_active'];
+    protected $fillable = ['name', 'position', 'month', 'year', 'bio', 'photo_path', 'photo_link', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',

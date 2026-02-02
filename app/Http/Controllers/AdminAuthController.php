@@ -40,6 +40,10 @@ class AdminAuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+        ], [
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password harus diisi.',
         ]);
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
@@ -47,7 +51,7 @@ class AdminAuthController extends Controller
             return redirect()->intended(route('admin.pengumuman.index'));
         }
 
-        return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->onlyInput('email');
+        return back()->withErrors(['email' => '✗ Email atau password yang Anda masukkan tidak sesuai dengan data kami.'])->onlyInput('email');
     }
 
     public function logout(Request $request)

@@ -30,9 +30,21 @@ class ProfileRuanganController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file gambar
             'is_active' => 'sometimes|boolean',
+        ], [
+            'room_name.required' => 'Nama ruangan harus diisi.',
+            'room_name.string' => 'Nama ruangan harus berupa teks.',
+            'room_name.max' => 'Nama ruangan maksimal 255 karakter.',
+            'floor.integer' => 'Lantai harus berupa angka.',
+            'floor.min' => 'Lantai minimal 1.',
+            'floor.max' => 'Lantai maksimal 7.',
+            'capacity.integer' => 'Kapasitas harus berupa angka.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
+            'images.*.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->has('is_active') ? true : false;
 
         $profileRuangan = ProfileRuangan::create($data);
 
@@ -47,11 +59,16 @@ class ProfileRuanganController extends Controller
             }
         }
 
-        return redirect()->route('admin.profile.index')->with('success', 'Created.');
+        return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil ditambahkan!');
     }
 
     public function edit(ProfileRuangan $profile_ruangan)
     {
+        // If JSON is requested, return JSON
+        if (request()->wantsJson()) {
+            return response()->json($profile_ruangan);
+        }
+        
         $profile_ruangan->load('images');
         return view('admin.profile.edit', compact('profile_ruangan'));
     }
@@ -66,9 +83,21 @@ class ProfileRuanganController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'sometimes|boolean',
+        ], [
+            'room_name.required' => 'Nama ruangan harus diisi.',
+            'room_name.string' => 'Nama ruangan harus berupa teks.',
+            'room_name.max' => 'Nama ruangan maksimal 255 karakter.',
+            'floor.integer' => 'Lantai harus berupa angka.',
+            'floor.min' => 'Lantai minimal 1.',
+            'floor.max' => 'Lantai maksimal 7.',
+            'capacity.integer' => 'Kapasitas harus berupa angka.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
+            'images.*.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->has('is_active') ? true : false;
 
         $profile_ruangan->update($data);
 
@@ -83,7 +112,7 @@ class ProfileRuanganController extends Controller
             }
         }
 
-        return redirect()->route('admin.profile.index')->with('success', 'Updated.');
+        return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil diperbarui!');
     }
 
     public function destroy(ProfileRuangan $profile_ruangan)
@@ -94,12 +123,25 @@ class ProfileRuanganController extends Controller
             $image->delete();
         }
         $profile_ruangan->delete();
-        return redirect()->route('admin.profile.index')->with('success', 'Deleted.');
+        return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil dihapus!');
     }
 
     public function publicIndex()
     {
         $items = ProfileRuangan::with('images')->where('is_active', true)->orderBy('created_at', 'desc')->get();
         return view('infobase.profile-ruangan', compact('items'));
+    }
+
+    public function deleteImage(ProfileRuanganImage $image)
+    {
+        $profileRuanganId = $image->profile_ruangan_id;
+        
+        // Hapus file dari storage
+        Storage::disk('public')->delete($image->image_path);
+        
+        // Hapus record dari database
+        $image->delete();
+        
+        return redirect()->route('admin.profile.edit', $profileRuanganId)->with('success', '✓ Gambar berhasil dihapus!');
     }
 }

@@ -9,6 +9,11 @@ use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileRuanganController;
 use App\Http\Controllers\ProfilPegawaiController;
+use App\Http\Controllers\StaffOfMonthController;
+
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
 
 Route::get('/', function () {
     return view('home');
@@ -50,7 +55,12 @@ Route::resource('admin/calendar', CalendarEventController::class)->names('admin.
 Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.tata_tertib')->middleware('auth');
 
 // Admin Profile Ruangan CRUD (protected)
-Route::resource('admin/profile', ProfileRuanganController::class)->names('admin.profile')->middleware('auth');
+Route::resource('admin/profile-ruangan', ProfileRuanganController::class)->names('admin.profile')->middleware('auth');
+
+// Admin Staff of Month CRUD (protected)
+Route::resource('admin/staff-of-month', StaffOfMonthController::class)->names('admin.staff-of-month')->middleware('auth');
+Route::post('admin/staff-of-month/store-jabatan', [StaffOfMonthController::class, 'storeJabatan'])->name('admin.staff-of-month.store-jabatan')->middleware('auth');
+Route::delete('admin/staff-of-month/jabatan/{jabatan}', [StaffOfMonthController::class, 'destroyJabatan'])->name('admin.staff-of-month.destroy-jabatan')->middleware('auth');
 
 // Admin Profil Pegawai CRUD (protected)
 Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('admin.profil_pegawai')->middleware('auth');

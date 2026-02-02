@@ -26,19 +26,23 @@ class PengumumanController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'published_at' => 'nullable|date',
-            'unpublished_at' => 'nullable|date|after:published_at',
-            'valid_from' => 'nullable|date',
-            'valid_until' => 'nullable|date|after:valid_from',
+            'published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'valid_from' => 'nullable|date_format:Y-m-d',
+            'valid_until' => 'nullable|date_format:Y-m-d',
+        ], [
+            'title.required' => 'Judul pengumuman harus diisi.',
+            'title.string' => 'Judul pengumuman harus berupa teks.',
+            'title.max' => 'Judul pengumuman maksimal 255 karakter.',
+            'description.required' => 'Deskripsi pengumuman harus diisi.',
+            'description.string' => 'Deskripsi pengumuman harus berupa teks.',
+            'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
+            'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
+            'valid_until.date_format' => 'Format tanggal berakhir tidak valid.',
         ]);
 
-        // Konversi tanggal ke UTC dari Asia/Jakarta
+        // Konversi tanggal dari datetime-local ke UTC
         if ($validated['published_at']) {
             $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
-        if ($validated['unpublished_at']) {
-            $validated['unpublished_at'] = Carbon::parse($validated['unpublished_at'], 'Asia/Jakarta')->setTimezone('UTC');
         }
         if ($validated['valid_from']) {
             $validated['valid_from'] = Carbon::parse($validated['valid_from'], 'Asia/Jakarta')->setTimezone('UTC');
@@ -47,17 +51,25 @@ class PengumumanController extends Controller
             $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->setTimezone('UTC');
         }
 
-        if ($request->hasFile('image')) {
-            $validated['image_path'] = $request->file('image')->store('pengumuman_images', 'public');
-        }
-
         Pengumuman::create($validated);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil dibuat');
+        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman berhasil ditambahkan!');
     }
 
     public function edit(Pengumuman $pengumuman)
     {
+        // Untuk AJAX request, return JSON
+        if (request()->expectsJson()) {
+            return response()->json([
+                'id' => $pengumuman->id,
+                'title' => $pengumuman->title,
+                'description' => $pengumuman->description,
+                'published_at' => $pengumuman->published_at?->format('Y-m-d\TH:i'),
+                'valid_from' => $pengumuman->valid_from?->format('Y-m-d'),
+                'valid_until' => $pengumuman->valid_until?->format('Y-m-d'),
+            ]);
+        }
+        
         return view('admin.pengumuman.edit', compact('pengumuman'));
     }
 
@@ -66,19 +78,23 @@ class PengumumanController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'published_at' => 'nullable|date',
-            'unpublished_at' => 'nullable|date|after:published_at',
-            'valid_from' => 'nullable|date',
-            'valid_until' => 'nullable|date|after:valid_from',
+            'published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'valid_from' => 'nullable|date_format:Y-m-d',
+            'valid_until' => 'nullable|date_format:Y-m-d',
+        ], [
+            'title.required' => 'Judul pengumuman harus diisi.',
+            'title.string' => 'Judul pengumuman harus berupa teks.',
+            'title.max' => 'Judul pengumuman maksimal 255 karakter.',
+            'description.required' => 'Deskripsi pengumuman harus diisi.',
+            'description.string' => 'Deskripsi pengumuman harus berupa teks.',
+            'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
+            'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
+            'valid_until.date_format' => 'Format tanggal berakhir tidak valid.',
         ]);
 
-        // Konversi tanggal ke UTC dari Asia/Jakarta
+        // Konversi tanggal dari datetime-local ke UTC
         if ($validated['published_at']) {
             $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
-        if ($validated['unpublished_at']) {
-            $validated['unpublished_at'] = Carbon::parse($validated['unpublished_at'], 'Asia/Jakarta')->setTimezone('UTC');
         }
         if ($validated['valid_from']) {
             $validated['valid_from'] = Carbon::parse($validated['valid_from'], 'Asia/Jakarta')->setTimezone('UTC');
@@ -87,17 +103,9 @@ class PengumumanController extends Controller
             $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->setTimezone('UTC');
         }
 
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($pengumuman->image_path) {
-                Storage::disk('public')->delete($pengumuman->image_path);
-            }
-            $validated['image_path'] = $request->file('image')->store('pengumuman_images', 'public');
-        }
-
         $pengumuman->update($validated);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui');
+        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman berhasil diperbarui!');
     }
 
     public function destroy(Pengumuman $pengumuman)
@@ -107,15 +115,11 @@ class PengumumanController extends Controller
         }
         $pengumuman->delete();
 
-        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil dihapus');
+        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman berhasil dihapus!');
     }
 
     public function show(Pengumuman $pengumuman)
     {
-        // Pastikan pengumuman aktif untuk public
-        if (!$pengumuman->active) {
-            abort(404);
-        }
         return view('infobase.pengumuman-detail', compact('pengumuman'));
     }
 }

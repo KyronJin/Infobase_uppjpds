@@ -4,7 +4,7 @@
 <div class="container mx-auto px-6 py-12">
     <div class="admin-section">
         <h1 class="admin-header">Edit Staff</h1>
-        <form action="{{ route('admin.staff.update', $staff_of_month) }}" method="POST">
+        <form action="{{ route('admin.staff-of-month.update', $staff_of_month) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="form-group"><label class="form-label">Name</label><input name="name" class="form-control" value="{{ old('name', $staff_of_month->name) }}" required></div>
