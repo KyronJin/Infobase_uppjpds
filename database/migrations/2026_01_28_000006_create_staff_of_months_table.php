@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->smallInteger('year')->nullable();
             $table->text('bio')->nullable();
             $table->string('photo_link')->nullable();
+            $table->string('foto_path')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
