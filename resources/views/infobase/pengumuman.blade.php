@@ -109,7 +109,7 @@
     }
 
     .page-header {
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        background: linear-gradient(135deg, #063A76 0%, #042354 100%);
         padding: 4rem 0;
         color: white;
         margin-top: 2rem;
@@ -365,8 +365,8 @@
             <h1><i class="fas fa-megaphone mr-3 text-white"></i>Pengumuman & Informasi</h1>
             <p>Dapatkan berita dan informasi terbaru dari perpustakaan kami.</p>
         </div>
-        <a href="{{ route('infobase.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 </div>

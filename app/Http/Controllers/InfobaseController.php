@@ -12,53 +12,6 @@ use Illuminate\View\View;
 
 class InfobaseController extends Controller
 {
-    /**
-     * Halaman utama Infobase (overview semua bagian)
-     */
-    public function index(): View
-    {
-        $todayOfficer = [
-            'name'     => 'Fenty Afriyeni',
-            'position' => 'Petugas Harian',
-            'image'    => asset('images/petugas/fenty.jpg'),
-        ];
-
-        $infobaseData = [
-            'tataTertib' => [
-                'title'       => 'Tata Tertib',
-                'description' => 'Berisi Tata Tertib dan Peraturan di Perpustakaan',
-                'image'       => asset('images/icons/tata-tertib.png'),
-                'route'       => route('infobase.tata-tertib'),
-            ],
-            'calendarAktifitas' => [
-                'title'       => 'Calendar Aktifitas',
-                'description' => 'Berisi informasi kunjungan atau event di hari berjalan',
-                'image'       => asset('images/icons/calendar.png'),
-                'route'       => route('infobase.calendar-aktifitas'),
-            ],
-            'pengumuman' => [
-                'title'       => 'Pengumuman',
-                'description' => 'Berisi pengumuman yang bersifat penting',
-                'image'       => asset('images/icons/announcement.png'),
-                'route'       => route('infobase.pengumuman'),
-            ],
-            'staffOfMonth' => [
-                'title'       => 'Staff of The Month',
-                'description' => 'Berisi data PJLP terbaik',
-                'image'       => asset('images/icons/staff.png'),
-                'route'       => route('infobase.staff-of-month'),
-            ],
-            'profileRuangan' => [
-                'title'       => 'Profile Ruangan',
-                'description' => 'Berisi foto dan informasi mengenai ruangan yang dapat dipinjam untuk event',
-                'image'       => asset('images/icons/room.png'),
-                'route'       => route('infobase.profile-ruangan'),
-            ],
-        ];
-
-        return view('infobase.index', compact('todayOfficer', 'infobaseData'));
-    }
-
     public function tataTertib(): View
     {
         $jenis = JenisTataTertib::with('tataTertibs')->whereHas('tataTertibs', function ($q) {
@@ -123,7 +76,7 @@ class InfobaseController extends Controller
      */
     public function profileRuangan(): View
     {
-        $items = ProfileRuangan::where('is_active', true)->orderBy('created_at', 'desc')->get();
+        $items = ProfileRuangan::with('images')->where('is_active', true)->orderBy('created_at', 'desc')->get();
         $title = 'Profile Ruangan';
 
         return view('infobase.profile-ruangan', compact('items', 'title'));

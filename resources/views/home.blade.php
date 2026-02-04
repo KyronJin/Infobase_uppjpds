@@ -23,10 +23,6 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <a href="{{ Route::has('admin.login') ? route('admin.login') : '#' }}" class="inline-flex items-center justify-center px-8 py-4 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-lg">
-                            <i class="fas fa-sign-in-alt mr-2"></i>
-                            Masuk Admin
-                        </a>
                         <a href="#features" class="inline-flex items-center justify-center px-8 py-4 border-2 border-[#00425A] text-[#00425A] font-semibold rounded-lg hover:bg-[#00425A] hover:text-white transition duration-300">
                             <i class="fas fa-arrow-down mr-2"></i>
                             Pelajari Lebih Lanjut
@@ -385,7 +381,7 @@
             <p class="text-lg text-white text-opacity-90 mb-8 max-w-2xl mx-auto">
                 Bergabunglah dengan ribuan pengunjung yang telah memanfaatkan layanan perpustakaan digital kami.
             </p>
-            <a href="{{ route('infobase.index') }}" class="inline-flex items-center px-8 py-4 bg-[#f85e38] text-white font-bold rounded-lg hover:bg-white hover:text-[#f85e38] transition duration-300 shadow-lg">
+            <a href="{{ route('pengumuman.index') }}" class="inline-flex items-center px-8 py-4 bg-[#f85e38] text-white font-bold rounded-lg hover:bg-white hover:text-[#f85e38] transition duration-300 shadow-lg">
                 <i class="fas fa-arrow-right mr-2"></i>
                 Mulai Sekarang
             </a>

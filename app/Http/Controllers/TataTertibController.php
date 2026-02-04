@@ -42,6 +42,7 @@ class TataTertibController extends Controller
                 'content.string' => 'Konten tata tertib harus berupa teks.',
             ]);
 
+            // ambil nilai checkbox dengan aman
             $validated['is_active'] = $request->boolean('is_active');
 
             $lines = explode("\n", trim($validated['content']));
@@ -73,7 +74,7 @@ class TataTertibController extends Controller
         if (request()->wantsJson()) {
             return response()->json($tata_tertib);
         }
-
+        
         $jenis = JenisTataTertib::all();
         return view('admin.tata_tertib.edit', compact('tata_tertib', 'jenis'));
     }
@@ -92,6 +93,7 @@ class TataTertibController extends Controller
                 'content.string' => 'Konten tata tertib harus berupa teks.',
             ]);
 
+            // ambil nilai checkbox dengan aman
             $validated['is_active'] = $request->boolean('is_active');
 
             $tata_tertib->update($validated);

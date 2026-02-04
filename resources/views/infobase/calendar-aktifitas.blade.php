@@ -186,8 +186,8 @@
             <h1><i class="fas fa-calendar-alt mr-3 text-white"></i>Calendar Aktifitas</h1>
             <p>Jadwal lengkap event, workshop, dan kegiatan perpustakaan.</p>
         </div>
-        <a href="{{ route('infobase.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 </div>

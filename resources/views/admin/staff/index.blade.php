@@ -491,7 +491,7 @@
             </div>
         </div>
 
-        <a href="{{ route('infobase.index') }}" class="inline-block mt-8 text-teal-600 hover:underline">
+        <a href="{{ route('home') }}" class="inline-block mt-8 text-teal-600 hover:underline">
             ← Kembali
         </a>
     </div>

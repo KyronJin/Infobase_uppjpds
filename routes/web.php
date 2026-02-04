@@ -27,7 +27,6 @@ Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::prefix('infobase')->name('infobase.')->group(function () {
-    Route::get('/', [InfobaseController::class, 'index'])->name('index');
     Route::get('tata-tertib', [InfobaseController::class, 'tataTertib'])->name('tata-tertib');
     Route::get('calendar-aktifitas', [InfobaseController::class, 'calendarAktifitas'])->name('calendar-aktifitas');
     Route::get('pengumuman', [InfobaseController::class, 'pengumuman'])->name('pengumuman');
@@ -56,6 +55,7 @@ Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.
 
 // Admin Profile Ruangan CRUD (protected)
 Route::resource('admin/profile-ruangan', ProfileRuanganController::class)->names('admin.profile')->middleware('auth');
+Route::delete('admin/profile-ruangan/image/{image}', [ProfileRuanganController::class, 'deleteImage'])->name('admin.profile.deleteImage')->middleware('auth');
 
 // Admin Staff of Month CRUD (protected)
 Route::resource('admin/staff-of-month', StaffOfMonthController::class)->names('admin.staff-of-month')->middleware('auth');

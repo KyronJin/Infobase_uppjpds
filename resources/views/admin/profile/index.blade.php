@@ -103,12 +103,25 @@
                             <textarea id="create-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Gambar</label>
-                            <input type="file" id="create-images" name="images[]" multiple accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file - Format: JPG, PNG, GIF</p>
+                            <label class="block text-gray-700 font-semibold mb-2">Gambar (Maks 3 file)</label>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-gray-600 text-sm mb-1">Gambar 1</label>
+                                    <input type="file" id="create-slot_1_image" name="slot_1_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-600 text-sm mb-1">Gambar 2</label>
+                                    <input type="file" id="create-slot_2_image" name="slot_2_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-600 text-sm mb-1">Gambar 3</label>
+                                    <input type="file" id="create-slot_3_image" name="slot_3_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Maksimal 2MB per file - Format: JPG, PNG, GIF</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" id="create-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500" value="1">
+                            <input type="checkbox" id="create-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500" value="1" checked>
                             <label for="create-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
                         </div>
                         <div class="flex justify-end gap-3 pt-4">
@@ -154,8 +167,25 @@
                             <textarea id="edit-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Gambar</label>
-                            <input type="file" name="images[]" multiple accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <label class="block text-gray-700 font-semibold mb-2">Gambar yang Ada</label>
+                            <div id="edit-images-preview" class="grid grid-cols-3 gap-2 mb-4"></div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Tambah/Ganti Gambar (Maks 3 file)</label>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-gray-600 text-sm mb-1">Gambar 1</label>
+                                    <input type="file" name="slot_1_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-600 text-sm mb-1">Gambar 2</label>
+                                    <input type="file" name="slot_2_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-600 text-sm mb-1">Gambar 3</label>
+                                    <input type="file" name="slot_3_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                </div>
+                            </div>
                             <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file - Kosongkan jika tidak ingin mengubah</p>
                         </div>
                         <div class="flex items-center">
@@ -357,9 +387,81 @@ function editProfileRuangan(id) {
         document.getElementById('edit-description').value = data.description || '';
         document.getElementById('edit-is_active').checked = data.is_active || false;
         form.action = `/admin/profile-ruangan/${id}`;
+        
+        // Display existing images
+        const previewContainer = document.getElementById('edit-images-preview');
+        previewContainer.innerHTML = '';
+        
+        if (data.images && data.images.length > 0) {
+            data.images.forEach(image => {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'relative border border-gray-200 rounded overflow-hidden bg-gray-100';
+                imageDiv.innerHTML = `
+                    <img src="/storage/${image.image_path}" alt="Room image" class="w-full h-24 object-cover">
+                    <button type="button" onclick="deleteImageFromEdit(${image.id}, this)" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded text-xs hover:bg-red-600 transition-colors" title="Hapus gambar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                previewContainer.appendChild(imageDiv);
+            });
+        } else {
+            previewContainer.innerHTML = '<p class="col-span-3 text-gray-500 text-sm">Belum ada gambar</p>';
+        }
+        
         modal.classList.remove('hidden');
     })
     .catch(error => console.error('Error:', error));
+}
+
+function deleteImageFromEdit(imageId, buttonElement) {
+    if (!confirm('Yakin ingin menghapus gambar ini?')) {
+        return;
+    }
+    
+    const previewContainer = document.getElementById('edit-images-preview');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    
+    fetch(`/admin/profile-ruangan/image/${imageId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the image element from preview
+            buttonElement.closest('div').remove();
+            
+            // Check if no images left
+            if (previewContainer.children.length === 0) {
+                previewContainer.innerHTML = '<p class="col-span-3 text-gray-500 text-sm">Belum ada gambar</p>';
+            }
+            
+            // Show success message
+            showNotification('Gambar berhasil dihapus!', 'success');
+        } else {
+            showNotification('Gagal menghapus gambar: ' + (data.message || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Terjadi kesalahan saat menghapus gambar', 'error');
+    });
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-[9999] ${
+        type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+    }`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
 function deleteProfileRuangan(id, roomName) {

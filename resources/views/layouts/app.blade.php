@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'INFOBASE') }}</title>
 
     <!-- Fonts -->
@@ -64,7 +65,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="{{ route('infobase.index') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
+                  <a href="{{ route('home') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
                     InfoBase
                   </a>

@@ -27,8 +27,9 @@ class ProfileRuanganController extends Controller
             'floor' => 'nullable|integer|min:1|max:7',
             'capacity' => 'nullable|integer',
             'description' => 'nullable|string',
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slot_1_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slot_2_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slot_3_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|in:0,1,on,true,false',
         ], [
             'room_name.required' => 'Nama ruangan harus diisi.',
@@ -39,18 +40,26 @@ class ProfileRuanganController extends Controller
             'floor.max' => 'Lantai maksimal 7.',
             'capacity.integer' => 'Kapasitas harus berupa angka.',
             'description.string' => 'Deskripsi harus berupa teks.',
-            'images.*.image' => 'File harus berupa gambar.',
-            'images.*.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-            'images.*.max' => 'Ukuran gambar maksimal 2MB.',
+            'slot_1_image.image' => 'File gambar 1 harus berupa gambar.',
+            'slot_1_image.mimes' => 'Format gambar 1 harus JPEG, PNG, JPG, atau GIF.',
+            'slot_1_image.max' => 'Ukuran gambar 1 maksimal 2MB.',
+            'slot_2_image.image' => 'File gambar 2 harus berupa gambar.',
+            'slot_2_image.mimes' => 'Format gambar 2 harus JPEG, PNG, JPG, atau GIF.',
+            'slot_2_image.max' => 'Ukuran gambar 2 maksimal 2MB.',
+            'slot_3_image.image' => 'File gambar 3 harus berupa gambar.',
+            'slot_3_image.mimes' => 'Format gambar 3 harus JPEG, PNG, JPG, atau GIF.',
+            'slot_3_image.max' => 'Ukuran gambar 3 maksimal 2MB.',
         ]);
 
         $data['is_active'] = $request->has('is_active') ? true : false;
 
         $profileRuangan = ProfileRuangan::create($data);
 
-        // Handle multiple image uploads
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
+        // Handle slot image uploads (maksimal 3)
+        for ($i = 1; $i <= 3; $i++) {
+            $slotName = "slot_{$i}_image";
+            if ($request->hasFile($slotName)) {
+                $image = $request->file($slotName);
                 $path = $image->store('profile_ruangan_images', 'public');
                 ProfileRuanganImage::create([
                     'profile_ruangan_id' => $profileRuangan->id,
@@ -75,6 +84,7 @@ class ProfileRuanganController extends Controller
 
     public function editModal(ProfileRuangan $profile_ruangan)
     {
+        $profile_ruangan->load('images');
         return response()->json($profile_ruangan);
     }
 
@@ -85,8 +95,9 @@ class ProfileRuanganController extends Controller
             'floor' => 'nullable|integer|min:1|max:7',
             'capacity' => 'nullable|integer',
             'description' => 'nullable|string',
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slot_1_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slot_2_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slot_3_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|in:0,1,on,true,false',
         ], [
             'room_name.required' => 'Nama ruangan harus diisi.',
@@ -97,18 +108,34 @@ class ProfileRuanganController extends Controller
             'floor.max' => 'Lantai maksimal 7.',
             'capacity.integer' => 'Kapasitas harus berupa angka.',
             'description.string' => 'Deskripsi harus berupa teks.',
-            'images.*.image' => 'File harus berupa gambar.',
-            'images.*.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-            'images.*.max' => 'Ukuran gambar maksimal 2MB.',
+            'slot_1_image.image' => 'File gambar 1 harus berupa gambar.',
+            'slot_1_image.mimes' => 'Format gambar 1 harus JPEG, PNG, JPG, atau GIF.',
+            'slot_1_image.max' => 'Ukuran gambar 1 maksimal 2MB.',
+            'slot_2_image.image' => 'File gambar 2 harus berupa gambar.',
+            'slot_2_image.mimes' => 'Format gambar 2 harus JPEG, PNG, JPG, atau GIF.',
+            'slot_2_image.max' => 'Ukuran gambar 2 maksimal 2MB.',
+            'slot_3_image.image' => 'File gambar 3 harus berupa gambar.',
+            'slot_3_image.mimes' => 'Format gambar 3 harus JPEG, PNG, JPG, atau GIF.',
+            'slot_3_image.max' => 'Ukuran gambar 3 maksimal 2MB.',
         ]);
 
         $data['is_active'] = $request->has('is_active') ? true : false;
 
         $profile_ruangan->update($data);
 
-        // Handle new images
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
+        // Handle slot image uploads (maksimal 3)
+        for ($i = 1; $i <= 3; $i++) {
+            $slotName = "slot_{$i}_image";
+            if ($request->hasFile($slotName)) {
+                // Delete old image in this slot if exists
+                $oldImage = $profile_ruangan->images()->skip($i - 1)->first();
+                if ($oldImage) {
+                    Storage::disk('public')->delete($oldImage->image_path);
+                    $oldImage->delete();
+                }
+                
+                // Save new image
+                $image = $request->file($slotName);
                 $path = $image->store('profile_ruangan_images', 'public');
                 ProfileRuanganImage::create([
                     'profile_ruangan_id' => $profile_ruangan->id,
@@ -117,7 +144,7 @@ class ProfileRuanganController extends Controller
             }
         }
 
-        return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil diperbarui!');
+        return redirect()->route('admin.profile.edit', $profile_ruangan->id)->with('success', '✓ Profile ruangan berhasil diperbarui!');
     }
 
     public function destroy(ProfileRuangan $profile_ruangan)
@@ -146,6 +173,14 @@ class ProfileRuanganController extends Controller
         
         // Hapus record dari database
         $image->delete();
+        
+        // If AJAX request, return JSON
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Gambar berhasil dihapus'
+            ]);
+        }
         
         return redirect()->route('admin.profile.edit', $profileRuanganId)->with('success', '✓ Gambar berhasil dihapus!');
     }

@@ -259,8 +259,8 @@
             <h1><i class="fas fa-scroll mr-3 text-white"></i>{{ $title ?? 'Tata Tertib & Peraturan' }}</h1>
             <p>{{ $content ?? 'Berisi Tata Tertib dan Peraturan di Perpustakaan' }}</p>
         </div>
-        <a href="{{ route('infobase.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 </div>

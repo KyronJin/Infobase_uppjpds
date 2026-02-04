@@ -40,28 +40,49 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Gambar Ruangan</label>
-                <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
-                <small class="text-gray-500">Anda dapat memilih multiple gambar. Biarkan kosong jika tidak ingin mengubah.</small>
-            </div>
+                <label class="form-label">Gambar Ruangan (Maksimal 3)</label>
+                <div class="grid grid-cols-3 gap-4 mt-4">
+                    <!-- Slot 1 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400 transition" onclick="document.getElementById('slot-1-input').click()">
+                        <div id="slot-1-preview" class="hidden">
+                            <img id="slot-1-img" src="" alt="Slot 1" class="w-full h-32 object-cover rounded mb-2">
+                            <button type="button" class="text-xs bg-blue-600 text-white px-2 py-1 rounded w-full">Ubah</button>
+                        </div>
+                        <div id="slot-1-empty" class="flex flex-col items-center justify-center h-32">
+                            <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <p class="text-sm font-semibold text-gray-700">Gambar 1</p>
+                        </div>
+                        <input type="file" id="slot-1-input" name="slot_1_image" accept="image/*" class="hidden" onchange="previewSlotImage(1, this)">
+                    </div>
 
-            @if($profile_ruangan->images && count($profile_ruangan->images) > 0)
-                <div class="form-group">
-                    <label class="form-label">Gambar yang Ada</label>
-                    <div class="grid grid-cols-3 gap-4">
-                        @foreach($profile_ruangan->images as $image)
-                            <div class="relative border rounded p-2">
-                                <img src="{{ Storage::url($image->image_path) }}" alt="Room image" class="w-full h-32 object-cover rounded">
-                                <form action="{{ route('admin.profile.deleteImage', $image->id) }}" method="POST" style="position: absolute; top: 0; right: 0;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded text-sm" onclick="return confirm('Delete image?')">Hapus</button>
-                                </form>
-                            </div>
-                        @endforeach
+                    <!-- Slot 2 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400 transition" onclick="document.getElementById('slot-2-input').click()">
+                        <div id="slot-2-preview" class="hidden">
+                            <img id="slot-2-img" src="" alt="Slot 2" class="w-full h-32 object-cover rounded mb-2">
+                            <button type="button" class="text-xs bg-blue-600 text-white px-2 py-1 rounded w-full">Ubah</button>
+                        </div>
+                        <div id="slot-2-empty" class="flex flex-col items-center justify-center h-32">
+                            <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <p class="text-sm font-semibold text-gray-700">Gambar 2</p>
+                        </div>
+                        <input type="file" id="slot-2-input" name="slot_2_image" accept="image/*" class="hidden" onchange="previewSlotImage(2, this)">
+                    </div>
+
+                    <!-- Slot 3 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400 transition" onclick="document.getElementById('slot-3-input').click()">
+                        <div id="slot-3-preview" class="hidden">
+                            <img id="slot-3-img" src="" alt="Slot 3" class="w-full h-32 object-cover rounded mb-2">
+                            <button type="button" class="text-xs bg-blue-600 text-white px-2 py-1 rounded w-full">Ubah</button>
+                        </div>
+                        <div id="slot-3-empty" class="flex flex-col items-center justify-center h-32">
+                            <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <p class="text-sm font-semibold text-gray-700">Gambar 3</p>
+                        </div>
+                        <input type="file" id="slot-3-input" name="slot_3_image" accept="image/*" class="hidden" onchange="previewSlotImage(3, this)">
                     </div>
                 </div>
-            @endif
+                <small class="text-gray-500 block mt-3">Klik pada slot untuk menambah atau mengubah gambar. Maksimal 3 gambar.</small>
+            </div>
 
             <div class="form-group">
                 <label class="form-label inline-flex items-center">
@@ -77,4 +98,43 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const existingSlots = {};
+    
+    // Load existing images ke slot
+    @if($profile_ruangan->images && count($profile_ruangan->images) > 0)
+        @foreach($profile_ruangan->images as $index => $image)
+            @if($index < 3)
+                const slotNum{{ $index + 1 }} = {{ $index + 1 }};
+                existingSlots[slotNum{{ $index + 1 }}] = '/storage/{{ $image->image_path }}';
+                showSlotImage(slotNum{{ $index + 1 }}, '/storage/{{ $image->image_path }}');
+            @endif
+        @endforeach
+    @endif
+    
+    function showSlotImage(slotNum, imagePath) {
+        const preview = document.getElementById(`slot-${slotNum}-preview`);
+        const empty = document.getElementById(`slot-${slotNum}-empty`);
+        const img = document.getElementById(`slot-${slotNum}-img`);
+        
+        img.src = imagePath;
+        preview.classList.remove('hidden');
+        empty.classList.add('hidden');
+    }
+    
+    window.previewSlotImage = function(slotNum, input) {
+        const file = input.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                showSlotImage(slotNum, e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+});
+</script>
 @endsection

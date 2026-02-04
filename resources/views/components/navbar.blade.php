@@ -28,35 +28,59 @@
         </li>
         <li class="relative">
           <button id="data-info-btn" class="flex items-center gap-2 text-gray-700 font-medium hover:text-[#f85e38] transition duration-300 relative group/link cursor-pointer whitespace-nowrap">
-            Data & Informasi
+            Infobase
             <i id="data-info-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
           </button>
 
           <!-- Dropdown Menu -->
           <div id="data-info-menu" class="absolute top-full left-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2">
-            <a href="{{ route('infobase.pengumuman') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              Pengumuman
+            <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              <i class="fas fa-bullhorn text-[#00425A] text-lg"></i>
+              <div>
+                <p class="font-semibold text-sm">Pengumuman</p>
+                <p class="text-xs text-gray-500">Lihat pengumuman</p>
+              </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
-            <a href="{{ route('infobase.calendar-aktifitas') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              Calendar Aktivitas
+            <a href="{{ route('infobase.calendar-aktifitas') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+              <i class="fas fa-calendar-alt text-[#f85e38] text-lg"></i>
+              <div>
+                <p class="font-semibold text-sm">Calendar</p>
+                <p class="text-xs text-gray-500">Lihat aktivitas</p>
+              </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
-            <a href="{{ route('infobase.tata-tertib') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              Tata Tertib
+            <a href="{{ route('infobase.profile-ruangan') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+              <i class="fas fa-door-open text-[#00425A] text-lg"></i>
+              <div>
+                <p class="font-semibold text-sm">Profile Ruangan</p>
+                <p class="text-xs text-gray-500">Lihat ruang fasilitas</p>
+              </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
-            <a href="{{ route('infobase.staff-of-month') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              Staff of Month
+            <a href="{{ route('infobase.tata-tertib') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+              <i class="fas fa-book text-[#f85e38] text-lg"></i>
+              <div>
+                <p class="font-semibold text-sm">Tata Tertib</p>
+                <p class="text-xs text-gray-500">Lihat peraturan</p>
+              </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
-            <a href="{{ route('infobase.profile-ruangan') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              Profile Ruangan
+            <a href="{{ route('infobase.staff-of-month') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+              <i class="fas fa-star text-[#00425A] text-lg"></i>
+              <div>
+                <p class="font-semibold text-sm">Staff of Month</p>
+                <p class="text-xs text-gray-500">Lihat staff terpilih</p>
+              </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
-            <a href="{{ route('infobase.profil-pegawai') }}" class="block px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              Profil Pegawai
+            <a href="{{ route('infobase.profil-pegawai') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
+              <i class="fas fa-users text-[#f85e38] text-lg"></i>
+              <div>
+                <p class="font-semibold text-sm">Profil Pegawai</p>
+                <p class="text-xs text-gray-500">Lihat data pegawai</p>
+              </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
           </div>
@@ -151,10 +175,6 @@
               </form>
             </div>
           </div>
-        @else
-          <a href="{{ Route::has('admin.login') ? route('admin.login') : '#' }}" class="px-6 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg">
-            Masuk Admin
-          </a>
         @endauth
       </div>
 
@@ -179,25 +199,34 @@
         </li>
         <li class="border-t border-gray-200 pt-4 mt-4">
           <button id="mobile-data-info-btn" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition duration-300">
-            Data & Informasi
+            Infobase
             <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
           </button>
 
           <div id="mobile-data-info-menu" class="hidden mt-2 space-y-2 pl-4">
-            <a href="{{ route('infobase.pengumuman') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+            <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              <i class="fas fa-bullhorn text-[#00425A]"></i>
               Pengumuman
             </a>
-            <a href="{{ route('infobase.calendar-aktifitas') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+            <a href="{{ route('infobase.calendar-aktifitas') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              <i class="fas fa-calendar-alt text-[#f85e38]"></i>
               Calendar Aktivitas
             </a>
-            <a href="{{ route('infobase.tata-tertib') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+            <a href="{{ route('infobase.profile-ruangan') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              <i class="fas fa-door-open text-[#00425A]"></i>
+              Profile Ruangan
+            </a>
+            <a href="{{ route('infobase.tata-tertib') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              <i class="fas fa-book text-[#f85e38]"></i>
               Tata Tertib
             </a>
-            <a href="{{ route('infobase.staff-of-month') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+            <a href="{{ route('infobase.staff-of-month') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              <i class="fas fa-star text-[#00425A]"></i>
               Staff of Month
             </a>
-            <a href="{{ route('infobase.profile-ruangan') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
-              Profile Ruangan
+            <a href="{{ route('infobase.profil-pegawai') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-300 text-sm font-medium">
+              <i class="fas fa-users text-[#f85e38]"></i>
+              Profil Pegawai
             </a>
           </div>
         </li>
@@ -263,10 +292,6 @@
                 </button>
               </form>
             </div>
-          @else
-            <a href="{{ Route::has('admin.login') ? route('admin.login') : '#' }}" class="block w-full px-4 py-3 bg-[#00425A] text-white text-center font-semibold rounded-lg hover:bg-[#003144] transition duration-300">
-              Masuk Admin
-            </a>
           @endauth
         </li>
       </ul>

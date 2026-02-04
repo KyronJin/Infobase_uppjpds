@@ -272,7 +272,7 @@
         </form>
 
         <div class="form-footer">
-            <a href="{{ route('infobase.index') }}" class="back-link">
+            <a href="{{ route('home') }}" class="back-link">
                 <i class="fas fa-arrow-left"></i>
                 Kembali ke Beranda
             </a>

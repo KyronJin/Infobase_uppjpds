@@ -573,8 +573,8 @@
             <h1><i class="fas fa-sitemap mr-3 text-white"></i>Profil Pegawai</h1>
             <p>Daftar struktur organisasi dan personel perpustakaan.</p>
         </div>
-        <a href="{{ route('infobase.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 </div>

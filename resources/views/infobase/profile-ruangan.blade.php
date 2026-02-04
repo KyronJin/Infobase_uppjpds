@@ -7,7 +7,7 @@
     body, html { padding: 0; margin: 0; }
 
     .page-header {
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        background: linear-gradient(135deg, #063A76 0%, #042354 100%);
         padding: 2.5rem 0;
         color: white;
         margin-top: 2rem;
@@ -476,8 +476,8 @@
             <h1><i class="fas fa-building mr-3 text-[#f85e38]"></i>Ruangan & Fasilitas</h1>
             <p>Jelajahi ruangan dan fasilitas yang tersedia di perpustakaan kami.</p>
         </div>
-        <a href="{{ route('infobase.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 </div>

@@ -6,7 +6,7 @@
     body, html { padding: 0; margin: 0; }
 
     .page-header {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        background: linear-gradient(135deg, #063A76 0%, #042354 100%);
         padding: 3rem 0;
         color: white;
         margin-top: 2rem;
@@ -344,8 +344,8 @@
 <div class="page-header">
     <div class="header-content">
         <h1><i class="fas fa-award mr-4 text-white"></i>{{ $title ?? 'Staff of The Month' }}</h1>
-        <a href="{{ route('infobase.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali ke Infobase
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
         </a>
     </div>
 </div>
