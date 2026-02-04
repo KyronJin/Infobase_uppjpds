@@ -18,7 +18,7 @@
       <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @endif
   </head>
-  <body class="bg-white text-gray-900 antialiased">
+  <body class="bg-gradient-to-br from-gray-50 via-white to-blue-50 text-gray-900 antialiased">
     <div id="app">
       @includeIf('components.navbar')
 

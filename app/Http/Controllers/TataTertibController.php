@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\TataTertib;
 use App\Models\JenisTataTertib;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class TataTertibController extends Controller
 {
@@ -23,7 +22,9 @@ class TataTertibController extends Controller
             'name.string' => 'Nama jenis tata tertib harus berupa teks.',
             'name.max' => 'Nama jenis tata tertib maksimal 255 karakter.',
         ]);
+
         JenisTataTertib::create($request->only('name'));
+
         return redirect()->back()->with('success', '✓ Jenis Tata Tertib berhasil ditambahkan!');
     }
 
@@ -33,7 +34,7 @@ class TataTertibController extends Controller
             $validated = $request->validate([
                 'jenis_tata_tertib_id' => 'required|exists:jenis_tata_tertibs,id',
                 'content' => 'required|string',
-                'is_active' => 'sometimes|boolean',
+                'is_active' => 'nullable',
             ], [
                 'jenis_tata_tertib_id.required' => 'Jenis tata tertib harus dipilih.',
                 'jenis_tata_tertib_id.exists' => 'Jenis tata tertib yang dipilih tidak valid.',
@@ -41,9 +42,8 @@ class TataTertibController extends Controller
                 'content.string' => 'Konten tata tertib harus berupa teks.',
             ]);
 
-            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+            $validated['is_active'] = $request->boolean('is_active');
 
-            // Split content by lines and create multiple records
             $lines = explode("\n", trim($validated['content']));
             $createdCount = 0;
 
@@ -70,11 +70,10 @@ class TataTertibController extends Controller
 
     public function edit(TataTertib $tata_tertib)
     {
-        // If JSON is requested, return JSON
         if (request()->wantsJson()) {
             return response()->json($tata_tertib);
         }
-        
+
         $jenis = JenisTataTertib::all();
         return view('admin.tata_tertib.edit', compact('tata_tertib', 'jenis'));
     }
@@ -85,7 +84,7 @@ class TataTertibController extends Controller
             $validated = $request->validate([
                 'jenis_tata_tertib_id' => 'required|exists:jenis_tata_tertibs,id',
                 'content' => 'required|string',
-                'is_active' => 'sometimes|boolean',
+                'is_active' => 'nullable',
             ], [
                 'jenis_tata_tertib_id.required' => 'Jenis tata tertib harus dipilih.',
                 'jenis_tata_tertib_id.exists' => 'Jenis tata tertib yang dipilih tidak valid.',
@@ -93,7 +92,8 @@ class TataTertibController extends Controller
                 'content.string' => 'Konten tata tertib harus berupa teks.',
             ]);
 
-            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+            $validated['is_active'] = $request->boolean('is_active');
+
             $tata_tertib->update($validated);
 
             return redirect()->route('admin.tata_tertib.index')

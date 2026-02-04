@@ -150,15 +150,25 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 lg:py-28 bg-[#00425A] text-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+    <section id="about" class="py-20 lg:py-28 bg-gradient-to-r from-[#00425A] to-[#003d50] text-white relative overflow-hidden">
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-[#f85e38] opacity-10 rounded-full -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#f85e38] opacity-10 rounded-full -ml-48 -mb-48"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div class="relative hidden lg:block order-2">
                     @if(!empty($content['about_image']))
-                        <img src="{{ $content['about_image'] }}" alt="Perpustakaan Jakarta" class="relative z-10 rounded-2xl shadow-2xl w-full object-cover aspect-[4/3]">
+                        <div class="relative">
+                            <div class="absolute -inset-2 bg-gradient-to-r from-[#f85e38] to-[#d94e2e] rounded-3xl opacity-20 blur-xl"></div>
+                            <img src="{{ $content['about_image'] }}" alt="Perpustakaan Jakarta" class="relative z-10 rounded-3xl shadow-2xl w-full object-cover aspect-[4/3] border-2 border-white border-opacity-10">
+                        </div>
                     @else
-                        <div class="relative z-10 rounded-2xl bg-white bg-opacity-5 aspect-[4/3] flex items-center justify-center">
-                            <i class="fas fa-image text-white text-6xl opacity-30"></i>
+                        <div class="relative">
+                            <div class="absolute -inset-2 bg-gradient-to-r from-[#f85e38] to-[#d94e2e] rounded-3xl opacity-20 blur-xl"></div>
+                            <div class="relative z-10 rounded-3xl bg-white bg-opacity-5 aspect-[4/3] flex items-center justify-center border-2 border-white border-opacity-10 backdrop-blur-sm">
+                                <i class="fas fa-image text-white text-6xl opacity-30"></i>
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -207,8 +217,11 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 lg:py-28 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+    <section id="contact" class="py-20 lg:py-28 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 left-1/2 w-96 h-96 -translate-x-1/2 bg-gradient-to-r from-[#f85e38] to-[#00425A] opacity-5 rounded-full blur-3xl"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">

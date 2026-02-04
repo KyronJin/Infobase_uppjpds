@@ -26,21 +26,24 @@ class CalendarEventController extends Controller
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date',
             'location' => 'nullable|string|max:255',
-            'is_active' => 'sometimes|boolean',
-        ], [
-            'title.required' => 'Judul event harus diisi.',
-            'title.string' => 'Judul event harus berupa teks.',
-            'title.max' => 'Judul event maksimal 255 karakter.',
-            'description.string' => 'Deskripsi harus berupa teks.',
-            'start_at.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
-            'end_at.date' => 'Tanggal selesai harus berupa tanggal yang valid.',
-            'location.string' => 'Lokasi harus berupa teks.',
-            'location.max' => 'Lokasi maksimal 255 karakter.',
+            'capacity' => 'nullable|integer|min:0',
+            'participants' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|in:0,1,on,true,false',
         ]);
 
         $data['is_active'] = $request->has('is_active') ? true : false;
 
-        CalendarEvent::create($data);
+        try {
+            CalendarEvent::create($data);
+        } catch (\Exception $e) {
+            // Jika field belum ada di database, hapus dan simpan tanpa field
+            if (strpos($e->getMessage(), 'Unknown column') !== false) {
+                unset($data['capacity'], $data['participants']);
+                CalendarEvent::create($data);
+            } else {
+                throw $e;
+            }
+        }
 
         return redirect()->route('admin.calendar.index')->with('success', '✓ Event berhasil ditambahkan!');
     }
@@ -63,21 +66,24 @@ class CalendarEventController extends Controller
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date',
             'location' => 'nullable|string|max:255',
-            'is_active' => 'sometimes|boolean',
-        ], [
-            'title.required' => 'Judul event harus diisi.',
-            'title.string' => 'Judul event harus berupa teks.',
-            'title.max' => 'Judul event maksimal 255 karakter.',
-            'description.string' => 'Deskripsi harus berupa teks.',
-            'start_at.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
-            'end_at.date' => 'Tanggal selesai harus berupa tanggal yang valid.',
-            'location.string' => 'Lokasi harus berupa teks.',
-            'location.max' => 'Lokasi maksimal 255 karakter.',
+            'capacity' => 'nullable|integer|min:0',
+            'participants' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|in:0,1,on,true,false',
         ]);
 
         $data['is_active'] = $request->has('is_active') ? true : false;
 
-        $calendar->update($data);
+        try {
+            $calendar->update($data);
+        } catch (\Exception $e) {
+            // Jika field belum ada di database, hapus dan update tanpa field
+            if (strpos($e->getMessage(), 'Unknown column') !== false) {
+                unset($data['capacity'], $data['participants']);
+                $calendar->update($data);
+            } else {
+                throw $e;
+            }
+        }
 
         return redirect()->route('admin.calendar.index')->with('success', '✓ Event berhasil diperbarui!');
     }

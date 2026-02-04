@@ -4,6 +4,13 @@
 <div class="py-24 bg-white pt-28">
   <div class="max-w-6xl mx-auto px-6">
     <div class="admin-section">
+        @if(session('success'))
+        <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded flex items-center gap-2">
+            <i class="fas fa-check-circle"></i>
+            {{ session('success') }}
+        </div>
+        @endif
+        
         <div class="flex items-center justify-between mb-6">
             <h1 class="h2">Profile Ruangan</h1>
             <button onclick="openCreateModal()" class="admin-button">Create</button>
@@ -76,38 +83,39 @@
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
-                    <form action="{{ route('admin.profile.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <div id="createErrors" class="hidden mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm"></div>
+                    <form id="createForm" action="{{ route('admin.profile.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nama Ruangan</label>
-                            <input type="text" name="room_name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <label class="block text-gray-700 font-semibold mb-2">Nama Ruangan <span class="text-red-500">*</span></label>
+                            <input type="text" id="create-room_name" name="room_name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Lantai</label>
-                            <input type="number" name="floor" min="1" max="7" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <input type="number" id="create-floor" name="floor" min="1" max="7" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                            <input type="number" name="capacity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <input type="number" id="create-capacity" name="capacity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                            <textarea name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                            <textarea id="create-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Gambar</label>
-                            <input type="file" name="images[]" multiple accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file</p>
+                            <input type="file" id="create-images" name="images[]" multiple accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file - Format: JPG, PNG, GIF</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="is_active" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                            <label class="ml-2 text-gray-700 font-semibold">Aktif</label>
+                            <input type="checkbox" id="create-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500" value="1">
+                            <label for="create-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
                         </div>
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" onclick="closeModal('createModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
                                 Batal
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
+                            <button type="submit" id="createSubmitBtn" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
                                 Simpan
                             </button>
                         </div>
@@ -117,7 +125,7 @@
         </div>
 
         <!-- Modal Edit -->
-        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div id="editModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
             <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
@@ -168,7 +176,7 @@
         </div>
 
         <!-- Modal Delete -->
-        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div id="deleteModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
             <div class="bg-white rounded-lg max-w-lg w-full">
                 <div class="p-8">
                     <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-6">
@@ -199,12 +207,138 @@
 
 <script>
 function openCreateModal() {
+    document.getElementById('createForm').reset();
+    document.getElementById('createErrors').classList.add('hidden');
     document.getElementById('createModal').classList.remove('hidden');
 }
 
 function closeModal(id) {
     document.getElementById(id).classList.add('hidden');
 }
+
+// Handle Create Form Submission
+document.getElementById('createForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const formData = new FormData(form);
+    const submitBtn = document.getElementById('createSubmitBtn');
+    const errorDiv = document.getElementById('createErrors');
+    const originalText = submitBtn.innerText;
+    
+    // Validate at least room_name is filled
+    if (!document.getElementById('create-room_name').value.trim()) {
+        errorDiv.innerHTML = '<strong>Error:</strong> Nama ruangan tidak boleh kosong';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Menyimpan...';
+    errorDiv.classList.add('hidden');
+    
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            redirect: 'follow'
+        });
+        
+        if (response.status === 422) {
+            // Validation error
+            const data = await response.json();
+            let errorMsg = '<strong>Perbaiki kesalahan berikut:</strong><ul style="margin-top: 8px;">';
+            if (data.errors) {
+                for (const [field, messages] of Object.entries(data.errors)) {
+                    messages.forEach(msg => {
+                        errorMsg += `<li>• ${msg}</li>`;
+                    });
+                }
+            }
+            errorMsg += '</ul>';
+            errorDiv.innerHTML = errorMsg;
+            errorDiv.classList.remove('hidden');
+            form.parentElement.scrollTop = 0;
+        } else if (response.ok || response.redirected) {
+            // Success - reload page after brief delay
+            setTimeout(() => {
+                window.location.href = '{{ route("admin.profile.index") }}';
+            }, 500);
+        } else {
+            errorDiv.innerHTML = `<strong>Error:</strong> Terjadi kesalahan (${response.status})`;
+            errorDiv.classList.remove('hidden');
+        }
+    } catch (error) {
+        errorDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+        errorDiv.classList.remove('hidden');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+    }
+});
+
+// Handle Edit Form Submission
+document.getElementById('editForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const formData = new FormData(form);
+    
+    // Show loading state
+    const submitBtn = form.querySelector('[type="submit"]');
+    const originalText = submitBtn.innerText;
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Loading...';
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Show success and reload page
+            window.location.href = '{{ route("admin.profile.index") }}';
+        } else if (response.status === 422) {
+            return response.json().then(data => {
+                throw data;
+            });
+        } else {
+            throw new Error('Terjadi kesalahan');
+        }
+    })
+    .catch(error => {
+        const errorDiv = form.querySelector('[id*="Errors"]') || document.createElement('div');
+        if (error.errors) {
+            let errorMsg = '<strong>Perbaiki kesalahan berikut:</strong><ul style="margin-top: 8px;">';
+            Object.values(error.errors).forEach(messages => {
+                messages.forEach(msg => {
+                    errorMsg += `<li>• ${msg}</li>`;
+                });
+            });
+            errorMsg += '</ul>';
+            errorDiv.innerHTML = errorMsg;
+        } else {
+            errorDiv.innerHTML = error.message || 'Terjadi kesalahan saat menyimpan data';
+        }
+        if (!errorDiv.parentNode) {
+            errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm mb-4';
+            form.insertBefore(errorDiv, form.firstChild);
+        } else {
+            errorDiv.classList.remove('hidden');
+        }
+        
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+    });
+});
 
 function editProfileRuangan(id) {
     const modal = document.getElementById('editModal');
@@ -250,188 +384,3 @@ document.getElementById('deleteModal')?.addEventListener('click', function(e) {
 });
 </script>
 @endsection
-
-
-        <!-- Modal Create -->
-        <div id="createModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-gray-900">Buat Profile Ruangan</h3>
-                        <button onclick="closeModal('createModal')" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    <form action="{{ route('admin.profile.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        @csrf
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nama Ruangan</label>
-                            <input type="text" name="room_name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Lantai</label>
-                            <input type="number" name="floor" min="1" max="7" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                            <input type="number" name="capacity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                            <textarea name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Gambar</label>
-                            <input type="file" name="images[]" multiple accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file</p>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="is_active" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                            <label class="ml-2 text-gray-700 font-semibold">Aktif</label>
-                        </div>
-                        <div class="flex justify-end gap-3 pt-4">
-                            <button type="button" onclick="closeModal('createModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                Batal
-                            </button>
-                            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Edit -->
-        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-gray-900">Edit Profile Ruangan</h3>
-                        <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        @csrf
-                        @method('PUT')
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nama Ruangan</label>
-                            <input type="text" id="edit-room_name" name="room_name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Lantai</label>
-                            <input type="number" id="edit-floor" name="floor" min="1" max="7" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                            <input type="number" id="edit-capacity" name="capacity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                            <textarea id="edit-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Gambar</label>
-                            <input type="file" name="images[]" multiple accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file - Kosongkan jika tidak ingin mengubah</p>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="edit-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                            <label class="ml-2 text-gray-700 font-semibold">Aktif</label>
-                        </div>
-                        <div class="flex justify-end gap-3 pt-4">
-                            <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                Batal
-                            </button>
-                            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Delete -->
-        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg max-w-lg w-full">
-                <div class="p-8">
-                    <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-6">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-3">Hapus Ruangan?</h3>
-                    <p class="text-gray-700 text-center mb-2 text-lg font-semibold" id="delete-room-name"></p>
-                    <p class="text-sm text-gray-500 text-center mb-8">Tindakan ini tidak dapat dibatalkan.</p>
-                    
-                    <form id="deleteForm" method="POST" class="space-y-0">
-                        @csrf
-                        @method('DELETE')
-                        
-                        <div class="flex gap-4">
-                            <button type="button" onclick="closeModal('deleteModal')" class="flex-1 px-5 py-3 border-2 border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors text-lg">
-                                Batal
-                            </button>
-                            <button type="submit" class="flex-1 px-5 py-3 bg-red-600 text-white rounded hover:bg-red-700 font-semibold transition-colors text-lg">
-                                Hapus
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function openCreateModal() {
-    document.getElementById('createModal').classList.remove('hidden');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
-}
-
-function editProfileRuangan(id) {
-    const modal = document.getElementById('editModal');
-    const form = document.getElementById('editForm');
-    
-    fetch(`/admin/profile-ruangan/${id}/edit`, {
-        headers: {
-            'Accept': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('edit-room_name').value = data.room_name || '';
-        document.getElementById('edit-floor').value = data.floor || '';
-        document.getElementById('edit-capacity').value = data.capacity || '';
-        document.getElementById('edit-description').value = data.description || '';
-        document.getElementById('edit-is_active').checked = data.is_active || false;
-        form.action = `/admin/profile-ruangan/${id}`;
-        modal.classList.remove('hidden');
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function deleteProfileRuangan(id, roomName) {
-    const modal = document.getElementById('deleteModal');
-    const form = document.getElementById('deleteForm');
-    document.getElementById('delete-room-name').textContent = `Yakin ingin menghapus "${roomName}"?`;
-    form.action = `/admin/profile-ruangan/${id}`;
-    modal.classList.remove('hidden');
-}
-
-// Close modals when clicking outside
-document.getElementById('createModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('createModal');
-});
-
-document.getElementById('editModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('editModal');
-});
-
-document.getElementById('deleteModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('deleteModal');
-});
-</script>

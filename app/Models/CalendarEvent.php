@@ -14,6 +14,8 @@ class CalendarEvent extends Model
         'start_at',
         'end_at',
         'location',
+        'capacity',
+        'participants',
         'is_active',
     ];
 

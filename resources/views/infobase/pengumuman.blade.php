@@ -5,6 +5,109 @@
     * { box-sizing: border-box; }
     body, html { padding: 0; margin: 0; }
 
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #f85e38;
+        padding-bottom: 1rem;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        color: #00425A;
+        font-size: 1.5rem;
+        max-width: 80%;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #666;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+        color: #f85e38;
+    }
+
+    .modal-body {
+        color: #555;
+        line-height: 1.8;
+    }
+
+    .modal-body img {
+        max-width: 100%;
+        height: auto;
+        margin: 1rem 0;
+        border-radius: 8px;
+    }
+
+    .modal-footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+        color: #999;
+        font-size: 0.875rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     .page-header {
         background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
         padding: 4rem 0;
@@ -89,10 +192,13 @@
         max-width: 1400px;
         margin: 0 auto;
         padding: 0 1.5rem;
+        background: linear-gradient(135deg, rgba(248, 94, 56, 0.02) 0%, rgba(0, 66, 90, 0.02) 100%);
+        border-radius: 0;
     }
 
     .content-wrapper {
         padding: 3rem 0;
+        background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5));
     }
 
     .pengumuman-card {
@@ -210,10 +316,17 @@
         align-items: center;
         gap: 0.5rem;
         transition: all 0.3s;
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 0;
+        font-family: inherit;
+        font-size: 1rem;
     }
 
     .pengumuman-read-more:hover {
         gap: 1rem;
+        color: #d94e2e;
     }
 
     .empty-state {
@@ -279,9 +392,9 @@
                                 <div class="pengumuman-date-valid">
                                     Berlaku: {{ $item->valid_from?->format('d/m/Y') ?? '-' }} - {{ $item->valid_until?->format('d/m/Y') ?? '-' }}
                                 </div>
-                                <a href="{{ route('pengumuman.show', $item->id) }}" class="pengumuman-read-more">
+                                <button class="pengumuman-read-more" onclick="openModal({{ $item->id }}, '{{ addslashes($item->title) }}', '{!! addslashes(nl2br(e($item->description))) !!}', '{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}')">
                                     Baca Selengkapnya <i class="fas fa-arrow-right"></i>
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -296,4 +409,60 @@
         @endif
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="modalImage"></div>
+            <div id="modalDescription"></div>
+        </div>
+        <div class="modal-footer">
+            <p id="modalFooter"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(id, title, description, image) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalDescription').innerHTML = description;
+        
+        if (image) {
+            document.getElementById('modalImage').innerHTML = '<img src="' + image + '" alt="' + title + '">';
+        } else {
+            document.getElementById('modalImage').innerHTML = '';
+        }
+        
+        const now = new Date();
+        document.getElementById('modalFooter').textContent = 'Diakses pada ' + now.toLocaleString('id-ID');
+        
+        document.getElementById('detailModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>
+
 @endsection

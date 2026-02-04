@@ -89,7 +89,7 @@
         </div>
 
         <!-- Modal untuk form create -->
-        <div id="create-announcement-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div id="create-announcement-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
             <div class="flex items-center justify-center min-h-screen p-4">
                 <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
                     <div class="p-6">
@@ -106,7 +106,7 @@
         </div>
 
         <!-- Modal untuk form edit -->
-        <div id="edit-announcement-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div id="edit-announcement-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
             <div class="flex items-center justify-center min-h-screen p-4">
                 <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
                     <div class="p-6">
@@ -160,7 +160,7 @@
         </div>
 
         <!-- Modal untuk konfirmasi delete -->
-        <div id="delete-announcement-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div id="delete-announcement-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
             <div class="flex items-center justify-center min-h-screen p-4">
                 <div class="bg-white rounded-lg max-w-lg w-full">
                     <div class="p-8">

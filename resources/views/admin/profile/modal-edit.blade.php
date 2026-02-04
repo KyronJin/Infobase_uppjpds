@@ -1,5 +1,5 @@
 <!-- Edit Modal -->
-<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center overflow-y-auto">
+<div id="editModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-white rounded-lg shadow-lg w-full max-h-[90vh] overflow-y-auto my-8" style="max-width: 600px; margin-left: auto; margin-right: auto;">
         <div class="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white">
             <h2 class="text-xl font-bold">Edit Profile Ruangan</h2>

@@ -31,7 +31,7 @@
         </div>
 
         <!-- Modal Jenis Tata Tertib -->
-        <div id="jenisModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+        <div id="jenisModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
             <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Tambah Jenis Tata Tertib</h3>
@@ -54,7 +54,7 @@
         </div>
 
         <!-- Modal Tata Tertib -->
-        <div id="tataTertibModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+        <div id="tataTertibModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
             <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Tambah Tata Tertib</h3>
@@ -75,7 +75,14 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Isi Tata Tertib (Setiap baris = 1 item)</label>
-                        <textarea name="content" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                        <textarea name="content" id="tataTertibContent" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Contoh: Tulis setiap poin di baris baru</p>
+                    </div>
+                    <div class="mb-4 p-3 bg-gray-50 rounded-md border border-gray-200">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Preview:</label>
+                        <ol id="tataTertibPreview" class="list-decimal list-inside text-sm text-gray-700 space-y-1">
+                            <li class="text-gray-400">Ketik untuk melihat preview poin-poin...</li>
+                        </ol>
                     </div>
                     <div class="mb-4">
                         <label class="inline-flex items-center">
@@ -158,6 +165,13 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Isi Tata Tertib</label>
                         <textarea id="edit-content" name="content" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Contoh: Tulis setiap poin di baris baru</p>
+                    </div>
+                    <div class="mb-4 p-3 bg-gray-50 rounded-md border border-gray-200">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Preview:</label>
+                        <ol id="editTataTertibPreview" class="list-decimal list-inside text-sm text-gray-700 space-y-1">
+                            <li class="text-gray-400">Ketik untuk melihat preview poin-poin...</li>
+                        </ol>
                     </div>
                     <div>
                         <label class="inline-flex items-center">
@@ -197,6 +211,39 @@
 </div>
 
 <script>
+    // Function to update preview
+    function updatePreview(textareaId, previewId) {
+        const textarea = document.getElementById(textareaId);
+        const preview = document.getElementById(previewId);
+        
+        if (!textarea || !preview) return;
+        
+        const lines = textarea.value.trim().split('\n').filter(line => line.trim() !== '');
+        
+        if (lines.length === 0) {
+            preview.innerHTML = '<li class="text-gray-400">Ketik untuk melihat preview poin-poin...</li>';
+            return;
+        }
+        
+        preview.innerHTML = lines.map(line => `<li>${line.trim()}</li>`).join('');
+    }
+    
+    // Add event listeners for create modal
+    const createContentTextarea = document.getElementById('tataTertibContent');
+    if (createContentTextarea) {
+        createContentTextarea.addEventListener('input', function() {
+            updatePreview('tataTertibContent', 'tataTertibPreview');
+        });
+    }
+    
+    // Add event listeners for edit modal
+    const editContentTextarea = document.getElementById('edit-content');
+    if (editContentTextarea) {
+        editContentTextarea.addEventListener('input', function() {
+            updatePreview('edit-content', 'editTataTertibPreview');
+        });
+    }
+    
     function openModal(id) {
         document.getElementById(id).classList.remove('hidden');
         document.getElementById('dropdownMenu').classList.add('hidden');
@@ -222,6 +269,8 @@
             document.getElementById('edit-is_active').checked = data.is_active || false;
             form.action = `/admin/tata-tertib/${id}`;
             modal.classList.remove('hidden');
+            // Update preview setelah modal ditampilkan
+            updatePreview('edit-content', 'editTataTertibPreview');
         })
         .catch(error => console.error('Error:', error));
     }
@@ -234,20 +283,33 @@
         modal.classList.remove('hidden');
     }
     
-    document.getElementById('dropdownButton').addEventListener('click', function() {
+    document.getElementById('dropdownButton').addEventListener('click', function(e) {
+        e.stopPropagation();
         document.getElementById('dropdownMenu').classList.toggle('hidden');
+    });
+    
+    document.addEventListener('click', function() {
+        document.getElementById('dropdownMenu').classList.add('hidden');
     });
     
     // Close modal when clicking outside
     window.onclick = function(event) {
         const jenisModal = document.getElementById('jenisModal');
         const tataTertibModal = document.getElementById('tataTertibModal');
+        const editTataTertibModal = document.getElementById('editTataTertibModal');
+        const deleteTataTertibModal = document.getElementById('deleteTataTertibModal');
         
         if (event.target == jenisModal) {
             jenisModal.classList.add('hidden');
         }
         if (event.target == tataTertibModal) {
             tataTertibModal.classList.add('hidden');
+        }
+        if (event.target == editTataTertibModal) {
+            editTataTertibModal.classList.add('hidden');
+        }
+        if (event.target == deleteTataTertibModal) {
+            deleteTataTertibModal.classList.add('hidden');
         }
     }
 </script>

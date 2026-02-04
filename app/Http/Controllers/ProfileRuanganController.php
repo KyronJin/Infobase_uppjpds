@@ -28,8 +28,8 @@ class ProfileRuanganController extends Controller
             'capacity' => 'nullable|integer',
             'description' => 'nullable|string',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file gambar
-            'is_active' => 'sometimes|boolean',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'nullable|in:0,1,on,true,false',
         ], [
             'room_name.required' => 'Nama ruangan harus diisi.',
             'room_name.string' => 'Nama ruangan harus berupa teks.',
@@ -51,7 +51,7 @@ class ProfileRuanganController extends Controller
         // Handle multiple image uploads
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('profile_ruangan_images', 'public'); // Simpan di storage/app/public
+                $path = $image->store('profile_ruangan_images', 'public');
                 ProfileRuanganImage::create([
                     'profile_ruangan_id' => $profileRuangan->id,
                     'image_path' => $path,
@@ -87,7 +87,7 @@ class ProfileRuanganController extends Controller
             'description' => 'nullable|string',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'sometimes|boolean',
+            'is_active' => 'nullable|in:0,1,on,true,false',
         ], [
             'room_name.required' => 'Nama ruangan harus diisi.',
             'room_name.string' => 'Nama ruangan harus berupa teks.',

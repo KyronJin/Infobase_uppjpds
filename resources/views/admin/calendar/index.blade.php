@@ -36,7 +36,7 @@
         <!-- Modal Create Event -->
         <div id="createCalendarModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
             <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-bold text-gray-900">Buat Event</h3>
@@ -44,15 +44,15 @@
                                 <i class="fas fa-times text-xl"></i>
                             </button>
                         </div>
-                        <form action="{{ route('admin.calendar.store') }}" method="POST" class="space-y-4">
+                        <form action="{{ route('admin.calendar.store') }}" method="POST" class="grid grid-cols-2 gap-4">
                             @csrf
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Judul</label>
+                            <div class="col-span-2">
+                                <label class="block text-gray-700 font-semibold mb-2">Judul <span class="text-red-500">*</span></label>
                                 <input type="text" name="title" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             </div>
-                            <div>
+                            <div class="col-span-2">
                                 <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                                <textarea name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                <textarea name="description" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
                             </div>
                             <div>
                                 <label class="block text-gray-700 font-semibold mb-2">Mulai</label>
@@ -66,11 +66,21 @@
                                 <label class="block text-gray-700 font-semibold mb-2">Lokasi</label>
                                 <input type="text" name="location" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="is_active" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                                <label class="ml-2 text-gray-700 font-semibold">Aktif</label>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
+                                <input type="number" name="capacity" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             </div>
-                            <div class="flex justify-end gap-3 pt-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Jumlah Peserta</label>
+                                <input type="number" name="participants" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            </div>
+                            <div>
+                                <label class="flex items-center text-gray-700 font-semibold">
+                                    <input type="checkbox" name="is_active" value="1" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500 mr-2">
+                                    Aktif
+                                </label>
+                            </div>
+                            <div class="col-span-2 flex justify-end gap-3 pt-4">
                                 <button type="button" onclick="closeModal('createCalendarModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
                                     Batal
                                 </button>
@@ -87,7 +97,7 @@
         <!-- Modal Edit Event -->
         <div id="editCalendarModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
             <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-bold text-gray-900">Edit Event</h3>
@@ -95,16 +105,16 @@
                                 <i class="fas fa-times text-xl"></i>
                             </button>
                         </div>
-                        <form id="editCalendarForm" method="POST" class="space-y-4">
+                        <form id="editCalendarForm" method="POST" class="grid grid-cols-2 gap-4">
                             @csrf
                             @method('PUT')
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Judul</label>
+                            <div class="col-span-2">
+                                <label class="block text-gray-700 font-semibold mb-2">Judul <span class="text-red-500">*</span></label>
                                 <input type="text" id="edit-title" name="title" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             </div>
-                            <div>
+                            <div class="col-span-2">
                                 <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                                <textarea id="edit-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                <textarea id="edit-description" name="description" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
                             </div>
                             <div>
                                 <label class="block text-gray-700 font-semibold mb-2">Mulai</label>
@@ -118,11 +128,21 @@
                                 <label class="block text-gray-700 font-semibold mb-2">Lokasi</label>
                                 <input type="text" id="edit-location" name="location" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="edit-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                                <label class="ml-2 text-gray-700 font-semibold">Aktif</label>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
+                                <input type="number" id="edit-capacity" name="capacity" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
                             </div>
-                            <div class="flex justify-end gap-3 pt-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Jumlah Peserta</label>
+                                <input type="number" id="edit-participants" name="participants" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            </div>
+                            <div>
+                                <label class="flex items-center text-gray-700 font-semibold">
+                                    <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500 mr-2">
+                                    Aktif
+                                </label>
+                            </div>
+                            <div class="col-span-2 flex justify-end gap-3 pt-4">
                                 <button type="button" onclick="closeModal('editCalendarModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
                                     Batal
                                 </button>
@@ -193,6 +213,8 @@ function editCalendarEvent(id) {
         document.getElementById('edit-start_at').value = data.start_at || '';
         document.getElementById('edit-end_at').value = data.end_at || '';
         document.getElementById('edit-location').value = data.location || '';
+        document.getElementById('edit-capacity').value = data.capacity || '';
+        document.getElementById('edit-participants').value = data.participants || '';
         document.getElementById('edit-is_active').checked = data.is_active || false;
         form.action = `/admin/calendar/${id}`;
         modal.classList.remove('hidden');

@@ -37,7 +37,7 @@
         </div>
 
         <!-- Modal Jabatan -->
-        <div id="jabatanModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+        <div id="jabatanModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
             <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Tambah Jabatan</h3>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Modal Profil Pegawai -->
-        <div id="profilPegawaiModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+        <div id="profilPegawaiModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
             <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Tambah Profil Pegawai</h3>
@@ -100,7 +100,7 @@
         </div>
 
         <!-- Modal Atur Posisi Jabatan -->
-        <div id="orderModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+        <div id="orderModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
             <div class="relative bg-white border border-gray-200 rounded-lg shadow-lg w-96 p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Atur Posisi Jabatan</h3>
@@ -278,8 +278,13 @@
         modal.classList.remove('hidden');
     }
     
-    document.getElementById('dropdownButton').addEventListener('click', function() {
+    document.getElementById('dropdownButton').addEventListener('click', function(e) {
+        e.stopPropagation();
         document.getElementById('dropdownMenu').classList.toggle('hidden');
+    });
+    
+    document.addEventListener('click', function() {
+        document.getElementById('dropdownMenu').classList.add('hidden');
     });
     
     // Close modal when clicking outside
@@ -304,56 +309,6 @@
         }
         if (event.target == deleteProfilPegawaiModal) {
             deleteProfilPegawaiModal.classList.add('hidden');
-        }
-    }
-
-    // Sortable for order modal
-    $(function() {
-        $("#sortable").sortable();
-        $("#sortable").disableSelection();
-    });
-
-    document.getElementById('saveOrder').addEventListener('click', function() {
-        const jabatanIds = [];
-        document.querySelectorAll('#sortable li').forEach(li => {
-            jabatanIds.push(parseInt(li.dataset.id));
-        });
-
-        fetch('{{ route("admin.profil_pegawai.update-order") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ jabatans: jabatanIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                closeModal('orderModal');
-                location.reload(); // Reload to reflect changes
-            }
-        });
-    });
-
-    document.getElementById('dropdownButton').addEventListener('click', function() {
-        document.getElementById('dropdownMenu').classList.toggle('hidden');
-    });
-    
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const jabatanModal = document.getElementById('jabatanModal');
-        const profilPegawaiModal = document.getElementById('profilPegawaiModal');
-        const orderModal = document.getElementById('orderModal');
-        
-        if (event.target == jabatanModal) {
-            jabatanModal.classList.add('hidden');
-        }
-        if (event.target == profilPegawaiModal) {
-            profilPegawaiModal.classList.add('hidden');
-        }
-        if (event.target == orderModal) {
-            orderModal.classList.add('hidden');
         }
     }
 

@@ -1,33 +1,33 @@
-<header class="sticky top-0 z-50 bg-white shadow-md">
-  <nav class="max-w-7xl mx-auto px-6 lg:px-12 py-4">
-    <div class="flex items-center justify-between">
-      <!-- Logo -->
-      <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-        <div class="w-12 h-12 bg-[#00425A] text-white rounded-lg flex items-center justify-center font-bold text-lg group-hover:bg-[#f85e38] transition duration-300">
+<header class="sticky top-0 z-50 bg-white shadow-lg border-b-2 border-[#f85e38]">
+  <nav class="max-w-7xl mx-auto px-6 lg:px-12 py-3">
+    <div class="flex items-center justify-between gap-8">
+      <!-- Logo - Left -->
+      <a href="{{ route('home') }}" class="flex items-center gap-2 group flex-shrink-0">
+        <div class="w-14 h-14 bg-[#00425A] text-white rounded-lg flex items-center justify-center font-bold text-xl group-hover:bg-[#f85e38] transition duration-300">
           <i class="fas fa-book"></i>
         </div>
-        <div>
-          <h1 class="text-xl font-bold text-[#00425A] group-hover:text-[#f85e38] transition duration-300">INFOBASE</h1>
+        <div class="hidden sm:block">
+          <h1 class="text-lg font-bold text-[#00425A] group-hover:text-[#f85e38] transition duration-300 leading-tight">INFOBASE</h1>
           <p class="text-xs text-gray-600">Perpustakaan Jakarta</p>
         </div>
       </a>
 
-      <!-- Desktop Navigation Links -->
-      <ul id="nav-links" class="hidden lg:flex items-center gap-12 ml-auto">
+      <!-- Desktop Navigation Links - Center -->
+      <ul id="nav-links" class="hidden lg:flex items-center gap-8 flex-1 justify-center">
         <li>
-          <a href="{{ route('home') }}" class="text-gray-700 font-medium hover:text-[#f85e38] p-2 transition duration-300 relative group/link">
+          <a href="{{ route('home') }}" class="text-gray-700 font-medium hover:text-[#f85e38] transition duration-300 relative group/link whitespace-nowrap">
             Beranda
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
           </a>
         </li>
         <li>
-          <a href="{{ route('about') }}" class="text-gray-700 font-medium hover:text-[#f85e38] p-2 transition duration-300 relative group/link">
+          <a href="{{ route('about') }}" class="text-gray-700 font-medium hover:text-[#f85e38] transition duration-300 relative group/link whitespace-nowrap">
             Tentang
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
           </a>
         </li>
         <li class="relative">
-          <button id="data-info-btn" class="flex items-center gap-2 text-gray-700 font-medium hover:text-[#f85e38] p-2 transition duration-300 relative group/link cursor-pointer">
+          <button id="data-info-btn" class="flex items-center gap-2 text-gray-700 font-medium hover:text-[#f85e38] transition duration-300 relative group/link cursor-pointer whitespace-nowrap">
             Data & Informasi
             <i id="data-info-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f85e38] group-hover/link:w-full transition-all duration-300"></span>
@@ -63,11 +63,11 @@
         </li>
       </ul>
 
-      <!-- Auth Section -->
-      <div class="hidden lg:flex items-center gap-4 ml-8">
+      <!-- Auth Section - Right -->
+      <div class="hidden lg:flex items-center gap-4 flex-shrink-0">
         @auth
           <div class="relative">
-            <button id="admin-btn" class="flex items-center gap-2 px-6 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg">
+            <button id="admin-btn" class="flex items-center gap-2 px-6 py-2.5 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg whitespace-nowrap">
               <i class="fas fa-user-shield"></i>
               Admin
               <i id="admin-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
