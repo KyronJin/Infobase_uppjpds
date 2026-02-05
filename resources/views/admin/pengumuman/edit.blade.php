@@ -8,34 +8,91 @@
             <h1 class="h2">Edit Pengumuman</h1>
             <a href="{{ route('admin.pengumuman.index') }}" class="text-teal-600 hover:underline">← Kembali</a>
         </div>
-
-        <form method="POST" action="{{ route('admin.pengumuman.update', $pengumuman) }}" class="bg-white p-6 rounded-lg shadow">
+        @if($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                <strong>Terjadi kesalahan:</strong>
+                <ul class="mt-2">
+                    @foreach($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form method="POST" action="{{ route('admin.pengumuman.update', $pengumuman) }}" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow">
             @csrf
             @method('PUT')
 
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Judul</label>
-                <input type="text" name="title" value="{{ $pengumuman->title }}" required class="w-full border rounded px-3 py-2">
+                <input type="text" name="title" value="{{ old('title', $pengumuman->title) }}" required 
+                       class="w-full border rounded px-3 py-2 @error('title') border-red-500 @enderror">
+                @error('title')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Isi Pengumuman</label>
-                <textarea name="description" rows="8" required class="w-full border rounded px-3 py-2">{{ $pengumuman->description }}</textarea>
+                <textarea name="description" rows="8" required 
+                          class="w-full border rounded px-3 py-2 @error('description') border-red-500 @enderror">{{ old('description', $pengumuman->description) }}</textarea>
+                @error('description')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Gambar Pengumuman</label>
+                
+                @if($pengumuman->image_path)
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-600 mb-2">Gambar saat ini:</p>
+                        <img src="{{ asset('storage/' . $pengumuman->image_path) }}" alt="Current image" class="w-32 h-32 object-cover rounded border">
+                    </div>
+                @endif
+                
+                <input type="file" name="image" 
+                       class="w-full border rounded px-3 py-2 @error('image') border-red-500 @enderror" 
+                       accept="image/*"
+                       onchange="previewImage(this)">
+                <p class="text-sm text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah gambar. Format: JPG, PNG, GIF. Maksimal 2MB.</p>
+                @error('image')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+                
+                <div id="imagePreview" class="mt-3" style="display: none;">
+                    <p class="text-sm text-gray-600 mb-2">Preview gambar baru:</p>
+                    <img id="previewImg" class="w-32 h-32 object-cover rounded border">
+                </div>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Tanggal Publish</label>
-                <input type="datetime-local" name="published_at" value="{{ $pengumuman->published_at?->format('Y-m-d\TH:i') }}" class="w-full border rounded px-3 py-2">
+                <input type="datetime-local" name="published_at" 
+                       value="{{ old('published_at', $pengumuman->published_at?->format('Y-m-d\TH:i')) }}" 
+                       class="w-full border rounded px-3 py-2 @error('published_at') border-red-500 @enderror">
+                @error('published_at')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Tanggal Mulai Berlaku</label>
-                <input type="date" name="valid_from" value="{{ $pengumuman->valid_from?->format('Y-m-d') }}" class="w-full border rounded px-3 py-2">
+                <input type="date" name="valid_from" 
+                       value="{{ old('valid_from', $pengumuman->valid_from?->format('Y-m-d')) }}" 
+                       class="w-full border rounded px-3 py-2 @error('valid_from') border-red-500 @enderror">
+                @error('valid_from')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Tanggal Akhir Berlaku</label>
-                <input type="date" name="valid_until" value="{{ $pengumuman->valid_until?->format('Y-m-d') }}" class="w-full border rounded px-3 py-2">
+                <input type="date" name="valid_until" 
+                       value="{{ old('valid_until', $pengumuman->valid_until?->format('Y-m-d')) }}" 
+                       class="w-full border rounded px-3 py-2 @error('valid_until') border-red-500 @enderror">
+                @error('valid_until')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex justify-end space-x-3">
@@ -50,46 +107,21 @@
     </div>
   </div>
 </div>
-@endsection
-                    Batal
-                </a>
-                <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700">
-                    Simpan Perubahan
-                </button>
-            </div>
-        </form>
-    </div>
-  </div>
-</div>
-@endsection
 
-        <div class="form-group">
-            <label class="form-label">Judul</label>
-            <input type="text" name="title" class="form-control" value="{{ old('title', $item->title) }}" required>
-        </div>
+<script>
+function previewImage(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+}
+</script>
 
-        <div class="form-group">
-            <label class="form-label">Konten</label>
-            <textarea name="body" class="form-control" rows="8">{{ old('body', $item->body) }}</textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Tanggal Terbit</label>
-            <input type="datetime-local" name="published_at" class="form-control" value="{{ optional($item->published_at)->format('Y-m-d\TH:i') }}">
-        </div>
-
-        <div class="form-group">
-            <label class="inline-flex items-center">
-                <input type="checkbox" name="is_active" {{ $item->is_active ? 'checked' : '' }}>
-                <span class="ml-2">Aktif</span>
-            </label>
-        </div>
-
-            <div>
-                <button class="form-submit">Simpan</button>
-                <a href="{{ route('admin.pengumuman.index') }}" class="inline-block ml-3">Batal</a>
-            </div>
-        </form>
-    </div>
-</div>
 @endsection

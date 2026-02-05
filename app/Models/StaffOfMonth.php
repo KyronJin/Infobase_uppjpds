@@ -16,4 +16,12 @@ class StaffOfMonth extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    // Scope untuk search
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('name', 'like', "%{$keyword}%")
+                    ->orWhere('position', 'like', "%{$keyword}%")
+                    ->orWhere('bio', 'like', "%{$keyword}%");
+    }
 }

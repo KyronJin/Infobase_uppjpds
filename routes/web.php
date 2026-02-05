@@ -10,14 +10,16 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileRuanganController;
 use App\Http\Controllers\ProfilPegawaiController;
 use App\Http\Controllers\StaffOfMonthController;
+use App\Http\Controllers\LanguageController;
 
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [InfobaseController::class, 'home'])->name('home');
+
+// Language switching route
+Route::get('/language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
 
 Route::get('/about', function () {
     return view('about');
@@ -32,6 +34,7 @@ Route::prefix('infobase')->name('infobase.')->group(function () {
     Route::get('pengumuman', [InfobaseController::class, 'pengumuman'])->name('pengumuman');
     Route::get('staff-of-month', [InfobaseController::class, 'staffOfMonth'])->name('staff-of-month');
     Route::get('profile-ruangan', [InfobaseController::class, 'profileRuangan'])->name('profile-ruangan');
+    Route::get('profil-pegawai', [InfobaseController::class, 'profilPegawai'])->name('profil-pegawai');
 });
 
 Route::post('admin/tata_tertib/store-jenis', [TataTertibController::class, 'storeJenis'])->name('admin.tata_tertib.store-jenis')->middleware('auth');
@@ -66,9 +69,6 @@ Route::delete('admin/staff-of-month/jabatan/{jabatan}', [StaffOfMonthController:
 Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('admin.profil_pegawai')->middleware('auth');
 Route::post('admin/profil-pegawai/store-jabatan', [ProfilPegawaiController::class, 'storeJabatan'])->name('admin.profil_pegawai.store-jabatan')->middleware('auth');
 Route::post('admin/profil-pegawai/update-order', [ProfilPegawaiController::class, 'updateOrder'])->name('admin.profil_pegawai.update-order')->middleware('auth');
-
-// Public route
-Route::get('infobase/profil-pegawai', [ProfilPegawaiController::class, 'publicIndex'])->name('infobase.profil-pegawai');
 
 // routes/web.php
 

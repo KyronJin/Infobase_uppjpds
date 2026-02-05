@@ -9,11 +9,22 @@ use Carbon\Carbon;
 
 class PengumumanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+        
+        $query = Pengumuman::query();
+        
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
         // Untuk admin, tampilkan semua pengumuman, bukan hanya aktif
-        $pengumumans = Pengumuman::latest('published_at')->get();
-        return view('admin.pengumuman.index', compact('pengumumans'));
+        $pengumumans = $query->latest('published_at')->paginate(10);
+        return view('admin.pengumuman.index', compact('pengumumans', 'search'));
     }
 
     public function create()
@@ -26,6 +37,7 @@ class PengumumanController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'published_at' => 'nullable|date_format:Y-m-d\TH:i',
             'valid_from' => 'nullable|date_format:Y-m-d',
             'valid_until' => 'nullable|date_format:Y-m-d',
@@ -35,10 +47,19 @@ class PengumumanController extends Controller
             'title.max' => 'Judul pengumuman maksimal 255 karakter.',
             'description.required' => 'Deskripsi pengumuman harus diisi.',
             'description.string' => 'Deskripsi pengumuman harus berupa teks.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
+            'image.max' => 'Ukuran gambar maksimal 2 MB.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
             'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
             'valid_until.date_format' => 'Format tanggal berakhir tidak valid.',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('pengumuman', 'public');
+            $validated['image_path'] = $imagePath;
+        }
 
         // Konversi tanggal dari datetime-local ke UTC
         if ($validated['published_at']) {
@@ -50,6 +71,9 @@ class PengumumanController extends Controller
         if ($validated['valid_until']) {
             $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->setTimezone('UTC');
         }
+
+        // Remove image key if it wasn't processed
+        unset($validated['image']);
 
         Pengumuman::create($validated);
 
@@ -67,6 +91,7 @@ class PengumumanController extends Controller
                 'published_at' => $pengumuman->published_at?->format('Y-m-d\TH:i'),
                 'valid_from' => $pengumuman->valid_from?->format('Y-m-d'),
                 'valid_until' => $pengumuman->valid_until?->format('Y-m-d'),
+                'image_path' => $pengumuman->image_path,
             ]);
         }
         
@@ -78,6 +103,7 @@ class PengumumanController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'published_at' => 'nullable|date_format:Y-m-d\TH:i',
             'valid_from' => 'nullable|date_format:Y-m-d',
             'valid_until' => 'nullable|date_format:Y-m-d',
@@ -87,10 +113,23 @@ class PengumumanController extends Controller
             'title.max' => 'Judul pengumuman maksimal 255 karakter.',
             'description.required' => 'Deskripsi pengumuman harus diisi.',
             'description.string' => 'Deskripsi pengumuman harus berupa teks.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
+            'image.max' => 'Ukuran gambar maksimal 2 MB.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
             'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
             'valid_until.date_format' => 'Format tanggal berakhir tidak valid.',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($pengumuman->image_path) {
+                Storage::disk('public')->delete($pengumuman->image_path);
+            }
+            $imagePath = $request->file('image')->store('pengumuman', 'public');
+            $validated['image_path'] = $imagePath;
+        }
 
         // Konversi tanggal dari datetime-local ke UTC
         if ($validated['published_at']) {
@@ -102,6 +141,9 @@ class PengumumanController extends Controller
         if ($validated['valid_until']) {
             $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->setTimezone('UTC');
         }
+
+        // Remove image key if it wasn't processed
+        unset($validated['image']);
 
         $pengumuman->update($validated);
 

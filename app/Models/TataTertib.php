@@ -18,6 +18,15 @@ class TataTertib extends Model
         'is_active' => 'boolean',
     ];
 
+    // Scope untuk search
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('content', 'like', "%{$keyword}%")
+                    ->orWhereHas('jenisTataTertib', function ($q) use ($keyword) {
+                        $q->where('name', 'like', "%{$keyword}%");
+                    });
+    }
+
     public function jenisTataTertib()
     {
         return $this->belongsTo(JenisTataTertib::class, 'jenis_tata_tertib_id', 'id');

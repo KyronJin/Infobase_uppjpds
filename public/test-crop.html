@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Crop Button</title>
+    <link rel="stylesheet" href="css/image-cropper.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        #preview {
+            margin: 15px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Crop Button Functionality</h1>
+        <p>Upload gambar untuk test tombol crop:</p>
+        
+        <div class="form-group">
+            <label>Pilih Gambar:</label>
+            <input type="file" id="imageInput" accept="image/*" onchange="previewImageWithCropper(event, 'preview', 'cropButton')">
+            
+            <div id="preview" style="display:none;"></div>
+            
+            <button 
+                type="button" 
+                id="cropButton" 
+                class="crop-button-standard"
+                style="display:none;"
+                onclick="testCropClick()">
+                🎨 Test Crop Button
+            </button>
+        </div>
+        
+        <div id="status" style="margin-top: 20px; padding: 10px; border-radius: 6px; display: none;"></div>
+    </div>
+
+    <!-- Include image cropper scripts -->
+    <script src="js/image-cropper.js"></script>
+    
+    <script>
+        // Test function to check if button is clickable
+        function testCropClick() {
+            const status = document.getElementById('status');
+            status.style.display = 'block';
+            status.style.backgroundColor = '#dcfce7';
+            status.style.color = '#166534';
+            status.style.border = '1px solid #bbf7d0';
+            status.innerHTML = '✅ SUKSES! Tombol crop bisa diklik dengan sempurna!';
+            
+            console.log('✅ Crop button clicked successfully!');
+            
+            // If cropper is available, try to open it
+            if (window.imageCropper && typeof window.imageCropper.openCropper === 'function') {
+                const input = document.getElementById('imageInput');
+                window.imageCropper.openCropper(input);
+            } else {
+                status.innerHTML += '<br>⚠️ Image cropper tidak tersedia (normal untuk test ini)';
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Page loaded, testing crop button functionality');
+            
+            // Try to initialize image cropper
+            if (typeof window.ImageCropper === 'function') {
+                window.imageCropper = new window.ImageCropper();
+                console.log('✅ Image cropper initialized');
+            } else {
+                console.log('⚠️ ImageCropper class not found - checking scripts...');
+            }
+            
+            // Test button visibility and interaction
+            const button = document.getElementById('cropButton');
+            if (button) {
+                console.log('✅ Crop button found in DOM');
+                console.log('Button styles:', {
+                    display: getComputedStyle(button).display,
+                    pointerEvents: getComputedStyle(button).pointerEvents,
+                    zIndex: getComputedStyle(button).zIndex,
+                    position: getComputedStyle(button).position
+                });
+            }
+        });
+        
+        // Override the preview function for testing
+        window.previewImageWithCropper = function(event, previewId, cropButtonId) {
+            const file = event.target.files[0];
+            const preview = document.getElementById(previewId);
+            const cropButton = document.getElementById(cropButtonId);
+            
+            console.log('📸 Preview function called:', { 
+                file: !!file, 
+                preview: !!preview, 
+                cropButton: !!cropButton 
+            });
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <div style="text-center; background: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 8px; padding: 15px;">
+                            <img src="${e.target.result}" style="max-width: 200px; height: auto; border-radius: 6px; margin-bottom: 10px;">
+                            <p style="margin: 0; color: #0369a1; font-weight: 600;">✅ Gambar berhasil dimuat!</p>
+                            <p style="margin: 5px 0 0 0; color: #0284c7; font-size: 14px;">Tombol crop akan muncul di bawah ini ↓</p>
+                        </div>
+                    `;
+                    preview.style.display = 'block';
+                    
+                    if (cropButton) {
+                        cropButton.style.display = 'inline-flex';
+                        cropButton.style.position = 'relative';
+                        cropButton.style.zIndex = '100';
+                        cropButton.style.pointerEvents = 'auto';
+                        
+                        console.log('✅ Crop button activated');
+                        console.log('Button final styles:', {
+                            display: getComputedStyle(cropButton).display,
+                            pointerEvents: getComputedStyle(cropButton).pointerEvents,
+                            zIndex: getComputedStyle(cropButton).zIndex
+                        });
+                        
+                        // Trigger animation
+                        cropButton.classList.add('show');
+                        setTimeout(() => {
+                            cropButton.classList.remove('show');
+                            cropButton.classList.add('animate-pulse');
+                        }, 800);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+    </script>
+</body>
+</html>

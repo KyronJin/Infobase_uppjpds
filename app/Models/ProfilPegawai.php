@@ -15,6 +15,16 @@ class ProfilPegawai extends Model
         'foto_path',
     ];
 
+    // Scope untuk search
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('nama', 'like', "%{$keyword}%")
+                    ->orWhere('deskripsi', 'like', "%{$keyword}%")
+                    ->orWhereHas('jabatan', function ($q) use ($keyword) {
+                        $q->where('name', 'like', "%{$keyword}%");
+                    });
+    }
+
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class);

@@ -8,11 +8,24 @@ use Illuminate\Http\Request;
 
 class TataTertibController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = TataTertib::with('jenisTataTertib')->orderBy('created_at', 'desc')->get();
+        // ambil keyword pencarian dari query string
+        $search = $request->input('search');
+
+        $items = TataTertib::with('jenisTataTertib')
+            ->when($search, function ($query, $search) {
+                $query->where('content', 'like', "%{$search}%")
+                      ->orWhereHas('jenisTataTertib', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
         $jenis = JenisTataTertib::all();
-        return view('admin.tata_tertib.index', compact('items', 'jenis'));
+
+        return view('admin.tata_tertib.index', compact('items', 'jenis', 'search'));
     }
 
     public function storeJenis(Request $request)
@@ -42,7 +55,6 @@ class TataTertibController extends Controller
                 'content.string' => 'Konten tata tertib harus berupa teks.',
             ]);
 
-            // ambil nilai checkbox dengan aman
             $validated['is_active'] = $request->boolean('is_active');
 
             $lines = explode("\n", trim($validated['content']));
@@ -93,7 +105,6 @@ class TataTertibController extends Controller
                 'content.string' => 'Konten tata tertib harus berupa teks.',
             ]);
 
-            // ambil nilai checkbox dengan aman
             $validated['is_active'] = $request->boolean('is_active');
 
             $tata_tertib->update($validated);

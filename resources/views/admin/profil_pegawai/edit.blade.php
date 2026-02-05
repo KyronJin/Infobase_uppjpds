@@ -107,12 +107,22 @@
                             name="foto" 
                             accept="image/*"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all cursor-pointer"
-                            onchange="previewFoto(this)">
+                            onchange="previewImageWithCropper(event, 'fotoPreview', 'crop-foto')">
                         <p class="text-xs text-gray-500 mt-2">Biarkan kosong jika tidak ingin mengubah foto. Format: JPEG, PNG, JPG, GIF. Maksimal 2MB.</p>
                     </div>
 
                     <!-- Preview Foto Baru -->
-                    <div id="fotoPreview" class="mt-4"></div>
+                    <div id="fotoPreview" class="mt-4" style="display:none;"></div>
+
+                    <!-- Crop Button -->
+                    <button 
+                        type="button" 
+                        id="crop-foto" 
+                        class="crop-button-standard mt-3"
+                        style="display:none;"
+                        onclick="window.imageCropper.openCropper('foto')">
+                        🎨 Edit & Crop Gambar
+                    </button>
 
                     @error('foto')
                         <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
@@ -136,22 +146,15 @@
     </div>
 </div>
 
+<!-- Include Image Cropper -->
+@include('components.image-cropper')
+
 <script>
-function previewFoto(input) {
-    const previewDiv = document.getElementById('fotoPreview');
-    previewDiv.innerHTML = '';
-    
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'w-24 h-24 rounded-lg object-cover border border-gray-200 mt-2';
-            previewDiv.innerHTML = '<p class="text-xs text-gray-600 font-medium mb-2">Preview Foto Baru:</p>';
-            previewDiv.appendChild(img);
-        };
-        reader.readAsDataURL(input.files[0]);
+// Initialize cropper when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.ImageCropper === 'function') {
+        window.imageCropper = new window.ImageCropper();
     }
-}
+});
 </script>
 @endsection

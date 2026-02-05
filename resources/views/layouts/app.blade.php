@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,12 +14,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-      @vite(['resources/css/app.css', 'resources/js/app.js'])
+      @vite(['resources/css/app.css', 'resources/css/brand.css', 'resources/js/app.js'])
     @else
       <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+      <link rel="stylesheet" href="{{ asset('css/brand.css') }}">
     @endif
+
+    <style>
+    </style>
   </head>
-  <body class="bg-gradient-to-br from-gray-50 via-white to-blue-50 text-gray-900 antialiased">
+  <body class="bg-white text-gray-900 antialiased font-primary">
     <div id="app">
       @includeIf('components.navbar')
 
@@ -28,35 +32,35 @@
       </main>
 
       <!-- Footer -->
-      <footer class="bg-[#00425A] text-white mt-20">
+      <footer class="bg-[#00425A] dark:bg-slate-950 text-white mt-20">
         <div class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
           <!-- Footer Content Grid -->
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <!-- Brand Section -->
             <div class="space-y-4">
-              <h3 class="text-2xl font-bold">INFOBASE</h3>
-              <p class="text-white text-opacity-80 leading-relaxed">
+              <h3 class="text-2xl font-bold  text-white">INFOBASE</h3>
+              <p class="text-white dark:text-gray-300 text-opacity-80 leading-relaxed">
                 Portal informasi terpadu Perpustakaan Jakarta untuk akses mudah pengumuman, jadwal, dan fasilitas.
               </p>
               <div class="flex gap-4 pt-4">
-                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white bg-opacity-20 text-white rounded-full hover:bg-[#f85e38] transition duration-300">
-                  <i class="fab fa-facebook-f text-sm"></i>
-                </a>
-                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white bg-opacity-20 text-white rounded-full hover:bg-[#f85e38] transition duration-300">
-                  <i class="fab fa-twitter text-sm"></i>
-                </a>
-                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white bg-opacity-20 text-white rounded-full hover:bg-[#f85e38] transition duration-300">
+                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
                   <i class="fab fa-instagram text-sm"></i>
                 </a>
-                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white bg-opacity-20 text-white rounded-full hover:bg-[#f85e38] transition duration-300">
+                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white hover:bg-[#f85e38] rounded-full transition duration-300">
+                  <img src="{{ asset('images/Jaklitera.png') }}" alt="Jaklitera Logo" class="w-8 h-8 object-contain">
+                </a>
+                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
                   <i class="fab fa-youtube text-sm"></i>
+                </a>
+                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
+                  <i class="fab fa-twitter text-sm"></i>
                 </a>
               </div>
             </div>
 
             <!-- Quick Links -->
             <div>
-              <h4 class="text-lg font-bold mb-6">Menu Cepat</h4>
+              <h4 class="text-lg font-bold  text-white mb-6">Menu Cepat</h4>
               <ul class="space-y-3">
                 <li>
                   <a href="{{ route('home') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
@@ -87,7 +91,7 @@
 
             <!-- Resources -->
             <div>
-              <h4 class="text-lg font-bold mb-6">Fitur</h4>
+              <h4 class="text-lg font-bold  text-white mb-6">Fitur</h4>
               <ul class="space-y-3">
                 <li>
                   <a href="{{ route('infobase.pengumuman') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
@@ -113,12 +117,24 @@
                     Profile Ruangan
                   </a>
                 </li>
+                <li>
+                  <a href="{{ route('infobase.profil-pegawai') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
+                    <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
+                    Profil Pegawai
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ route('infobase.staff-of-month') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
+                    <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
+                    Staff of Month
+                  </a>
+                </li>
               </ul>
             </div>
 
             <!-- Contact Info -->
             <div>
-              <h4 class="text-lg font-bold mb-6">Hubungi Kami</h4>
+              <h4 class="text-lg font-bold  text-white mb-6">Hubungi Kami</h4>
               <ul class="space-y-4">
                 <li class="flex gap-3">
                   <div class="flex-shrink-0 mt-1">
@@ -126,7 +142,8 @@
                   </div>
                   <div>
                     <p class="text-white text-opacity-80 text-sm">
-                      Jl. Cikini Raya No. 73<br>Jakarta Pusat 10330
+                     Jl. Cikini Raya No. 73  RT.8/RW.2, Cikini, Kec. Menteng
+                     Kota Jakarta Pusat<br>Daerah Khusus Ibukota Jakarta 10330 Indonesia
                     </p>
                   </div>
                 </li>
@@ -195,5 +212,3 @@
         });
       });
     </script>
-  </body>
-</html>

@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+{{-- Include Image Cropper Component --}}
+@include('components.image-cropper')
+
 @push('styles')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,8 +74,22 @@
                 <form action="{{ route('admin.profil_pegawai.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Nama Pegawai</label>
-                        <input type="text" name="nama" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <label class="block text-sm font-medium text-gray-700">🖼️ Foto Pegawai</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-indigo-400 transition-colors">
+                            <input type="file" name="foto" accept="image/*" onchange="previewImageWithCropper(event, 'create-foto-preview', 'create-foto-crop-btn')" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 mb-3">
+                            
+                            <div id="create-foto-preview" class="mb-3" style="display: none;"></div>
+                            
+                            <button 
+                                type="button" 
+                                id="create-foto-crop-btn" 
+                                class="crop-button-standard"
+                                style="display:none;"
+                                onclick="window.imageCropper.openCropper(document.querySelector('input[name=foto]'))">
+                                🎨 Edit & Crop Gambar
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop</p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Jabatan</label>
@@ -88,8 +105,8 @@
                         <textarea name="deskripsi" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Foto Pegawai</label>
-                        <input type="file" name="foto" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" accept="image/*">
+                        <label class="block text-sm font-medium text-gray-700">Nama Pegawai</label>
+                        <input type="text" name="nama" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                     </div>
                     <div class="flex justify-end gap-3">
                         <button type="button" onclick="closeModal('profilPegawaiModal')" class="px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400">Batal</button>
@@ -121,6 +138,40 @@
                     <button id="saveOrder" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Simpan</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="mb-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <form method="GET" action="{{ route('admin.profil_pegawai.index') }}" class="flex gap-3">
+                <div class="flex-1">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Cari pegawai berdasarkan nama, jabatan, atau deskripsi..." 
+                        value="{{ $search ?? '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-300"
+                >
+                    <i class="fas fa-search mr-2"></i>Cari
+                </button>
+                @if(!empty($search))
+                    <a 
+                        href="{{ route('admin.profil_pegawai.index') }}" 
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+                    >
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            @if(!empty($search))
+                <div class="mt-3 text-sm text-gray-600">
+                    Hasil pencarian untuk: "<strong>{{ $search }}</strong>" - {{ $items->total() }} hasil ditemukan
+                </div>
+            @endif
         </div>
 
         <!-- Tabel -->
@@ -170,6 +221,13 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            @if($items->hasPages())
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    {{ $items->appends(['search' => $search ?? ''])->links() }}
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -204,9 +262,18 @@
                 <textarea id="edit-deskripsi" name="deskripsi" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Foto Pegawai</label>
-                <input type="file" id="edit-foto" name="foto" accept="image/*" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                <p class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah. Format: JPEG, PNG, JPG, GIF. Maksimal 2MB.</p>
+                <label class="block text-sm font-medium text-gray-700">🖼️ Foto Pegawai</label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-indigo-400 transition-colors">
+                    <input type="file" id="edit-foto" name="foto" accept="image/*" onchange="previewImageWithCropper(event, 'edit-foto-preview', 'edit-foto-crop-btn')" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 mb-3">
+                    
+                    <div id="edit-foto-preview" class="mb-3" style="display: none;"></div>
+                    
+                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
+                        <button type="button" id="edit-foto-crop-btn" onclick="openImageCropper(document.getElementById('edit-foto'), document.getElementById('edit-foto-preview'))" class="crop-button-standard" style="display: none;">
+                            ✂️ Edit & Crop Foto
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop - Kosongkan jika tidak ingin mengubah</p>
             </div>
             <div id="editFotoPreview" class="mt-2"></div>
             <div class="flex justify-end gap-3">
@@ -340,5 +407,18 @@
             }
         });
     });
+</script>
+
+{{-- Include Image Cropper JS --}}
+<script src="{{ asset('js/image-cropper.js') }}"></script>
+
+<script>
+// Initialize cropper when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.ImageCropper === 'function') {
+        window.imageCropper = new window.ImageCropper();
+        console.log('Image cropper initialized successfully');
+    }
+});
 </script>
 @endsection

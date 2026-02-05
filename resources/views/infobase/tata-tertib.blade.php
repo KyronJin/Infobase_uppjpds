@@ -265,6 +265,14 @@
     </div>
 </div>
 
+{{-- Search Form --}}
+@include('partials.search-form', [
+    'action' => route('infobase.tata-tertib'),
+    'placeholder' => 'Cari tata tertib berdasarkan jenis atau isi...',
+    'search' => $search ?? '',
+    'resultCount' => $jenis->sum(function($j) { return $j->tataTertibs->count(); })
+])
+
 <div class="container">
     <div class="content-wrapper">
         @forelse($jenis as $j)

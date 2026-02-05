@@ -482,6 +482,14 @@
     </div>
 </div>
 
+{{-- Search Form --}}
+@include('partials.search-form', [
+    'action' => route('infobase.profile-ruangan'),
+    'placeholder' => 'Cari ruangan berdasarkan nama, lantai, atau deskripsi...',
+    'search' => $search ?? '',
+    'resultCount' => isset($items) ? $items->total() : null
+])
+
 <div class="container">
     @if($items->isNotEmpty())
         <div class="rooms-grid">
@@ -552,6 +560,13 @@
                 </div>
             @endforeach
         </div>
+        
+        {{-- Pagination --}}
+        @if($items->hasPages())
+            <div class="d-flex justify-content-center mt-6">
+                {{ $items->appends(['search' => $search ?? ''])->links() }}
+            </div>
+        @endif
     @else
         <div class="rooms-grid">
             <div class="empty-state">

@@ -98,6 +98,40 @@
             </div>
         </div>
 
+        <!-- Search Form -->
+        <div class="mb-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <form method="GET" action="{{ route('admin.tata_tertib.index') }}" class="flex gap-3">
+                <div class="flex-1">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Cari tata tertib berdasarkan jenis atau isi..." 
+                        value="{{ $search ?? '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-300"
+                >
+                    <i class="fas fa-search mr-2"></i>Cari
+                </button>
+                @if(!empty($search))
+                    <a 
+                        href="{{ route('admin.tata_tertib.index') }}" 
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+                    >
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            @if(!empty($search))
+                <div class="mt-3 text-sm text-gray-600">
+                    Hasil pencarian untuk: "<strong>{{ $search }}</strong>" - {{ $items->total() }} hasil ditemukan
+                </div>
+            @endif
+        </div>
+
         <!-- Tabel -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="overflow-x-auto">
@@ -139,6 +173,13 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            @if($items->hasPages())
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    {{ $items->appends(['search' => $search ?? ''])->links() }}
+                </div>
+            @endif
         </div>
 
         <!-- Modal Edit Tata Tertib -->

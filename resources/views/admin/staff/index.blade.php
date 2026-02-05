@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- Include Image Cropper Component --}}
+@include('components.image-cropper')
 {{-- Hidden elements to pass messages to JavaScript --}}
 @if(session('success'))
 <div style="display:none" data-success-message="{{ session('success') }}"></div>
@@ -270,9 +272,18 @@
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Foto</label>
-                                <input type="file" id="create-photo" name="photo" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, GIF (Maks 2MB)</p>
+                                <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
+                                    <input type="file" id="create-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'create-photo-preview', 'create-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
+                                    
+                                    <div id="create-photo-preview" class="mb-3" style="display: none;"></div>
+                                    
+                                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
+                                        <button type="button" id="create-crop-btn" onclick="openImageCropper(document.getElementById('create-photo'), document.getElementById('create-photo-preview'))" class="crop-button-standard" style="display: none;">
+                                            ✂️ Edit & Crop Foto
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop</p>
                             </div>
 
                             <div>
@@ -346,9 +357,18 @@
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Foto</label>
-                                <input type="file" id="edit-photo" name="photo" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, GIF (Maks 2MB) - Kosongkan jika tidak ingin mengubah</p>
+                                <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
+                                    <input type="file" id="edit-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'edit-photo-preview', 'edit-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
+                                    
+                                    <div id="edit-photo-preview" class="mb-3" style="display: none;"></div>
+                                    
+                                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
+                                        <button type="button" id="edit-crop-btn" onclick="openImageCropper(document.getElementById('edit-photo'), document.getElementById('edit-photo-preview'))" class="crop-button-standard" style="display: none;">
+                                            ✂️ Edit & Crop Foto
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop - Kosongkan jika tidak ingin mengubah</p>
                             </div>
 
                             <div>
@@ -737,4 +757,7 @@ window.addEventListener('load', function() {
     }
 });
 </script>
+
+{{-- Include Image Cropper JS --}}
+<script src="{{ asset('js/image-cropper.js') }}"></script>
 @endsection

@@ -350,6 +350,14 @@
     </div>
 </div>
 
+{{-- Search Form --}}
+@include('partials.search-form', [
+    'action' => route('infobase.staff-of-month'),
+    'placeholder' => 'Cari staff berdasarkan nama, posisi, atau prestasi...',
+    'search' => $search ?? '',
+    'resultCount' => isset($staff) ? $staff->total() : ($staffByPosition ? $staffByPosition->count() : null)
+])
+
 <div class="container">
     <div class="content-wrapper">
         @if($staffByPosition && $staffByPosition->count())
@@ -424,6 +432,13 @@
                 <i class="fas fa-users"></i>
                 <h3>Belum Ada Staff Terpilih</h3>
                 <p>Staff terbaik per posisi akan ditampilkan di sini ketika sudah ada yang terpilih.</p>
+            </div>
+        @endif
+        
+        {{-- Pagination --}}
+        @if(isset($staff) && $staff->hasPages())
+            <div class="d-flex justify-content-center mt-6">
+                {{ $staff->appends(['search' => $search ?? ''])->links() }}
             </div>
         @endif
     </div>

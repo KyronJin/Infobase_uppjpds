@@ -16,6 +16,40 @@
             <button onclick="openCreateModal()" class="admin-button">Create</button>
         </div>
 
+        <!-- Search Form -->
+        <div class="mb-6">
+            <form method="GET" action="{{ route('admin.profile.index') }}" class="flex gap-3">
+                <div class="flex-1">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Cari ruangan berdasarkan nama, lantai, atau deskripsi..." 
+                        value="{{ $search ?? '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                    <i class="fas fa-search mr-2"></i>Cari
+                </button>
+                @if(!empty($search))
+                    <a 
+                        href="{{ route('admin.profile.index') }}" 
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+                    >
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </form>
+            @if(!empty($search))
+                <div class="mt-3 text-sm text-gray-600">
+                    Hasil pencarian untuk: "<strong>{{ $search }}</strong>" - {{ $items->total() }} hasil ditemukan
+                </div>
+            @endif
+        </div>
+
         <div class="space-y-4">
             @if($items->isEmpty())
                 <div class="bg-gray-50 p-8 rounded-lg text-center text-gray-600">
@@ -70,6 +104,13 @@
                     </div>
                 </div>
                 @endforeach
+            @endif
+            
+            <!-- Pagination -->
+            @if($items->hasPages())
+                <div class="mt-8 flex justify-center">
+                    {{ $items->appends(['search' => $search ?? ''])->links() }}
+                </div>
             @endif
         </div>
 

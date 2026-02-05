@@ -192,6 +192,14 @@
     </div>
 </div>
 
+{{-- Search Form --}}
+@include('partials.search-form', [
+    'action' => route('infobase.calendar-aktifitas'),
+    'placeholder' => 'Cari event berdasarkan judul, deskripsi, atau lokasi...',
+    'search' => $search ?? '',
+    'resultCount' => isset($events) ? $events->total() : null
+])
+
 <div class="min-h-screen bg-[#f8fafc] pt-0 pb-24">
     <div class="max-w-6xl mx-auto px-6">
 

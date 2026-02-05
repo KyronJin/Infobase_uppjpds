@@ -579,6 +579,14 @@
     </div>
 </div>
 
+{{-- Search Form --}}
+@include('partials.search-form', [
+    'action' => route('infobase.profil-pegawai'),
+    'placeholder' => 'Cari pegawai berdasarkan nama, jabatan, atau deskripsi...',
+    'search' => $search ?? '',
+    'resultCount' => isset($pegawai) ? $pegawai->total() : null
+])
+
 <div class="min-h-screen bg-[#f8fafc] pt-6 pb-24">
     <div class="max-w-7xl mx-auto px-6">
             </div>
@@ -596,17 +604,17 @@
 
         <!-- Slider Content -->
         <div id="sliderContent" class="view-content transition-opacity duration-300">
-            @if($pegawais->count())
+            @if(isset($pegawai) && $pegawai->count())
                 <div class="relative group">
                     <div class="overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100">
                         <div id="slider" class="flex transition-transform duration-500 ease-in-out">
-                            @foreach($pegawais as $pegawai)
+                            @foreach($pegawai as $p)
                                 <div class="w-full flex-shrink-0 p-8 md:p-16">
                                     <div class="flex flex-col md:flex-row items-center gap-10">
                                         <div class="flex-shrink-0 relative">
                                             <div class="absolute inset-0 bg-[#f85e38] rounded-full blur-lg opacity-20 transform translate-y-4"></div>
-                                            @if($pegawai->foto_path)
-                                                <img src="{{ asset('storage/' . $pegawai->foto_path) }}" alt="{{ $pegawai->nama }}" class="relative w-40 h-40 md:w-56 md:h-56 rounded-full object-cover border-4 border-white shadow-lg">
+                                            @if($p->foto_path)
+                                                <img src="{{ asset('storage/' . $p->foto_path) }}" alt="{{ $p->nama }}" class="relative w-40 h-40 md:w-56 md:h-56 rounded-full object-cover border-4 border-white shadow-lg">
                                             @else
                                                 <div class="relative w-40 h-40 md:w-56 md:h-56 bg-gray-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
                                                     <i class="fas fa-user text-gray-300 text-6xl"></i>
@@ -615,11 +623,11 @@
                                         </div>
                                         <div class="flex-1 text-center md:text-left space-y-4">
                                             <div>
-                                                <h2 class="text-3xl md:text-4xl font-bold text-[#00425A]">{{ $pegawai->nama }}</h2>
-                                                <p class="text-xl text-[#f85e38] font-semibold mt-1">{{ $pegawai->jabatan ? $pegawai->jabatan->name : 'Jabatan Tidak Ditemukan' }}</p>
+                                                <h2 class="text-3xl md:text-4xl font-bold text-[#00425A]">{{ $p->nama }}</h2>
+                                                <p class="text-xl text-[#f85e38] font-semibold mt-1">{{ $p->jabatan ? $p->jabatan->name : 'Jabatan Tidak Ditemukan' }}</p>
                                             </div>
                                             <div class="w-16 h-1 bg-gray-200 mx-auto md:mx-0 rounded-full"></div>
-                                            <p class="text-gray-600 leading-relaxed text-lg max-w-2xl">{{ $pegawai->deskripsi ?? 'Berdedikasi untuk memberikan pelayanan terbaik bagi pengunjung perpustakaan.' }}</p>
+                                            <p class="text-gray-600 leading-relaxed text-lg max-w-2xl">{{ $p->deskripsi ?? 'Berdedikasi untuk memberikan pelayanan terbaik bagi pengunjung perpustakaan.' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -637,7 +645,7 @@
                     
                     <!-- Dots -->
                     <div class="flex justify-center mt-8 space-x-3">
-                        @for($i = 0; $i < $pegawais->count(); $i++)
+                        @for($i = 0; $i < $pegawai->count(); $i++)
                             <button class="dot w-3 h-3 rounded-full bg-gray-300 hover:bg-[#00425A] transition-colors" data-slide="{{ $i }}"></button>
                         @endfor
                     </div>
@@ -653,14 +661,14 @@
 
         <!-- OrgChart Content -->
         <div id="orgContent" class="view-content hidden">
-            @if($jabatans->count() > 0 && $pegawais->count() > 0)
+            @if(isset($jabatans) && $jabatans->count() > 0 && isset($pegawai) && $pegawai->count() > 0)
                 <div class="bg-white rounded-2xl p-8 md:p-12 overflow-x-auto shadow-sm border border-gray-200 min-h-[500px]">
                     
                     @php
                         $sortedJabatans = $jabatans->sortBy('order')->values();
                         $jabatanLevels = [];
                         foreach($sortedJabatans as $jabatan) {
-                            $jabatanPegawais = $pegawais->where('jabatan_id', $jabatan->id);
+                            $jabatanPegawais = collect($pegawai->items())->where('jabatan_id', $jabatan->id);
                             if($jabatanPegawais->count() > 0) {
                                 $jabatanLevels[] = [
                                     'jabatan' => $jabatan,
@@ -776,6 +784,13 @@
                 </div>
             @endif
         </div>
+        
+        {{-- Pagination --}}
+        @if(isset($pegawai) && $pegawai->hasPages())
+            <div class="d-flex justify-content-center mt-6">
+                {{ $pegawai->appends(['search' => $search ?? ''])->links() }}
+            </div>
+        @endif
     </div>
 </div>
 

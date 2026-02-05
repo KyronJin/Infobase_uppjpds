@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🔍 DEBUG: Kenapa Tombol Tidak Bisa Diklik?</title>
+    <link rel="stylesheet" href="css/image-cropper.css">
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .debug-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #222;
+        }
+        .test-button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 DEBUG TOMBOL CROP</h1>
+    
+    <div class="debug-section">
+        <h3>1. CSS Test</h3>
+        <button class="test-button crop-button-standard" onclick="logClick('CSS Button')">🎨 CSS Button Test</button>
+        <button class="test-button" style="background: red; color: white; padding: 15px; border: none; border-radius: 8px;" onclick="logClick('Inline Button')">🔴 Inline Style Button</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>2. File Upload Test</h3>
+        <input type="file" id="debugFile" accept="image/*" onchange="debugFileChange(event)">
+        <div id="debugPreview"></div>
+        <button id="debugCropBtn" class="crop-button-standard" style="display:none;" onclick="debugCropClick()">🎨 DEBUG CROP</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>3. Dynamic Button Test</h3>
+        <button onclick="createDynamicButton()">Create Dynamic Button</button>
+        <div id="dynamicArea"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>4. Debug Log</h3>
+        <div id="debugLog" class="log">Waiting for actions...</div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <script>
+        let logCounter = 0;
+        
+        function log(message) {
+            logCounter++;
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('debugLog');
+            logDiv.innerHTML += `[${logCounter}] ${timestamp}: ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        function logClick(buttonName) {
+            log(`✅ SUCCESS: ${buttonName} clicked!`);
+            playClickSound();
+        }
+        
+        function debugFileChange(event) {
+            const file = event.target.files[0];
+            log(`📁 File selected: ${file ? file.name : 'none'}`);
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('debugPreview').innerHTML = `
+                        <img src="${e.target.result}" style="max-width: 150px; margin: 10px 0;">
+                    `;
+                    
+                    const btn = document.getElementById('debugCropBtn');
+                    btn.style.display = 'inline-flex';
+                    
+                    log(`🖼️ Preview loaded, button displayed`);
+                    log(`Button styles: display=${getComputedStyle(btn).display}, zIndex=${getComputedStyle(btn).zIndex}, pointerEvents=${getComputedStyle(btn).pointerEvents}`);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function debugCropClick() {
+            log(`🎨 DEBUG CROP BUTTON CLICKED!`);
+            playClickSound();
+            alert('DEBUG: Crop button works!');
+        }
+        
+        function createDynamicButton() {
+            const area = document.getElementById('dynamicArea');
+            const btnId = 'dynBtn' + Date.now();
+            
+            area.innerHTML = `
+                <button id="${btnId}" 
+                        class="crop-button-standard" 
+                        style="display: inline-flex; z-index: 99999; pointer-events: auto; position: relative;"
+                        onclick="logClick('Dynamic Button')">
+                    🚀 Dynamic Button
+                </button>
+            `;
+            
+            log(`🔨 Dynamic button created: ${btnId}`);
+            
+            // Test if it's clickable
+            setTimeout(() => {
+                const btn = document.getElementById(btnId);
+                const rect = btn.getBoundingClientRect();
+                log(`Button position: x=${rect.left}, y=${rect.top}, width=${rect.width}, height=${rect.height}`);
+                
+                // Try to click programmatically
+                btn.click();
+            }, 100);
+        }
+        
+        function playClickSound() {
+            // Visual feedback
+            document.body.style.background = '#004400';
+            setTimeout(() => {
+                document.body.style.background = '#1a1a1a';
+            }, 200);
+        }
+        
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = 'Log cleared.\n';
+            logCounter = 0;
+        }
+        
+        // Page load tests
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 DEBUG PAGE LOADED');
+            log(`CSS loaded: ${document.styleSheets.length} stylesheets`);
+            
+            // Test if CSS class exists
+            const testDiv = document.createElement('div');
+            testDiv.className = 'crop-button-standard';
+            document.body.appendChild(testDiv);
+            const styles = getComputedStyle(testDiv);
+            log(`CSS class test: background=${styles.background}, zIndex=${styles.zIndex}`);
+            document.body.removeChild(testDiv);
+            
+            // Mouse move tracker
+            document.addEventListener('mousemove', function(e) {
+                const element = document.elementFromPoint(e.clientX, e.clientY);
+                if (element && element.classList.contains('crop-button-standard')) {
+                    log(`🖱️ Mouse over crop button: ${element.id || 'no id'}`);
+                }
+            });
+        });
+        
+        // Global click tracker
+        document.addEventListener('click', function(e) {
+            log(`🖱️ CLICK detected on: ${e.target.tagName} class="${e.target.className}" id="${e.target.id}"`);
+        });
+    </script>
+</body>
+</html>

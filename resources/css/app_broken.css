@@ -354,7 +354,7 @@
     .form-control {
         @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200;
         background: white;
-        font-size: 16px;
+        font-size: 16px; /* Prevent zoom on mobile */
     }
 
     .form-control:focus {
@@ -425,43 +425,17 @@
 /* Animations */
 @layer utilities {
     @keyframes slideInUp {
-        from { 
-            opacity: 0; 
-            transform: translateY(30px); 
-        }
-        to { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeIn {
-        from { 
-            opacity: 0; 
-        }
-        to { 
-            opacity: 1; 
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-slide-up { 
-        animation: slideInUp 0.6s ease-out; 
-    }
-    
-    .animate-fade { 
-        animation: fadeIn 0.5s ease-in; 
-    }
+    .animate-slide-up { animation: slideInUp 0.6s ease-out; }
+    .animate-fade { animation: fadeIn 0.5s ease-in; }
 }
 
 /* Responsive Adjustments */
@@ -474,38 +448,14 @@
         --space-lg: 20px;
     }
 
-    .site-container { 
-        padding-left: 12px; 
-        padding-right: 12px; 
-    }
-    
-    .hero-container { 
-        @apply px-3 py-8; 
-    }
-    
-    .image-container { 
-        @apply w-48 h-48; 
-    }
-    
-    .features-grid { 
-        @apply grid-cols-1 gap-4 px-4; 
-    }
-    
-    .hero-text { 
-        @apply text-center items-center px-2; 
-    }
-    
-    .login-btn { 
-        @apply px-6 py-3 text-sm w-full; 
-    }
-    
-    .main-title { 
-        font-size: 1.5rem !important; 
-    }
-    
-    .subtitle { 
-        font-size: 0.875rem; 
-    }
+    .site-container { padding-left: 12px; padding-right: 12px; }
+    .hero-container { @apply px-3 py-8; }
+    .image-container { @apply w-48 h-48; }
+    .features-grid { @apply grid-cols-1 gap-4 px-4; }
+    .hero-text { @apply text-center items-center px-2; }
+    .login-btn { @apply px-6 py-3 text-sm w-full; }
+    .main-title { font-size: 1.5rem !important; }
+    .subtitle { font-size: 0.875rem; }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
@@ -514,34 +464,13 @@
         --type-h2-size: 1.5rem;
     }
 
-    .navbar { 
-        @apply px-4 flex-wrap; 
-        gap: 1rem; 
-    }
-    
-    .hero-container { 
-        @apply px-4 py-12; 
-    }
-    
-    .image-container { 
-        @apply w-60 h-60; 
-    }
-    
-    .features-grid { 
-        @apply grid-cols-1 sm:grid-cols-2 gap-4; 
-    }
-    
-    .hero-text { 
-        @apply text-center items-center px-4; 
-    }
-    
-    .nav-links { 
-        @apply hidden; 
-    }
-    
-    .nav-toggle { 
-        @apply flex; 
-    }
+    .navbar { @apply px-4 flex-wrap; gap: 1rem; }
+    .hero-container { @apply px-4 py-12; }
+    .image-container { @apply w-60 h-60; }
+    .features-grid { @apply grid-cols-1 sm:grid-cols-2 gap-4; }
+    .hero-text { @apply text-center items-center px-4; }
+    .nav-links { @apply hidden; }
+    .nav-toggle { @apply flex; }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -550,17 +479,9 @@
         --type-h2-size: 1.75rem;
     }
 
-    .features-grid { 
-        @apply grid-cols-2 gap-6; 
-    }
-    
-    .image-container { 
-        @apply w-80 h-80; 
-    }
-    
-    .hero-content { 
-        @apply gap-10; 
-    }
+    .features-grid { @apply grid-cols-2 gap-6; }
+    .image-container { @apply w-80 h-80; }
+    .hero-content { @apply gap-10; }
 }
 
 @media (min-width: 1025px) {
@@ -569,17 +490,9 @@
         --type-h2-size: 2rem;
     }
 
-    .features-grid { 
-        @apply grid-cols-3 gap-8; 
-    }
-    
-    .nav-links { 
-        @apply flex; 
-    }
-    
-    .nav-toggle { 
-        @apply hidden; 
-    }
+    .features-grid { @apply grid-cols-3 gap-8; }
+    .nav-links { @apply flex; }
+    .nav-toggle { @apply hidden; }
 }
 
 /* Mobile navigation */
@@ -609,5 +522,23 @@
 
     .mobile-links a {
         @apply px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

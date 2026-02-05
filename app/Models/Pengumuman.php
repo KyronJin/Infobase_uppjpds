@@ -18,6 +18,13 @@ class Pengumuman extends Model
         'valid_until',
     ];
 
+    // Scope untuk search
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('title', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
+    }
+
     protected $casts = [
         'published_at' => 'datetime',
         'unpublished_at' => 'datetime',

@@ -273,20 +273,69 @@
 
         <section class="site-container features" style="max-width:1100px;margin:28px auto;padding:0 20px;">
             <h2 style="font-size:20px;margin:0 0 12px;font-weight:700">Fitur Utama</h2>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
-                <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;">
-                    <h4 style="margin:0 0 6px;font-weight:700">Pengumuman</h4>
-                    <p style="margin:0;color:#6b7280">Lihat pengumuman terbaru dan informasi acara perpustakaan.</p>
+            @if(isset($latestAnnouncements) && $latestAnnouncements->count() > 0)
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+                    @foreach($latestAnnouncements as $announcement)
+                        <div class="feature-card" style="padding:16px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:linear-gradient(135deg, #00425A 0%, #003144 100%);color:white;position:relative;overflow:hidden;transition:transform 0.3s ease,box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 12px 32px rgba(9,30,63,0.15)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(9,30,63,0.06)'">
+                            <div style="position:absolute;top:-10px;right:-10px;width:60px;height:60px;background:rgba(248,94,56,0.1);border-radius:50%;"></div>
+                            <div style="position:relative;z-index:2;">
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                    <div style="width:8px;height:8px;background:#f85e38;border-radius:50%;"></div>
+                                    <span style="background:rgba(255,255,255,0.2);color:white;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;">
+                                        {{ $announcement->published_at ? $announcement->published_at->format('d M') : 'BARU' }}
+                                    </span>
+                                </div>
+                                <h4 style="margin:0 0 8px;font-weight:700;font-size:16px;line-height:1.3;color:#fff;">
+                                    {{ Str::limit($announcement->title, 40) }}
+                                </h4>
+                                <p style="margin:0 0 12px;color:rgba(255,255,255,0.8);font-size:12px;line-height:1.4;">
+                                    {{ Str::limit(strip_tags($announcement->description), 60) }}
+                                </p>
+                                <div style="display:flex;align-items:center;justify-content:space-between;">
+                                    <a href="{{ route('infobase.pengumuman') }}" style="color:#f85e38;font-weight:600;font-size:12px;text-decoration:none;">
+                                        Baca Selengkapnya →
+                                    </a>
+                                    <div style="width:20px;height:20px;background:rgba(248,94,56,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                                        <div style="width:6px;height:6px;background:#f85e38;border-radius:50%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-                <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;">
-                    <h4 style="margin:0 0 6px;font-weight:700">Calendar Aktivitas</h4>
-                    <p style="margin:0;color:#6b7280">Jadwal event dan kegiatan yang bisa diikuti oleh pengunjung.</p>
+                <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+                    <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;border:2px solid #f8f9fa;transition:border-color 0.3s ease;" onmouseover="this.style.borderColor='#00425A'" onmouseout="this.style.borderColor='#f8f9fa'">
+                        <h4 style="margin:0 0 6px;font-weight:700;color:#00425A;">Staff of Month</h4>
+                        <p style="margin:0;color:#6b7280;font-size:13px;">Apresiasi untuk staff berprestasi dan kontribusi luar biasa mereka setiap bulannya.</p>
+                        <a href="{{ route('infobase.staff-of-month') }}" style="display:inline-block;margin-top:8px;color:#f85e38;font-weight:600;font-size:12px;text-decoration:none;">Lihat Penghargaan →</a>
+                    </div>
+                    <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;border:2px solid #f8f9fa;transition:border-color 0.3s ease;" onmouseover="this.style.borderColor='#00425A'" onmouseout="this.style.borderColor='#f8f9fa'">
+                        <h4 style="margin:0 0 6px;font-weight:700;color:#00425A;">Profile Ruangan</h4>
+                        <p style="margin:0;color:#6b7280;font-size:13px;">Informasi detail ruang, kapasitas, dan fasilitas lengkap yang tersedia untuk publik.</p>
+                        <a href="{{ route('infobase.profile-ruangan') }}" style="display:inline-block;margin-top:8px;color:#f85e38;font-weight:600;font-size:12px;text-decoration:none;">Jelajahi Ruangan →</a>
+                    </div>
+                    <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;border:2px solid #f8f9fa;transition:border-color 0.3s ease;" onmouseover="this.style.borderColor='#00425A'" onmouseout="this.style.borderColor='#f8f9fa'">
+                        <h4 style="margin:0 0 6px;font-weight:700;color:#00425A;">Hubungi Kami</h4>
+                        <p style="margin:0;color:#6b7280;font-size:13px;">Punya pertanyaan atau saran? Tim kami siap membantu dan mendengarkan masukan Anda.</p>
+                        <a href="{{ route('contact') }}" style="display:inline-block;margin-top:8px;color:#f85e38;font-weight:600;font-size:12px;text-decoration:none;">Kirim Pesan →</a>
+                    </div>
                 </div>
-                <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;">
-                    <h4 style="margin:0 0 6px;font-weight:700">Tata Tertib</h4>
-                    <p style="margin:0;color:#6b7280">Aturan dan pedoman penggunaan fasilitas perpustakaan.</p>
+            @else
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+                    <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;">
+                        <h4 style="margin:0 0 6px;font-weight:700">Pengumuman</h4>
+                        <p style="margin:0;color:#6b7280">Lihat pengumuman terbaru dan informasi acara perpustakaan.</p>
+                    </div>
+                    <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;">
+                        <h4 style="margin:0 0 6px;font-weight:700">Calendar Aktivitas</h4>
+                        <p style="margin:0;color:#6b7280">Jadwal event dan kegiatan yang bisa diikuti oleh pengunjung.</p>
+                    </div>
+                    <div class="feature-card" style="padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(9,30,63,0.06);background:#fff;">
+                        <h4 style="margin:0 0 6px;font-weight:700">Tata Tertib</h4>
+                        <p style="margin:0;color:#6b7280">Aturan dan pedoman penggunaan fasilitas perpustakaan.</p>
+                    </div>
                 </div>
-            </div>
+            @endif
         </section>
 
         @if (Route::has('login'))

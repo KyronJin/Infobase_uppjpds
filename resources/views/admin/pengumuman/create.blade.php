@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- Include Image Cropper Component --}}
+@include('components.image-cropper')
+
 <div class="container mx-auto px-6 py-12">
     <div class="admin-section">
         <h1 class="admin-header">Buat Pengumuman</h1>
@@ -59,4 +62,7 @@
         </form>
     </div>
 </div>
+
+{{-- Include Image Cropper JS --}}
+<script src="{{ asset('js/image-cropper.js') }}"></script>
 @endsection

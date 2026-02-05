@@ -6,42 +6,42 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left: Text Content -->
-                <div class="space-y-8">
+                <div class="space-y-8 brand-animate-left">
                     <div class="inline-block">
-                        <span class="inline-block px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-full border border-blue-200">
-                            <i class="fas fa-sparkles mr-2"></i>Selamat Datang
+                        <span class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 text-sm font-semibold rounded-full border-2 border-gray-200">
+                            <i class="fas fa-sparkles mr-2 text-gray-600"></i>Selamat Datang
                         </span>
                     </div>
 
-                    <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                    <h1 class="text-5xl lg:text-6xl font-bold leading-tight text-black">
                         {{ $content['hero_title'] ?? 'INFOBASE' }}
-                        <span class="block text-[#00425A]">UPPJPDS</span>
+                        <span class="block text-black">UPPJPDS</span>
                     </h1>
 
-                    <p class="text-xl text-gray-600 leading-relaxed max-w-xl">
+                    <p class="text-lg text-gray-700 max-w-xl">
                         {{ $content['hero_subtitle'] ?? 'Portal informasi terpadu untuk perpustakaan Jakarta. Akses pengumuman, jadwal aktivitas, dan informasi fasilitas dengan mudah.' }}
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <a href="#features" class="inline-flex items-center justify-center px-8 py-4 border-2 border-[#00425A] text-[#00425A] font-semibold rounded-lg hover:bg-[#00425A] hover:text-white transition duration-300">
+                        <a href="#announcements" class="inline-flex items-center justify-center px-6 py-3 border-2 border-black text-black font-semibold rounded-lg hover:bg-black hover:text-white transition duration-300">
                             <i class="fas fa-arrow-down mr-2"></i>
                             Pelajari Lebih Lanjut
                         </a>
                     </div>
 
                     <p class="text-sm text-gray-500 pt-6">
-                        <i class="fas fa-globe mr-2 text-[#f85e38]"></i>
+                        <i class="fas fa-globe mr-2 text-gray-600"></i>
                         dispusip.jakarta.go.id/cikini
                     </p>
                 </div>
 
                 <!-- Right: Illustration Area -->
-                <div class="relative hidden lg:block">
+                <div class="relative hidden lg:block brand-animate-right">
                     @if(!empty($content['hero_image']))
-                        <img src="{{ $content['hero_image'] }}" alt="Hero" class="relative z-10 rounded-2xl shadow-2xl w-full object-cover aspect-[3/4]">
+                        <img src="{{ $content['hero_image'] }}" alt="Hero" class="relative z-10 rounded-3xl shadow-2xl w-full object-cover aspect-[3/4] border-4 border-white">
                     @else
-                        <div class="relative z-10 rounded-2xl bg-[#00425A] aspect-[3/4] flex items-center justify-center">
-                            <i class="fas fa-image text-white text-6xl opacity-20"></i>
+                        <div class="relative z-10 rounded-3xl bg-gray-200 aspect-[3/4] flex items-center justify-center border-4 border-white shadow-2xl">
+                            <i class="fas fa-image text-gray-400 text-6xl opacity-30"></i>
                         </div>
                     @endif
                 </div>
@@ -49,130 +49,117 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-20 lg:py-28 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Fitur Utama</h2>
-                <p class="text-lg text-gray-600">Akses semua informasi perpustakaan dalam satu platform terpadu</p>
+    <!-- Announcements Section (Pengumuman Terbaru) -->
+    <section id="announcements" class="py-24 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-orange-400/10 to-red-500/10 rounded-full transform translate-x-48 -translate-y-48"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+            <div class="text-center mb-20">
+                <div class="inline-block mb-6 group">
+                    <span class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-50 to-red-50 text-orange-600 text-sm font-bold rounded-2xl border border-orange-200 shadow-lg group-hover:shadow-xl transform group-hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-bullhorn mr-3 text-orange-500 group-hover:animate-pulse"></i>{{ __('home.latest_updates') }}
+                    </span>
+                </div>
+                <h2 class="text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 mb-8 tracking-tight">{{ __('home.latest_announcements') }}</h2>
+                <p class="text-xl leading-relaxed text-gray-600 max-w-4xl mx-auto font-medium">{{ __('home.important_latest_info') }}</p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Feature Card 1 -->
-                <div class="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#00425A] hover:shadow-xl transition duration-300">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#00425A] text-white rounded-lg mb-6 group-hover:bg-[#f85e38] transition duration-300">
-                        <i class="fas fa-bullhorn text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Pengumuman</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Dapatkan informasi terbaru tentang acara, pengumuman penting, dan berita dari perpustakaan.
-                    </p>
-                    <a href="{{ route('infobase.pengumuman') }}" class="inline-block mt-4 text-[#00425A] font-semibold hover:text-[#f85e38] transition duration-300">
-                        Baca Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
+            @if(isset($latestAnnouncements) && $latestAnnouncements->count())
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($latestAnnouncements as $item)
+                        <div class="bg-white rounded-lg shadow-md group border-2 border-gray-100 hover:shadow-lg transition-all duration-300">
+                            <!-- Image -->
+                            @if($item->image_path)
+                                <div class="relative h-48 overflow-hidden bg-gray-100">
+                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                </div>
+                            @else
+                                <div class="relative h-48 bg-gray-200 flex items-center justify-center transition-all duration-500">
+                                    <i class="fas fa-newspaper text-gray-400 text-4xl opacity-40"></i>
+                                </div>
+                            @endif
+
+                            <!-- Content -->
+                            <div class="p-6">
+                                <!-- Date -->
+                                <div class="mb-3">
+                                    <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full border border-gray-200">
+                                        {{ $item->published_at?->format('d M Y') ?? 'N/A' }}
+                                    </span>
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="text-xl font-semibold mb-2 text-black line-clamp-2 group-hover:text-blue-600 transition duration-300">
+                                    {{ $item->title }}
+                                </h3>
+
+                                <!-- Description -->
+                                <p class="text-gray-600 mb-4 line-clamp-3">
+                                    {{ strip_tags($item->description) }}
+                                </p>
+
+                                <!-- Link -->
+                                <a href="{{ route('infobase.pengumuman') }}" class="inline-flex items-center text-black font-semibold text-sm hover:text-blue-600 transition duration-300">
+                                    Baca Selengkapnya
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
-                <!-- Feature Card 2 -->
-                <div class="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#00425A] hover:shadow-xl transition duration-300">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#f85e38] text-white rounded-lg mb-6 group-hover:bg-[#00425A] transition duration-300">
-                        <i class="fas fa-calendar-alt text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Calendar Aktivitas</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Jadwal lengkap event, workshop, dan kegiatan yang dapat Anda ikuti setiap bulannya.
-                    </p>
-                    <a href="{{ route('infobase.calendar-aktifitas') }}" class="inline-block mt-4 text-[#00425A] font-semibold hover:text-[#f85e38] transition duration-300">
-                        Lihat Jadwal <i class="fas fa-arrow-right ml-2"></i>
+                <!-- View All Link -->
+                <div class="text-center mt-12">
+                    <a href="{{ route('infobase.pengumuman') }}" class="inline-flex items-center justify-center px-8 py-4 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition duration-300">
+                        <i class="fas fa-list mr-2"></i>
+                        Lihat Semua Pengumuman
                     </a>
                 </div>
-
-                <!-- Feature Card 3 -->
-                <div class="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#00425A] hover:shadow-xl transition duration-300">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#00425A] text-white rounded-lg mb-6 group-hover:bg-[#f85e38] transition duration-300">
-                        <i class="fas fa-book-open text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Tata Tertib</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Panduan lengkap aturan dan pedoman penggunaan fasilitas perpustakaan untuk kenyamanan bersama.
-                    </p>
-                    <a href="{{ route('infobase.tata-tertib') }}" class="inline-block mt-4 text-[#00425A] font-semibold hover:text-[#f85e38] transition duration-300">
-                        Pelajari Aturan <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-
-                <!-- Feature Card 4 -->
-                <div class="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#00425A] hover:shadow-xl transition duration-300">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#f85e38] text-white rounded-lg mb-6 group-hover:bg-[#00425A] transition duration-300">
-                        <i class="fas fa-star text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Staff of Month</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Apresiasi untuk staff berprestasi dan kontribusi luar biasa mereka setiap bulannya.
-                    </p>
-                    <a href="{{ route('infobase.staff-of-month') }}" class="inline-block mt-4 text-[#00425A] font-semibold hover:text-[#f85e38] transition duration-300">
-                        Lihat Penghargaan <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-
-                <!-- Feature Card 5 -->
-                <div class="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#00425A] hover:shadow-xl transition duration-300">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#00425A] text-white rounded-lg mb-6 group-hover:bg-[#f85e38] transition duration-300">
-                        <i class="fas fa-door-open text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Profile Ruangan</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Informasi detail ruang, kapasitas, dan fasilitas lengkap yang tersedia untuk publik.
-                    </p>
-                    <a href="{{ route('infobase.profile-ruangan') }}" class="inline-block mt-4 text-[#00425A] font-semibold hover:text-[#f85e38] transition duration-300">
-                        Jelajahi Ruangan <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-
-                <!-- Feature Card 6 -->
-                <div class="group p-8 bg-white border-2 border-gray-200 rounded-xl hover:border-[#00425A] hover:shadow-xl transition duration-300">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#f85e38] text-white rounded-lg mb-6 group-hover:bg-[#00425A] transition duration-300">
-                        <i class="fas fa-envelope text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Hubungi Kami</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Punya pertanyaan atau saran? Tim kami siap membantu dan mendengarkan masukan Anda.
-                    </p>
-                    <a href="#contact" class="inline-block mt-4 text-[#00425A] font-semibold hover:text-[#f85e38] transition duration-300">
-                        Kirim Pesan <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-            </div>
+            @endif
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 lg:py-28 bg-gradient-to-r from-[#00425A] to-[#003d50] text-white relative overflow-hidden">
-        <!-- Decorative Elements -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-[#f85e38] opacity-10 rounded-full -mr-48 -mt-48"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#f85e38] opacity-10 rounded-full -ml-48 -mb-48"></div>
+    <section id="about" class="py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-white to-gray-50 text-black relative overflow-hidden">
+        <!-- Background decorations -->
+        <div class="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-full transform -translate-x-48 -translate-y-48"></div>
+        <div class="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-green-400/10 to-blue-500/10 rounded-full transform translate-x-32 translate-y-32"></div>
         
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div class="relative hidden lg:block order-2">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative hidden lg:block order-2 group">
                     @if(!empty($content['about_image']))
                         <div class="relative">
-                            <div class="absolute -inset-2 bg-gradient-to-r from-[#f85e38] to-[#d94e2e] rounded-3xl opacity-20 blur-xl"></div>
-                            <img src="{{ $content['about_image'] }}" alt="Perpustakaan Jakarta" class="relative z-10 rounded-3xl shadow-2xl w-full object-cover aspect-[4/3] border-2 border-white border-opacity-10">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-500 rounded-3xl transform rotate-3 opacity-20 scale-105 group-hover:rotate-6 group-hover:scale-110 transition-all duration-700"></div>
+                            <img src="{{ $content['about_image'] }}" alt="Perpustakaan Jakarta" class="relative z-10 rounded-3xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white hover:scale-105 transition-transform duration-700">
                         </div>
                     @else
                         <div class="relative">
-                            <div class="absolute -inset-2 bg-gradient-to-r from-[#f85e38] to-[#d94e2e] rounded-3xl opacity-20 blur-xl"></div>
-                            <div class="relative z-10 rounded-3xl bg-white bg-opacity-5 aspect-[4/3] flex items-center justify-center border-2 border-white border-opacity-10 backdrop-blur-sm">
-                                <i class="fas fa-image text-white text-6xl opacity-30"></i>
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-500 rounded-3xl transform rotate-3 opacity-20 scale-105 group-hover:rotate-6 group-hover:scale-110 transition-all duration-700"></div>
+                            <div class="relative z-10 rounded-3xl bg-gradient-to-br from-blue-50 to-purple-50 aspect-[4/3] flex items-center justify-center border-4 border-white shadow-2xl hover:shadow-3xl transition-all duration-500">
+                                <div class="text-center space-y-4 group-hover:scale-110 transition-transform duration-300">
+                                    <div class="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-xl">
+                                        <i class="fas fa-university text-white text-3xl"></i>
+                                    </div>
+                                    <p class="text-gray-600 font-semibold text-lg">Perpustakaan Modern</p>
+                                </div>
                             </div>
                         </div>
                     @endif
                 </div>
 
-                <div class="space-y-8 order-1 lg:order-1">
-                    <div>
-                        <h2 class="text-4xl lg:text-5xl font-bold mb-6">Tentang Perpustakaan Jakarta</h2>
-                        <p class="text-lg text-white text-opacity-90 leading-relaxed mb-8">
+                <div class="space-y-10 order-1 lg:order-1">
+                    <div class="space-y-6">
+                        <div class="inline-block group">
+                            <span class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600 text-sm font-bold rounded-2xl border border-blue-200 shadow-lg group-hover:shadow-xl transform group-hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-info-circle mr-3 text-blue-500 group-hover:animate-pulse"></i>Tentang Kami
+                            </span>
+                        </div>
+                        
+                        <h2 class="text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 mb-8 tracking-tight leading-tight">Tentang Perpustakaan Jakarta</h2>
+                        
+                        <p class="text-xl leading-relaxed text-gray-600 font-medium">
                             Perpustakaan Jakarta (UPPJPDS) adalah institusi publik yang berkomitmen menyediakan sumber daya pembelajaran, ruang kolaborasi, dan program pemberdayaan masyarakat. Kami percaya bahwa akses informasi yang mudah adalah kunci kemajuan sosial dan intelektual.
                         </p>
                     </div>
@@ -180,11 +167,11 @@
                     <div class="space-y-6">
                         <div class="flex gap-4">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-check-circle text-[#f85e38] text-2xl mt-1"></i>
+                                <i class="fas fa-check-circle text-black text-2xl mt-1"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold mb-2">Visi</h3>
-                                <p class="text-white text-opacity-90">
+                                <h3 class="text-xl font-bold mb-2 text-black">Visi</h3>
+                                <p class="text-gray-700">
                                     Menjadi pusat pengetahuan yang inklusif, inovatif, dan relevan untuk mendukung literasi dan kreativitas seluruh warga Jakarta.
                                 </p>
                             </div>
@@ -192,18 +179,18 @@
 
                         <div class="flex gap-4">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-check-circle text-[#f85e38] text-2xl mt-1"></i>
+                                <i class="fas fa-check-circle text-black text-2xl mt-1"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold mb-2">Misi</h3>
-                                <p class="text-white text-opacity-90">
+                                <h3 class="text-xl font-bold mb-2 text-black">Misi</h3>
+                                <p class="text-gray-700">
                                     Menyediakan akses informasi berkualitas, mendorong budaya baca dan inovasi, serta menciptakan ekosistem pembelajaran yang memberdayakan masyarakat.
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <a href="{{ route('about') }}" class="inline-flex items-center px-6 py-3 bg-[#f85e38] text-white font-semibold rounded-lg hover:bg-white hover:text-[#f85e38] transition duration-300">
+                    <a href="{{ route('about') }}" class="inline-flex items-center px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition duration-300">
                         <i class="fas fa-arrow-right mr-2"></i>
                         Ketahui Lebih Lanjut
                     </a>
@@ -213,47 +200,56 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 lg:py-28 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <!-- Decorative Elements -->
-        <div class="absolute top-0 left-1/2 w-96 h-96 -translate-x-1/2 bg-gradient-to-r from-[#f85e38] to-[#00425A] opacity-5 rounded-full blur-3xl"></div>
+    <section id="contact" class="py-24 lg:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+        <!-- Background decorations -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-400/10 to-blue-500/10 rounded-full transform translate-x-48 -translate-y-48"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-green-400/10 to-purple-500/10 rounded-full transform -translate-x-32 translate-y-32"></div>
         
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            <div class="text-center mb-20">
+                <div class="inline-block mb-6 group">
+                    <span class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-50 to-blue-50 text-purple-600 text-sm font-bold rounded-2xl border border-purple-200 shadow-lg group-hover:shadow-xl transform group-hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-envelope mr-3 text-purple-500 group-hover:animate-pulse"></i>Kontak Kami
+                    </span>
+                </div>
+                <h2 class="text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 mb-8 tracking-tight">Hubungi Kami</h2>
+                <p class="text-xl leading-relaxed text-gray-600 max-w-4xl mx-auto font-medium">
                     Punya pertanyaan, saran, atau ingin berkolaborasi? Jangan ragu untuk menghubungi kami. Tim kami siap membantu.
                 </p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-12">
+            <div class="grid lg:grid-cols-2 gap-16">
                 <!-- Contact Info -->
                 <div class="space-y-8">
-                    <div class="flex gap-6">
-                        <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-14 w-14 rounded-lg bg-[#00425A] text-white">
-                                <i class="fas fa-map-marker-alt text-xl"></i>
+                    <div class="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <i class="fas fa-map-marker-alt text-xl"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Alamat</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Perpustakaan Jakarta<br>
-                                Jl. Cikini Raya No. 73<br>
-                                Jakarta Pusat 10330
-                            </p>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold text-black mb-3 group-hover:text-red-600 transition-colors duration-300">Alamat</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    Perpustakaan Jakarta<br>
+                                    Jl. Cikini Raya No. 73<br>
+                                    Jakarta Pusat 10330
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-6">
-                        <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-14 w-14 rounded-lg bg-[#f85e38] text-white">
-                                <i class="fas fa-phone text-xl"></i>
+                    <div class="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <i class="fas fa-phone text-xl"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Telepon</h3>
-                            <p class="text-gray-600">
-                                <a href="tel:+62214706295" class="hover:text-[#00425A] transition duration-300">
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold text-black mb-3 group-hover:text-blue-600 transition-colors duration-300">Telepon</h3>
+                                <p class="text-gray-600">
+                                    <a href="tel:+62214706295" class="hover:text-blue-600 transition duration-300 font-medium">
                                     (+62 21) 4706-295
                                 </a>
                             </p>
@@ -262,129 +258,133 @@
 
                     <div class="flex gap-6">
                         <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-14 w-14 rounded-lg bg-[#00425A] text-white">
-                                <i class="fas fa-envelope text-xl"></i>
+                    <div class="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <i class="fas fa-envelope text-xl"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Email</h3>
-                            <p class="text-gray-600">
-                                <a href="mailto:info@perpustakaan.jakarta.go.id" class="hover:text-[#00425A] transition duration-300">
-                                    info@perpustakaan.jakarta.go.id
-                                </a>
-                            </p>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold text-black mb-3 group-hover:text-green-600 transition-colors duration-300">Email</h3>
+                                <p class="text-gray-600">
+                                    <a href="mailto:info@perpustakaan.jakarta.go.id" class="hover:text-green-600 transition duration-300 font-medium">
+                                        info@perpustakaan.jakarta.go.id
+                                    </a>
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-6">
-                        <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-14 w-14 rounded-lg bg-[#f85e38] text-white">
-                                <i class="fas fa-clock text-xl"></i>
+                    <div class="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <i class="fas fa-clock text-xl"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Jam Operasional</h3>
-                            <p class="text-gray-600">
-                                Senin - Jumat: 09:00 - 17:00<br>
-                                Sabtu: 09:00 - 15:00<br>
-                                Minggu & Libur: Tutup
-                            </p>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold text-black mb-3 group-hover:text-purple-600 transition-colors duration-300">Jam Operasional</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    Senin - Jumat: 09:00 - 17:00<br>
+                                    Sabtu: 09:00 - 15:00<br>
+                                    Minggu & Libur: Tutup
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Contact Form -->
-                <div class="p-10 bg-white border-2 border-gray-200 rounded-2xl">
-                    @if(session('success'))
-                        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            {{ session('success') }}
-                        </div>
-                    @endif
+        <section class="py-12 bg-white">
+    <div class="max-w-2xl mx-auto px-4">
+        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
 
-                    <form action="{{ route('contact.store') }}" method="POST" class="space-y-6">
-                        @csrf
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-100 text-green-800 rounded border border-green-300">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                        <div>
-                            <label for="name" class="block text-sm font-semibold text-gray-900 mb-3">
-                                <i class="fas fa-user mr-2 text-[#00425A]"></i>
-                                Nama Lengkap
-                            </label>
+            <h2 class="text-2xl font-bold text-center mb-8 text-gray-800">Kirim Pesan</h2>
+            <p class="text-center text-gray-600 mb-8">Kami akan segera membalas pesan Anda</p>
+
+            <form action="{{ route('contact.store') }}" method="POST">
+                @csrf
+
+                <table class="w-full border-collapse">
+                    <tr>
+                        <td class="pb-4 pr-4 w-1/3 align-top">
+                            <label for="name" class="block font-medium text-gray-700">Nama Lengkap</label>
+                        </td>
+                        <td class="pb-4">
                             <input 
                                 type="text" 
                                 name="name" 
                                 id="name" 
                                 required 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#00425A] transition duration-300 @error('name') border-red-500 @enderror"
-                                placeholder="Nama Anda"
                                 value="{{ old('name') }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 bg-white text-gray-900 @error('name') border-red-500 @enderror"
+                                placeholder="Nama Anda"
                             >
                             @error('name')
-                                <p class="text-red-500 text-sm mt-2"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </td>
+                    </tr>
 
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-gray-900 mb-3">
-                                <i class="fas fa-envelope mr-2 text-[#00425A]"></i>
-                                Email
-                            </label>
+                    <tr>
+                        <td class="pb-4 pr-4 align-top">
+                            <label for="email" class="block font-medium text-gray-700">Email</label>
+                        </td>
+                        <td class="pb-4">
                             <input 
                                 type="email" 
                                 name="email" 
                                 id="email" 
                                 required 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#00425A] transition duration-300 @error('email') border-red-500 @enderror"
-                                placeholder="email@example.com"
                                 value="{{ old('email') }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 bg-white text-gray-900 @error('email') border-red-500 @enderror"
+                                placeholder="email@contoh.com"
                             >
                             @error('email')
-                                <p class="text-red-500 text-sm mt-2"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </td>
+                    </tr>
 
-                        <div>
-                            <label for="message" class="block text-sm font-semibold text-gray-900 mb-3">
-                                <i class="fas fa-comment mr-2 text-[#00425A]"></i>
-                                Pesan
-                            </label>
+                    <tr>
+                        <td class="pb-6 pr-4 align-top">
+                            <label for="message" class="block font-medium text-gray-700">Pesan</label>
+                        </td>
+                        <td class="pb-6">
                             <textarea 
                                 name="message" 
                                 id="message" 
-                                rows="5" 
+                                rows="6" 
                                 required 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#00425A] transition duration-300 resize-none @error('message') border-red-500 @enderror"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 bg-white text-gray-900 resize-y @error('message') border-red-500 @enderror"
                                 placeholder="Tulis pesan Anda di sini..."
                             >{{ old('message') }}</textarea>
                             @error('message')
-                                <p class="text-red-500 text-sm mt-2"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                             @enderror
-                        </div>
+                        </td>
+                    </tr>
 
-                        <button 
-                            type="submit" 
-                            class="w-full py-4 bg-[#00425A] text-white font-bold rounded-lg hover:bg-[#003144] transition duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                        >
-                            <i class="fas fa-paper-plane"></i>
-                            Kirim Pesan
-                        </button>
-                    </form>
-                </div>
-            </div>
+                    <tr>
+                        <td colspan="2" class="pt-4 text-center">
+                            <button 
+                                type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-md transition duration-200"
+                            >
+                                Kirim Pesan
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-16 bg-[#00425A] text-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-6">Siap untuk Menjelajahi Perpustakaan?</h2>
-            <p class="text-lg text-white text-opacity-90 mb-8 max-w-2xl mx-auto">
-                Bergabunglah dengan ribuan pengunjung yang telah memanfaatkan layanan perpustakaan digital kami.
-            </p>
-            <a href="{{ route('pengumuman.index') }}" class="inline-flex items-center px-8 py-4 bg-[#f85e38] text-white font-bold rounded-lg hover:bg-white hover:text-[#f85e38] transition duration-300 shadow-lg">
-                <i class="fas fa-arrow-right mr-2"></i>
-                Mulai Sekarang
-            </a>
-        </div>
-    </section>
+    </div>
+</section>
 @endsection

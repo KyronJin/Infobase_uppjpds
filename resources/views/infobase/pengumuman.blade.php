@@ -365,11 +365,29 @@
             <h1><i class="fas fa-megaphone mr-3 text-white"></i>Pengumuman & Informasi</h1>
             <p>Dapatkan berita dan informasi terbaru dari perpustakaan kami.</p>
         </div>
-        <a href="{{ route('home') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i>Kembali
-        </a>
     </div>
 </div>
+
+<!-- Breadcrumb -->
+<div class="bg-gray-100 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 py-3">
+        <nav class="flex items-center gap-2 text-sm">
+            <a href="{{ route('home') }}" class="text-gray-600 hover:text-[#00425A] transition duration-300">
+                <i class="fas fa-home mr-1"></i>Beranda
+            </a>
+            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-gray-900 font-semibold">Pengumuman</span>
+        </nav>
+    </div>
+</div>
+
+{{-- Search Form --}}
+@include('partials.search-form', [
+    'action' => route('infobase.pengumuman'),
+    'placeholder' => 'Cari pengumuman berdasarkan judul atau isi...',
+    'search' => $search ?? '',
+    'resultCount' => isset($pengumumans) ? $pengumumans->total() : null
+])
 
 <div class="container">
     <div class="content-wrapper">
@@ -400,11 +418,22 @@
                     </div>
                 </div>
             @endforeach
+
+            <!-- Pagination -->
+            <div style="max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem; display: flex; justify-content: center;">
+                {{ $pengumumans->links() }}
+            </div>
         @else
             <div class="empty-state">
                 <i class="fas fa-inbox"></i>
-                <h3>Belum ada pengumuman</h3>
-                <p>Kami akan segera mengabari Anda jika ada informasi terbaru tersedia.</p>
+                <h3>{{ $search ? 'Tidak ada hasil pencarian' : 'Belum ada pengumuman' }}</h3>
+                <p>
+                    @if($search)
+                        Coba gunakan kata kunci yang berbeda untuk mencari pengumuman.
+                    @else
+                        Kami akan segera mengabari Anda jika ada informasi terbaru tersedia.
+                    @endif
+                </p>
             </div>
         @endif
     </div>

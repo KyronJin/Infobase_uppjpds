@@ -10,16 +10,27 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProfilPegawaiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = ProfilPegawai::with('jabatan')
-            ->whereHas('jabatan')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
+        $search = $request->input('search');
+        
+        $query = ProfilPegawai::with('jabatan')
+            ->whereHas('jabatan');
+            
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%")
+                  ->orWhereHas('jabatan', function ($subQ) use ($search) {
+                      $subQ->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        $items = $query->orderBy('created_at', 'desc')->paginate(12);
         $jabatans = Jabatan::all();
 
-        return view('admin.profil_pegawai.index', compact('items', 'jabatans'));
+        return view('admin.profil_pegawai.index', compact('items', 'jabatans', 'search'));
     }
 
     public function storeJabatan(Request $request)
@@ -146,16 +157,22 @@ class ProfilPegawaiController extends Controller
     }
 
     // Halaman public (slider / daftar pegawai)
-    public function publicIndex()
+    public function publicIndex(Request $request)
     {
-        $pegawais = ProfilPegawai::with('jabatan')
-            ->whereHas('jabatan')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $search = $request->query('search', '');
+        
+        $query = ProfilPegawai::with('jabatan')
+            ->whereHas('jabatan');
 
+        // Apply search if provided
+        if (!empty($search)) {
+            $query->search($search);
+        }
+
+        $pegawai = $query->orderBy('created_at', 'desc')->paginate(12);
         $jabatans = Jabatan::ordered()->get();
 
-        return view('infobase.profil-pegawai', compact('pegawais', 'jabatans'));
+        return view('infobase.profil-pegawai', compact('pegawai', 'jabatans', 'search'));
     }
 
     public function updateOrder(Request $request)

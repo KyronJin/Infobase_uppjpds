@@ -24,4 +24,12 @@ class CalendarEvent extends Model
         'end_at' => 'datetime',
         'is_active' => 'boolean',
     ];
+
+    // Scope untuk search
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('title', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%")
+                    ->orWhere('location', 'like', "%{$keyword}%");
+    }
 }

@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Set locale based on session or default to 'id' (Indonesian)
+        $locale = session('locale', 'id');
+        app()->setLocale($locale);
     }
 }

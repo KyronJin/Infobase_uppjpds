@@ -9,10 +9,22 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileRuanganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = ProfileRuangan::with('images')->orderBy('created_at', 'desc')->get();
-        return view('admin.profile.index', compact('items'));
+        $search = $request->input('search');
+        
+        $query = ProfileRuangan::with('images');
+        
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('room_name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('floor', 'like', "%{$search}%");
+            });
+        }
+        
+        $items = $query->orderBy('created_at', 'desc')->paginate(12);
+        return view('admin.profile.index', compact('items', 'search'));
     }
 
     public function create()
