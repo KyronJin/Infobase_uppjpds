@@ -462,6 +462,36 @@
     .animate-fade { 
         animation: fadeIn 0.5s ease-in; 
     }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .brand-animate-left {
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .brand-animate-right {
+        animation: slideInRight 0.8s ease-out;
+    }
 }
 
 /* Responsive Adjustments */

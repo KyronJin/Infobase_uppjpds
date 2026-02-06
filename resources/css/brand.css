@@ -17,16 +17,27 @@
 
 /* Brand Logo Enhanced Styling */
 .brand-logo-enhanced {
-    @apply flex items-center gap-3 transition-all duration-300 hover:scale-105;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* gap-3 equivalent */
+    transition: all 300ms;
+}
+
+.brand-logo-enhanced:hover {
+    transform: scale(1.05);
 }
 
 .brand-logo-enhanced .icon {
-    @apply relative overflow-hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 .brand-logo-enhanced .icon::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom right, rgb(251, 146, 60), rgb(234, 88, 12));
+    border-radius: 0.75rem;
     filter: blur(8px);
     opacity: 0.5;
     z-index: -1;
@@ -80,8 +91,18 @@
 
 /* Brand Button Styles */
 .btn-brand {
-    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    color: white;
+    transition: all 300ms;
+    transform: scale(1);
     background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+}
+
+.btn-brand:hover {
+    transform: scale(1.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .btn-brand:hover {
@@ -90,12 +111,20 @@
 }
 
 .btn-brand-secondary {
-    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    color: white;
+    transition: all 300ms;
     background: linear-gradient(135deg, var(--brand-secondary), #0f3460);
 }
 
 .btn-brand-outline {
-    @apply px-6 py-3 rounded-xl font-semibold border-2 transition-all duration-300;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    border: 2px solid;
+    transition: all 300ms;
     border-color: var(--brand-primary);
     color: var(--brand-primary);
     background: transparent;
@@ -110,7 +139,10 @@
 
 /* Brand Card Styles */
 .card-brand {
-    @apply bg-white rounded-2xl border border-gray-100 transition-all duration-300;
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid #f3f4f6;
+    transition: all 300ms;
     background: linear-gradient(135deg, #ffffff, #f8fafc);
 }
 
@@ -128,18 +160,25 @@
 
 .nav-brand-active::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-full h-0.5;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0.125rem;
     background: var(--brand-primary);
 }
 
 /* Brand Loading States */
 .loading-brand {
-    @apply relative overflow-hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 .loading-brand::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, white, transparent);
     animation: loading-shimmer 1.5s infinite;
 }
 
@@ -151,15 +190,19 @@
 /* Brand Responsive Utilities */
 @media (max-width: 768px) {
     .brand-mobile-center {
-        @apply text-center flex flex-col items-center;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     .brand-mobile-full {
-        @apply w-full;
+        width: 100%;
     }
     
     .brand-mobile-stack {
-        @apply flex-col gap-4;
+        flex-direction: column;
+        gap: 1rem;
     }
 }
 
@@ -190,7 +233,8 @@
 }
 
 .container-brand {
-    @apply max-w-7xl mx-auto;
+    max-width: 80rem;
+    margin: 0 auto;
     padding-left: var(--brand-container-padding);
     padding-right: var(--brand-container-padding);
 }

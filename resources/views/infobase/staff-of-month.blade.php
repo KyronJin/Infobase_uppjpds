@@ -373,16 +373,16 @@
             </div>
 
             <!-- Staff Displays -->
-            @foreach($staffByPosition as $position => $staff)
+            @foreach($staffByPosition as $position => $staffItem)
                 <div class="staff-display {{ $loop->first ? 'active' : '' }}" id="staff-{{ Str::slug($position) }}">
                     <div class="staff-hero">
                         <!-- Foto di Atas -->
                         <div class="staff-image-section">
                             <div class="staff-image-container">
-                                @if($staff->photo_path)
-                                    <img src="{{ asset('storage/' . $staff->photo_path) }}" alt="{{ $staff->name }}" class="staff-image">
-                                @elseif($staff->photo_link)
-                                    <img src="{{ $staff->photo_link }}" alt="{{ $staff->name }}" class="staff-image">
+                                @if($staffItem->photo_path)
+                                    <img src="{{ asset('storage/' . $staffItem->photo_path) }}" alt="{{ $staffItem->name }}" class="staff-image">
+                                @elseif($staffItem->photo_link)
+                                    <img src="{{ $staffItem->photo_link }}" alt="{{ $staffItem->name }}" class="staff-image">
                                 @else
                                     <div class="staff-image-placeholder">
                                         <i class="fas fa-user text-white text-6xl opacity-40"></i>
@@ -398,30 +398,30 @@
                                 Staff Terpilih
                             </div>
                             
-                            <h2 class="staff-name">{{ $staff->name }}</h2>
-                            <div class="staff-position">{{ $staff->position }}</div>
+                            <h2 class="staff-name">{{ $staffItem->name }}</h2>
+                            <div class="staff-position">{{ $staffItem->position }}</div>
                             
-                            @if($staff->month || $staff->year)
+                            @if($staffItem->month || $staffItem->year)
                             <div class="staff-meta">
-                                @if($staff->month)
+                                @if($staffItem->month)
                                 <div class="staff-meta-item">
                                     <div class="staff-meta-label">Bulan</div>
                                     <div class="staff-meta-value">
-                                        {{ DateTime::createFromFormat('!m', $staff->month)->format('F') }}
+                                        {{ DateTime::createFromFormat('!m', $staffItem->month)->format('F') }}
                                     </div>
                                 </div>
                                 @endif
-                                @if($staff->year)
+                                @if($staffItem->year)
                                 <div class="staff-meta-item">
                                     <div class="staff-meta-label">Tahun</div>
-                                    <div class="staff-meta-value">{{ $staff->year }}</div>
+                                    <div class="staff-meta-value">{{ $staffItem->year }}</div>
                                 </div>
                                 @endif
                             </div>
                             @endif
                             
-                            @if($staff->bio)
-                            <div class="staff-bio">{!! nl2br(e($staff->bio)) !!}</div>
+                            @if($staffItem->bio)
+                            <div class="staff-bio">{!! nl2br(e($staffItem->bio)) !!}</div>
                             @endif
                         </div>
                     </div>

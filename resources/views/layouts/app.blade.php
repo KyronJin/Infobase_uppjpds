@@ -60,30 +60,30 @@
 
             <!-- Quick Links -->
             <div>
-              <h4 class="text-lg font-bold  text-white mb-6">Menu Cepat</h4>
+              <h4 class="text-lg font-bold  text-white mb-6">{{ __('messages.footer_quick_links') }}</h4>
               <ul class="space-y-3">
                 <li>
                   <a href="{{ route('home') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Beranda
+                    {{ __('messages.home') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('home') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    InfoBase
+                    {{ __('messages.infobase') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('about') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Tentang Kami
+                    {{ __('messages.about_us') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('contact') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Hubungi Kami
+                    {{ __('messages.footer_contact_us') }}
                   </a>
                 </li>
               </ul>
@@ -91,42 +91,42 @@
 
             <!-- Resources -->
             <div>
-              <h4 class="text-lg font-bold  text-white mb-6">Fitur</h4>
+              <h4 class="text-lg font-bold  text-white mb-6">{{ __('messages.footer_features') }}</h4>
               <ul class="space-y-3">
                 <li>
                   <a href="{{ route('infobase.pengumuman') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Pengumuman
+                    {{ __('messages.announcements') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('infobase.calendar-aktifitas') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Calendar Aktivitas
+                    {{ __('messages.calendar') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('infobase.tata-tertib') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Tata Tertib
+                    {{ __('messages.rules') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('infobase.profile-ruangan') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Profile Ruangan
+                    {{ __('messages.room_profiles') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('infobase.profil-pegawai') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Profil Pegawai
+                    {{ __('messages.staff_profiles') }}
                   </a>
                 </li>
                 <li>
                   <a href="{{ route('infobase.staff-of-month') }}" class="text-white text-opacity-80 hover:text-white hover:text-opacity-100 transition duration-300 flex items-center gap-2">
                     <i class="fas fa-chevron-right text-[#f85e38] text-sm"></i>
-                    Staff of Month
+                    {{ __('messages.staff_of_month') }}
                   </a>
                 </li>
               </ul>
@@ -134,7 +134,7 @@
 
             <!-- Contact Info -->
             <div>
-              <h4 class="text-lg font-bold  text-white mb-6">Hubungi Kami</h4>
+              <h4 class="text-lg font-bold  text-white mb-6">{{ __('messages.footer_contact_us') }}</h4>
               <ul class="space-y-4">
                 <li class="flex gap-3">
                   <div class="flex-shrink-0 mt-1">

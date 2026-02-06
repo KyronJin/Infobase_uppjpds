@@ -10,6 +10,9 @@ class LanguageController extends Controller
 {
     public function switchLanguage($locale)
     {
+        // Debug log
+        \Log::info("Language switch called with locale: " . $locale);
+        
         // Check if locale is supported
         if (in_array($locale, ['id', 'en'])) {
             // Set the application locale
@@ -17,6 +20,10 @@ class LanguageController extends Controller
             
             // Store the locale in session
             Session::put('locale', $locale);
+            
+            \Log::info("Language switched to: " . $locale);
+        } else {
+            \Log::warning("Unsupported locale: " . $locale);
         }
         
         // Redirect back to previous page

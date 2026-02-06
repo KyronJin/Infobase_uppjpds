@@ -11,6 +11,8 @@ use App\Http\Controllers\ProfileRuanganController;
 use App\Http\Controllers\ProfilPegawaiController;
 use App\Http\Controllers\StaffOfMonthController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\Admin\GalleryPhotoController;
+use App\Models\GalleryPhoto;
 
 Route::get('/login', function () {
     return redirect()->route('admin.login');
@@ -21,8 +23,21 @@ Route::get('/', [InfobaseController::class, 'home'])->name('home');
 // Language switching route
 Route::get('/language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
 
+// Debug route for testing locale
+Route::get('/debug/locale', function () {
+    return response()->json([
+        'app_locale' => app()->getLocale(),
+        'session_locale' => session('locale'),
+        'test_translation' => __('messages.home'),
+    ]);
+});
+
 Route::get('/about', function () {
-    return view('about');
+    $aboutPhotos = GalleryPhoto::active()
+        ->whereIn('location', ['about', 'both'])
+        ->orderBy('order')
+        ->get();
+    return view('about', compact('aboutPhotos'));
 })->name('about');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
@@ -69,6 +84,12 @@ Route::delete('admin/staff-of-month/jabatan/{jabatan}', [StaffOfMonthController:
 Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('admin.profil_pegawai')->middleware('auth');
 Route::post('admin/profil-pegawai/store-jabatan', [ProfilPegawaiController::class, 'storeJabatan'])->name('admin.profil_pegawai.store-jabatan')->middleware('auth');
 Route::post('admin/profil-pegawai/update-order', [ProfilPegawaiController::class, 'updateOrder'])->name('admin.profil_pegawai.update-order')->middleware('auth');
+
+// Admin Gallery Photo CRUD (protected)
+Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
+
+// Admin Gallery Photo CRUD (protected)
+Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
 
 // routes/web.php
 

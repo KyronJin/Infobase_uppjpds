@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class LanguageServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,7 @@ class LanguageServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Middleware SetLocale will handle locale setting
+        // This provider can be used for other language-related services
     }
 }

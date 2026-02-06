@@ -9,6 +9,7 @@ use App\Models\JenisTataTertib;
 use App\Models\StaffOfMonth;
 use App\Models\ProfilPegawai;
 use App\Models\TataTertib;
+use App\Models\GalleryPhoto;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -23,8 +24,16 @@ class InfobaseController extends Controller
               ->orWhere('published_at', '<=', $now);
         })->latest('published_at')->limit(3)->get();
 
+        // Get gallery photos for home page
+        $homePhotos = GalleryPhoto::active()
+            ->whereIn('location', ['home', 'both'])
+            ->orderBy('order')
+            ->limit(6)
+            ->get();
+
         return view('home', [
             'latestAnnouncements' => $latestAnnouncements,
+            'homePhotos' => $homePhotos,
             'content' => [],
         ]);
     }

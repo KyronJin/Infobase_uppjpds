@@ -141,6 +141,7 @@ class StaffOfMonthController extends Controller
                 'bio' => 'nullable|string',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'photo_link' => 'nullable|url',
+                'delete_photo' => 'nullable|in:0,1',
             ], [
                 'name.required' => 'Nama staff harus diisi.',
                 'name.string' => 'Nama staff harus berupa teks.',
@@ -161,6 +162,18 @@ class StaffOfMonthController extends Controller
             ]);
 
             $data['is_active'] = $request->has('is_active') ? true : false;
+
+            // Handle photo deletion
+            if ($request->input('delete_photo') === '1') {
+                try {
+                    if ($staffOfMonth->photo_path) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($staffOfMonth->photo_path);
+                    }
+                    $data['photo_path'] = null;
+                } catch (\Exception $e) {
+                    \Log::warning('Failed to delete photo: ' . $e->getMessage());
+                }
+            }
 
             // Handle photo upload
             if ($request->hasFile('photo')) {

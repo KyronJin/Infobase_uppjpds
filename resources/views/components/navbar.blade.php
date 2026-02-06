@@ -8,7 +8,7 @@
         </div>
         <div class="hidden sm:block">
           <h1 class="brand-logo-text group-hover:text-orange-400">INFOBASE</h1>
-          <p class="brand-logo-subtitle">Perpustakaan Jakarta</p>
+          <p class="brand-logo-subtitle">{{ __('messages.library_name') }}</p>
         </div>
       </a>
 
@@ -22,7 +22,7 @@
         </li>
         <li>
           <a href="{{ route('about') }}" class="text-white font-medium hover:text-orange-300 transition duration-300 relative group/link whitespace-nowrap">
-            {{ __('About Us') }}
+            {{ __('messages.about_us') }}
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-300 group-hover/link:w-full transition-all duration-300"></span>
           </a>
         </li>
@@ -39,7 +39,7 @@
               <i class="fas fa-bullhorn text-[#00425A] text-lg"></i>
               <div>
                 <p class="font-semibold text-sm">{{ __('messages.announcements') }}</p>
-                <p class="text-xs text-gray-500">{{ __('View announcements') }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.view_announcements') }}</p>
               </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
@@ -47,7 +47,7 @@
               <i class="fas fa-calendar-alt text-[#f85e38] text-lg"></i>
               <div>
                 <p class="font-semibold text-sm">{{ __('messages.calendar') }}</p>
-                <p class="text-xs text-gray-500">{{ __('View activities') }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.view_activities') }}</p>
               </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
@@ -55,7 +55,7 @@
               <i class="fas fa-door-open text-[#00425A] text-lg"></i>
               <div>
                 <p class="font-semibold text-sm">{{ __('messages.room_profiles') }}</p>
-                <p class="text-xs text-gray-500">{{ __('View room facilities') }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.view_room_facilities') }}</p>
               </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
@@ -63,7 +63,7 @@
               <i class="fas fa-book text-[#f85e38] text-lg"></i>
               <div>
                 <p class="font-semibold text-sm">{{ __('messages.rules') }}</p>
-                <p class="text-xs text-gray-500">{{ __('View regulations') }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.view_regulations') }}</p>
               </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
@@ -71,7 +71,7 @@
               <i class="fas fa-star text-[#00425A] text-lg"></i>
               <div>
                 <p class="font-semibold text-sm">{{ __('messages.staff_of_month') }}</p>
-                <p class="text-xs text-gray-500">{{ __('View featured staff') }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.view_featured_staff') }}</p>
               </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
@@ -79,7 +79,7 @@
               <i class="fas fa-users text-[#f85e38] text-lg"></i>
               <div>
                 <p class="font-semibold text-sm">{{ __('messages.staff_profiles') }}</p>
-                <p class="text-xs text-gray-500">{{ __('View staff data') }}</p>
+                <p class="text-xs text-gray-500">{{ __('messages.view_staff_data') }}</p>
               </div>
               <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
             </a>
@@ -127,8 +127,8 @@
               <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
                 <i class="fas fa-bullhorn text-[#00425A] text-lg"></i>
                 <div>
-                  <p class="font-semibold text-sm">Pengumuman</p>
-                  <p class="text-xs text-gray-500">Kelola pengumuman</p>
+                  <p class="font-semibold text-sm">{{ __('messages.announcements') }}</p>
+                  <p class="text-xs text-gray-500">{{ __('messages.manage_announcements') }}</p>
                 </div>
                 <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
               </a>
@@ -138,8 +138,8 @@
               <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
                 <i class="fas fa-calendar-alt text-[#f85e38] text-lg"></i>
                 <div>
-                  <p class="font-semibold text-sm">Calendar</p>
-                  <p class="text-xs text-gray-500">Kelola event aktivitas</p>
+                  <p class="font-semibold text-sm">{{ __('messages.calendar') }}</p>
+                  <p class="text-xs text-gray-500">{{ __('messages.manage_calendar') }}</p>
                 </div>
                 <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
               </a>
@@ -189,6 +189,17 @@
               </a>
               @endif
 
+              @if(Route::has('admin.gallery.index'))
+              <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
+                <i class="fas fa-images text-[#00425A] text-lg"></i>
+                <div>
+                  <p class="font-semibold text-sm">Galeri</p>
+                  <p class="text-xs text-gray-500">Kelola foto perpustakaan</p>
+                </div>
+                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              </a>
+              @endif
+
               <form action="{{ route('admin.logout') }}" method="POST" class="mt-2">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50 transition duration-200 font-semibold text-sm relative group/item">
@@ -215,8 +226,8 @@
         <div class="flex items-center gap-2">
           <i class="fas fa-globe text-[#f85e38]"></i>
           <select id="mobile-lang-select" class="bg-transparent text-black text-sm font-medium outline-none cursor-pointer">
-            <option value="id" class="bg-white text-black">ID</option>
-            <option value="en" class="bg-white text-black">EN</option>
+            <option value="id" class="bg-white text-black" {{ app()->getLocale() == 'id' ? 'selected' : '' }}>ID</option>
+            <option value="en" class="bg-white text-black" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
           </select>
         </div>
       </div>
@@ -224,12 +235,12 @@
       <ul class="space-y-2">
         <li>
           <a href="{{ route('home') }}" class="block px-4 py-3 text-black hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
-            Beranda
+            {{ __('messages.home') }}
           </a>
         </li>
         <li>
           <a href="{{ route('about') }}" class="block px-4 py-3 text-black hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
-            Tentang
+            {{ __('messages.about_us') }}
           </a>
         </li>
         <li class="border-t border-gray-200 pt-4 mt-4">
@@ -241,27 +252,27 @@
           <div id="mobile-data-info-menu" class="hidden mt-2 space-y-2 pl-4 bg-gray-100 rounded-lg">
             <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
               <i class="fas fa-bullhorn text-[#00425A]"></i>
-              Pengumuman
+              {{ __('messages.announcements') }}
             </a>
             <a href="{{ route('infobase.calendar-aktifitas') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
               <i class="fas fa-calendar-alt text-[#f85e38]"></i>
-              Calendar Aktivitas
+              {{ __('messages.calendar') }}
             </a>
             <a href="{{ route('infobase.profile-ruangan') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
               <i class="fas fa-door-open text-[#00425A]"></i>
-              Profile Ruangan
+              {{ __('messages.room_profiles') }}
             </a>
             <a href="{{ route('infobase.tata-tertib') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
               <i class="fas fa-book text-[#f85e38]"></i>
-              Tata Tertib
+              {{ __('messages.rules') }}
             </a>
             <a href="{{ route('infobase.staff-of-month') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
               <i class="fas fa-star text-[#00425A]"></i>
-              Staff of Month
+              {{ __('messages.staff_of_month') }}
             </a>
             <a href="{{ route('infobase.profil-pegawai') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
               <i class="fas fa-users text-[#f85e38]"></i>
-              Profil Pegawai
+              {{ __('messages.staff_profiles') }}
             </a>
           </div>
         </li>
@@ -280,14 +291,14 @@
               @if(Route::has('admin.pengumuman.index'))
               <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
                 <i class="fas fa-bullhorn text-[#00425A]"></i>
-                Pengumuman
+                {{ __('messages.announcements') }}
               </a>
               @endif
 
               @if(Route::has('admin.calendar.index'))
               <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
                 <i class="fas fa-calendar-alt text-[#f85e38]"></i>
-                Calendar
+                {{ __('messages.calendar') }}
               </a>
               @endif
 
@@ -316,6 +327,13 @@
               <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
                 <i class="fas fa-users text-[#f85e38]"></i>
                 Profil Pegawai
+              </a>
+              @endif
+
+              @if(Route::has('admin.gallery.index'))
+              <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                <i class="fas fa-images text-[#00425A]"></i>
+                Galeri
               </a>
               @endif
 
@@ -464,7 +482,14 @@
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        // Let the link handle the navigation to Laravel route
+        
+        // Close the dropdown first
+        if (langMenu && langChevron) {
+          langMenu.classList.add('opacity-0', 'invisible');
+          langChevron.classList.remove('rotate-180');
+        }
+        
+        // Navigate to Laravel language switch route
         window.location.href = this.href;
       });
     });
@@ -473,8 +498,8 @@
     if (mobileLangSelect) {
       mobileLangSelect.addEventListener('change', function() {
         const selectedLang = this.value;
-        localStorage.setItem('app_language', selectedLang);
-        updateLanguageUI(selectedLang);
+        // Navigate to Laravel language switch route
+        window.location.href = '/language/' + selectedLang;
       });
     }
 

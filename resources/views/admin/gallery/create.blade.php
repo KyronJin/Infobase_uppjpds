@@ -1,0 +1,209 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Tambah Foto Galeri</h1>
+        <p class="text-gray-600 mt-2">Tambahkan foto baru ke galeri perpustakaan</p>
+    </div>
+
+    @if($errors->any())
+        <div class="mb-6 p-4 bg-red-100 text-red-800 rounded-lg border border-red-300">
+            <h3 class="font-semibold mb-2">Ada kesalahan:</h3>
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <form action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+
+            <!-- Judul -->
+            <div>
+                <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Judul Foto <span class="text-red-600">*</span></label>
+                <input 
+                    type="text" 
+                    name="title" 
+                    id="title" 
+                    value="{{ old('title') }}"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                    placeholder="Judul foto galeri"
+                >
+            </div>
+
+            <!-- Deskripsi -->
+            <div>
+                <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
+                <textarea 
+                    name="description" 
+                    id="description" 
+                    rows="4"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                    placeholder="Deskripsi foto"
+                >{{ old('description') }}</textarea>
+            </div>
+
+            <!-- Kategori -->
+            <div>
+                <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Kategori <span class="text-red-600">*</span></label>
+                <select 
+                    name="category" 
+                    id="category"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                >
+                    <option value="">-- Pilih Kategori --</option>
+                    <option value="building" {{ old('category') === 'building' ? 'selected' : '' }}>Gedung</option>
+                    <option value="interior" {{ old('category') === 'interior' ? 'selected' : '' }}>Interior</option>
+                    <option value="collection" {{ old('category') === 'collection' ? 'selected' : '' }}>Koleksi</option>
+                    <option value="service" {{ old('category') === 'service' ? 'selected' : '' }}>Layanan</option>
+                    <option value="facility" {{ old('category') === 'facility' ? 'selected' : '' }}>Fasilitas</option>
+                    <option value="activity" {{ old('category') === 'activity' ? 'selected' : '' }}>Aktivitas</option>
+                </select>
+            </div>
+
+            <!-- Lokasi Tampilan -->
+            <div>
+                <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">Lokasi Tampilan <span class="text-red-600">*</span></label>
+                <select 
+                    name="location" 
+                    id="location"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                >
+                    <option value="">-- Pilih Lokasi --</option>
+                    <option value="home" {{ old('location') === 'home' ? 'selected' : '' }}>Halaman Beranda</option>
+                    <option value="about" {{ old('location') === 'about' ? 'selected' : '' }}>Halaman Tentang</option>
+                    <option value="both" {{ old('location') === 'both' ? 'selected' : '' }}>Kedua Halaman</option>
+                </select>
+            </div>
+
+            <!-- Upload Foto -->
+            <div>
+                <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">Upload Foto <span class="text-red-600">*</span></label>
+                <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 hover:bg-blue-50 transition duration-200 cursor-pointer"
+                    onclick="document.getElementById('image').click()">
+                    <input 
+                        type="file" 
+                        name="image" 
+                        id="image" 
+                        accept="image/*"
+                        required
+                        class="hidden"
+                        onchange="handleImageChange(event)"
+                    >
+                    <div id="imagePreview" class="hidden">
+                        <img id="previewImg" src="" alt="Preview" class="max-h-64 mx-auto rounded-lg mb-4">
+                        <p id="fileName" class="text-sm text-gray-600"></p>
+                    </div>
+                    <div id="placeholder">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2 block"></i>
+                        <p class="text-gray-500">Klik atau drag-drop foto di sini</p>
+                        <p class="text-sm text-gray-400 mt-1">Format: JPG, PNG, GIF, WebP (Max 5MB)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Urutan -->
+            <div>
+                <label for="order" class="block text-sm font-semibold text-gray-700 mb-2">Urutan Tampilan</label>
+                <input 
+                    type="number" 
+                    name="order" 
+                    id="order" 
+                    value="{{ old('order', 0) }}"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                    placeholder="0"
+                    min="0"
+                >
+            </div>
+
+            <!-- Status Aktif -->
+            <div>
+                <label class="flex items-center cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        name="is_active" 
+                        {{ old('is_active') ? 'checked' : '' }}
+                        class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-2 focus:ring-blue-200"
+                    >
+                    <span class="ml-3 text-sm font-medium text-gray-700">Aktif</span>
+                </label>
+            </div>
+
+            <!-- Tombol -->
+            <div class="flex gap-4 pt-6 border-t">
+                <button 
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300"
+                >
+                    <i class="fas fa-save mr-2"></i>Simpan Foto
+                </button>
+                <a 
+                    href="{{ route('admin.gallery.index') }}"
+                    class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-3 px-8 rounded-lg transition duration-300"
+                >
+                    <i class="fas fa-times mr-2"></i>Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function handleImageChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('previewImg').src = e.target.result;
+        document.getElementById('fileName').textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+        document.getElementById('placeholder').classList.add('hidden');
+        document.getElementById('imagePreview').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Drag and drop support
+const dropZone = document.querySelector('[onclick*="image"]');
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight(e) {
+    dropZone.classList.add('border-blue-500', 'bg-blue-50');
+}
+
+function unhighlight(e) {
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+}
+
+dropZone.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    document.getElementById('image').files = files;
+    handleImageChange({ target: { files: files } });
+}
+</script>
+@endsection

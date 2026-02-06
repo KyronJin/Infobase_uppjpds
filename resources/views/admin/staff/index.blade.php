@@ -358,6 +358,19 @@
 
                             <div>
                                 <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
+                                
+                                <!-- Foto Existing -->
+                                <div id="edit-existing-photo-container" class="mb-4" style="display: none;">
+                                    <p class="text-sm text-gray-600 mb-2">Foto Sekarang:</p>
+                                    <div class="bg-white p-3 rounded border border-gray-200 mb-3">
+                                        <img id="edit-existing-photo-img" src="" alt="Foto Staff" class="max-w-xs rounded" style="max-height: 200px; object-fit: cover;">
+                                    </div>
+                                    <button type="button" id="edit-delete-photo-btn" onclick="deleteExistingPhoto()" class="w-full px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded font-semibold transition-colors mb-3">
+                                        <i class="fas fa-trash mr-2"></i> Hapus Foto Ini
+                                    </button>
+                                </div>
+                                
+                                <!-- Upload Foto Baru -->
                                 <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
                                     <input type="file" id="edit-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'edit-photo-preview', 'edit-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
                                     
@@ -366,10 +379,13 @@
                                     <div class="text-center mt-4" style="position: relative; z-index: 10;">
                                         <button type="button" id="edit-crop-btn" onclick="openImageCropper(document.getElementById('edit-photo'), document.getElementById('edit-photo-preview'))" class="crop-button-standard" style="display: none;">
                                             ✂️ Edit & Crop Foto
-                                    </button>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop - Kosongkan jika tidak ingin mengubah</p>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop - Kosongkan jika tidak ingin mengubah</p>
-                            </div>
+                            
+                            <!-- Hidden input untuk mark photo as deleted -->
+                            <input type="hidden" id="edit-delete-photo-flag" name="delete_photo" value="0">
 
                             <div>
                                 <label class="block text-gray-700 font-semibold mb-2">Link Foto (Optional)</label>
@@ -641,11 +657,37 @@ function editStaff(id) {
         document.getElementById('edit-photo_link').value = data.photo_link || '';
         document.getElementById('edit-is_active').checked = data.is_active === 1;
         
+        // Reset delete photo flag
+        document.getElementById('edit-delete-photo-flag').value = '0';
+        document.getElementById('edit-photo').value = '';
+        document.getElementById('edit-photo-preview').style.display = 'none';
+        document.getElementById('edit-crop-btn').style.display = 'none';
+        
+        // Show existing photo if available
+        const existingPhotoContainer = document.getElementById('edit-existing-photo-container');
+        const existingPhotoImg = document.getElementById('edit-existing-photo-img');
+        
+        if (data.photo_path) {
+            existingPhotoImg.src = '/storage/' + data.photo_path;
+            existingPhotoContainer.style.display = 'block';
+        } else {
+            existingPhotoContainer.style.display = 'none';
+        }
+        
         editForm.action = `/admin/staff-of-month/${id}`;
         
         editModal.classList.remove('hidden');
     })
     .catch(error => console.error('Error:', error));
+}
+
+function deleteExistingPhoto() {
+    const confirmed = confirm('Yakin ingin menghapus foto ini?');
+    if (confirmed) {
+        document.getElementById('edit-delete-photo-flag').value = '1';
+        document.getElementById('edit-existing-photo-container').style.display = 'none';
+        showToast('Foto akan dihapus saat disimpan', 'info', 2000);
+    }
 }
 
 function deleteStaff(id, name) {
