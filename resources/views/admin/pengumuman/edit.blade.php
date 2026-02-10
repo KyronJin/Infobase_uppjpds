@@ -33,8 +33,8 @@
 
             <div class="mb-4">
                 <label class="block text-gray-700 mb-1">Isi Pengumuman</label>
-                <textarea name="description" rows="8" required 
-                          class="w-full border rounded px-3 py-2 @error('description') border-red-500 @enderror">{{ old('description', $pengumuman->description) }}</textarea>
+                <div id="editor-description" class="border border-gray-300 rounded-lg shadow-sm" style="border-radius: 0.5rem; overflow: hidden; min-height: 300px;"></div>
+                <textarea name="description" id="description" class="editor hidden" required>{{ old('description', $pengumuman->description) }}</textarea>
                 @error('description')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -71,26 +71,6 @@
                        value="{{ old('published_at', $pengumuman->published_at?->format('Y-m-d\TH:i')) }}" 
                        class="w-full border rounded px-3 py-2 @error('published_at') border-red-500 @enderror">
                 @error('published_at')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700 mb-1">Tanggal Mulai Berlaku</label>
-                <input type="date" name="valid_from" 
-                       value="{{ old('valid_from', $pengumuman->valid_from?->format('Y-m-d')) }}" 
-                       class="w-full border rounded px-3 py-2 @error('valid_from') border-red-500 @enderror">
-                @error('valid_from')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700 mb-1">Tanggal Akhir Berlaku</label>
-                <input type="date" name="valid_until" 
-                       value="{{ old('valid_until', $pengumuman->valid_until?->format('Y-m-d')) }}" 
-                       class="w-full border rounded px-3 py-2 @error('valid_until') border-red-500 @enderror">
-                @error('valid_until')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

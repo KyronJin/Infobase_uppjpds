@@ -50,7 +50,7 @@
                     @endif
 
                     <div class="prose prose-slate max-w-none text-slate-700 text-lg leading-relaxed">
-                        {!! nl2br(e($pengumuman->description)) !!}
+                        {!! $pengumuman->description !!}
                     </div>
 
                     <div class="mt-12 pt-8 border-t border-slate-50">

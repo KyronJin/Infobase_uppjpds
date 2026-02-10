@@ -28,6 +28,12 @@ class TataTertibController extends Controller
         return view('admin.tata_tertib.index', compact('items', 'jenis', 'search'));
     }
 
+    public function create()
+    {
+        $jenis = JenisTataTertib::all();
+        return view('admin.tata_tertib.create', compact('jenis'));
+    }
+
     public function storeJenis(Request $request)
     {
         $request->validate(['name' => 'required|string|max:255'], [

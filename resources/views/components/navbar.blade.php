@@ -1,13 +1,13 @@
 <header class="sticky top-0 z-50 bg-[#063A76] shadow-lg border-b-2 border-gray-200">
-  <nav class="max-w-7xl mx-auto px-6 lg:px-12 py-3">
-    <div class="flex items-center justify-between gap-8">
+  <nav class="max-w-7xl mx-auto px-6 lg:px-12 py-2">
+    <div class="flex items-center justify-between gap-4">
       <!-- Logo - Left -->
       <a href="{{ route('home') }}" class="brand-logo group flex-shrink-0">
-        <div class="brand-logo-icon group-hover:bg-orange-500 group-hover:text-white">
+        <div class="brand-logo-icon bg-orange-500 text-white">
           <i class="fas fa-book"></i>
         </div>
         <div class="hidden sm:block">
-          <h1 class="brand-logo-text group-hover:text-orange-400">INFOBASE</h1>
+          <h1 class="brand-logo-text text-orange-400 tracking-tighter transition-colors">INFO<span class="text-orange-400 transition-colors">BASE</span></h1>
           <p class="brand-logo-subtitle">{{ __('messages.library_name') }}</p>
         </div>
       </a>
@@ -91,7 +91,7 @@
       <div class="hidden lg:flex items-center gap-3">
         <!-- Language Selector -->
         <div class="relative">
-          <button id="lang-btn" class="flex items-center gap-2 px-4 py-2.5 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition duration-300 whitespace-nowrap text-sm font-medium">
+          <button id="lang-btn" class="flex items-center gap-2 px-3 py-2 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition duration-300 whitespace-nowrap text-sm font-medium">
             <i class="fas fa-globe text-orange-300"></i>
             <span id="lang-display">{{ strtoupper(app()->getLocale()) }}</span>
             <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="lang-chevron"></i>
@@ -115,7 +115,7 @@
       <div class="hidden lg:flex items-center gap-4 flex-shrink-0">
         @auth
           <div class="relative">
-            <button id="admin-btn" class="flex items-center gap-2 px-6 py-2.5 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg whitespace-nowrap">
+            <button id="admin-btn" class="flex items-center gap-2 px-5 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg whitespace-nowrap">
               <i class="fas fa-user-shield"></i>
               Admin
               <i id="admin-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
@@ -214,8 +214,8 @@
       </div>
 
       <!-- Mobile Menu Toggle -->
-      <button id="nav-toggle" aria-controls="mobile-menu" aria-expanded="false" class="lg:hidden p-2 text-black hover:bg-gray-100 rounded-lg transition duration-300">
-        <i class="fas fa-bars text-2xl"></i>
+      <button id="nav-toggle" aria-controls="mobile-menu" aria-expanded="false" class="lg:hidden p-1.5 text-black hover:bg-gray-100 rounded-lg transition duration-300">
+        <i class="fas fa-bars text-xl"></i>
       </button>
     </div>
 
@@ -249,37 +249,49 @@
             <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
           </button>
 
-          <div id="mobile-data-info-menu" class="hidden mt-2 space-y-2 pl-4 bg-gray-100 rounded-lg">
-            <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
-              <i class="fas fa-bullhorn text-[#00425A]"></i>
-              {{ __('messages.announcements') }}
+          <div id="mobile-data-info-menu" class="hidden mt-2 space-y-1 pl-4 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
+            <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+              <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                <i class="fas fa-bullhorn"></i>
+              </div>
+              <span class="text-sm font-semibold">{{ __('messages.announcements') }}</span>
             </a>
-            <a href="{{ route('infobase.calendar-aktifitas') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
-              <i class="fas fa-calendar-alt text-[#f85e38]"></i>
-              {{ __('messages.calendar') }}
+            <a href="{{ route('infobase.calendar-aktifitas') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
+              <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <span class="text-sm font-semibold">{{ __('messages.calendar') }}</span>
             </a>
-            <a href="{{ route('infobase.profile-ruangan') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
-              <i class="fas fa-door-open text-[#00425A]"></i>
-              {{ __('messages.room_profiles') }}
+            <a href="{{ route('infobase.profile-ruangan') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+              <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                <i class="fas fa-door-open"></i>
+              </div>
+              <span class="text-sm font-semibold">{{ __('messages.room_profiles') }}</span>
             </a>
-            <a href="{{ route('infobase.tata-tertib') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
-              <i class="fas fa-book text-[#f85e38]"></i>
-              {{ __('messages.rules') }}
+            <a href="{{ route('infobase.tata-tertib') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
+              <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
+                <i class="fas fa-book"></i>
+              </div>
+              <span class="text-sm font-semibold">{{ __('messages.rules') }}</span>
             </a>
-            <a href="{{ route('infobase.staff-of-month') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
-              <i class="fas fa-star text-[#00425A]"></i>
-              {{ __('messages.staff_of_month') }}
+            <a href="{{ route('infobase.staff-of-month') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+              <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm font-semibold">{{ __('messages.staff_of_month') }}</span>
             </a>
-            <a href="{{ route('infobase.profil-pegawai') }}" class="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-200 rounded-lg transition duration-300 text-sm font-medium">
-              <i class="fas fa-users text-[#f85e38]"></i>
-              {{ __('messages.staff_profiles') }}
+            <a href="{{ route('infobase.profil-pegawai') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
+              <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
+                <i class="fas fa-users"></i>
+              </div>
+              <span class="text-sm font-semibold">{{ __('messages.staff_profiles') }}</span>
             </a>
           </div>
         </li>
 
         <li class="border-t border-gray-200 pt-4 mt-4">
           @auth
-            <button id="mobile-admin-btn" class="w-full flex items-center justify-between px-4 py-3 bg-[#f85e38] text-white rounded-lg font-semibold hover:bg-[#d94e2e] transition duration-300">
+            <button id="mobile-admin-btn" class="w-full flex items-center justify-between px-4 py-2 bg-[#f85e38] text-white rounded-lg font-semibold hover:bg-[#d94e2e] transition duration-300">
               <span class="flex items-center gap-2">
                 <i class="fas fa-user-shield"></i>
                 Admin
@@ -287,60 +299,76 @@
               <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             </button>
 
-            <div id="mobile-admin-menu" class="hidden mt-2 space-y-2">
+            <div id="mobile-admin-menu" class="hidden mt-2 space-y-1 pl-4 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
               @if(Route::has('admin.pengumuman.index'))
-              <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-bullhorn text-[#00425A]"></i>
-                {{ __('messages.announcements') }}
+              <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                  <i class="fas fa-bullhorn"></i>
+                </div>
+                <span class="text-sm font-semibold">{{ __('messages.announcements') }}</span>
               </a>
               @endif
 
               @if(Route::has('admin.calendar.index'))
-              <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-calendar-alt text-[#f85e38]"></i>
-                {{ __('messages.calendar') }}
+              <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+                <span class="text-sm font-semibold">{{ __('messages.calendar') }}</span>
               </a>
               @endif
 
               @if(Route::has('admin.profile.index'))
-              <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-door-open text-[#00425A]"></i>
-                Profile Ruangan
+              <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                  <i class="fas fa-door-open"></i>
+                </div>
+                <span class="text-sm font-semibold">Profile Ruangan</span>
               </a>
               @endif
 
               @if(Route::has('admin.tata_tertib.index'))
-              <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-book text-[#f85e38]"></i>
-                Tata Tertib
+              <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
+                  <i class="fas fa-book"></i>
+                </div>
+                <span class="text-sm font-semibold">Tata Tertib</span>
               </a>
               @endif
 
               @if(Route::has('admin.staff-of-month.index'))
-              <a href="{{ route('admin.staff-of-month.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-star text-[#00425A]"></i>
-                Staff of Month
+              <a href="{{ route('admin.staff-of-month.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="text-sm font-semibold">Staff of Month</span>
               </a>
               @endif
 
               @if(Route::has('admin.profil_pegawai.index'))
-              <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-users text-[#f85e38]"></i>
-                Profil Pegawai
+              <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
+                  <i class="fas fa-users"></i>
+                </div>
+                <span class="text-sm font-semibold">Profil Pegawai</span>
               </a>
               @endif
 
               @if(Route::has('admin.gallery.index'))
-              <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-4 py-3 text-black bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
-                <i class="fas fa-images text-[#00425A]"></i>
-                Galeri
+              <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
+                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
+                  <i class="fas fa-images"></i>
+                </div>
+                <span class="text-sm font-semibold">Galeri</span>
               </a>
               @endif
 
               <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-gray-200">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-2 px-4 py-3 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition duration-300 font-semibold text-sm">
-                  <i class="fas fa-sign-out-alt"></i>
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition duration-300 font-semibold text-sm">
+                  <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </div>
                   Keluar
                 </button>
               </form>

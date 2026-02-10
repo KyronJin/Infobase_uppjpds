@@ -8,6 +8,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class GalleryPhotoController extends Controller
 {
@@ -16,7 +18,11 @@ class GalleryPhotoController extends Controller
      */
     public function index(): View
     {
-        $photos = GalleryPhoto::orderBy('order')->paginate(12);
+        if (!Schema::hasTable('gallery_photos')) {
+            $photos = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
+        } else {
+            $photos = GalleryPhoto::orderBy('order')->paginate(12);
+        }
         return view('admin.gallery.index', compact('photos'));
     }
 
@@ -49,6 +55,21 @@ class GalleryPhotoController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+
+        // Create table if not exists
+        if (!Schema::hasTable('gallery_photos')) {
+            Schema::create('gallery_photos', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->text('description')->nullable();
+                $table->string('image_path');
+                $table->string('category')->nullable();
+                $table->enum('location', ['home', 'about', 'both'])->default('both');
+                $table->boolean('is_active')->default(true);
+                $table->integer('order')->default(0);
+                $table->timestamps();
+            });
+        }
 
         GalleryPhoto::create($validated);
 

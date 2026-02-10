@@ -62,6 +62,11 @@ Route::get('admin/login', [AdminAuthController::class, 'showLogin'])->name('admi
 Route::post('admin/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
+// Dashboard shortcut
+Route::get('admin/dashboard', function() {
+    return redirect()->route('admin.pengumuman.index');
+})->name('admin.dashboard')->middleware('auth');
+
 // Admin Pengumuman CRUD (protected)
 Route::resource('admin/pengumuman', PengumumanController::class)->names('admin.pengumuman')->middleware('auth');
 
@@ -85,11 +90,23 @@ Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('
 Route::post('admin/profil-pegawai/store-jabatan', [ProfilPegawaiController::class, 'storeJabatan'])->name('admin.profil_pegawai.store-jabatan')->middleware('auth');
 Route::post('admin/profil-pegawai/update-order', [ProfilPegawaiController::class, 'updateOrder'])->name('admin.profil_pegawai.update-order')->middleware('auth');
 
+// Simple create form for testing
+Route::get('admin/profil-pegawai-simple', function() {
+    $jabatans = \App\Models\Jabatan::ordered()->get();
+    return view('admin.profil_pegawai.create-simple', compact('jabatans'));
+})->name('admin.profil_pegawai.create-simple')->middleware('auth');
+
+// Debug route for profil pegawai form
+Route::get('admin/profil-pegawai-debug', function() {
+    $jabatans = \App\Models\Jabatan::ordered()->get();
+    return view('admin.profil_pegawai.debug-create', compact('jabatans'));
+})->name('admin.profil_pegawai.debug')->middleware('auth');
+
 // Admin Gallery Photo CRUD (protected)
 Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
 
 // Admin Gallery Photo CRUD (protected)
-Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
+// Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
 
 // routes/web.php
 

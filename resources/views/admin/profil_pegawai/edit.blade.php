@@ -24,7 +24,7 @@
 
         <!-- Form Card -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <form action="{{ route('admin.profil_pegawai.update', $profil_pegawai) }}" method="POST" enctype="multipart/form-data">
+            <form id="formEditPegawai" action="{{ route('admin.profil_pegawai.update', $profil_pegawai) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -69,9 +69,9 @@
                     <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
                     <textarea 
                         id="deskripsi" 
-                        name="deskripsi" 
-                        rows="5"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        name="deskripsi"
+                        rows="6"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all @error('deskripsi') border-red-500 @enderror"
                         placeholder="Masukkan deskripsi pegawai"
                         required>{{ old('deskripsi', $profil_pegawai->deskripsi) }}</textarea>
                     @error('deskripsi')
@@ -148,6 +148,21 @@
 
 <!-- Include Image Cropper -->
 @include('components.image-cropper')
+
+<script>
+function previewImageWithCropper(event, previewId, cropBtnId) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById(previewId).innerHTML = '<img src="' + e.target.result + '" class="max-w-xs rounded-lg border border-gray-300">';
+            document.getElementById(previewId).style.display = 'block';
+            document.getElementById(cropBtnId).style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
 
 <script>
 // Initialize cropper when page loads

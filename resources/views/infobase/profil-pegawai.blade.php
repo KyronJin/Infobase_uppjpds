@@ -2,12 +2,12 @@
 
 @section('content')
 <style>
-    /* ===== ORGCHART TREE STYLES ===== */
+    /* Profil Pegawai Org Chart specific styles */
     .orgchart-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 40px 20px;
+        padding: 25px 15px;
     }
 
     /* Root card wrapper */
@@ -22,11 +22,11 @@
     .org-root::after {
         content: '';
         position: absolute;
-        bottom: -40px;
+        bottom: -25px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 40px;
+        height: 25px;
         background: #00425A;
     }
 
@@ -34,8 +34,8 @@
     .org-children {
         display: flex;
         justify-content: center;
-        gap: 40px;
-        margin-top: 80px;
+        gap: 30px;
+        margin-top: 50px;
         position: relative;
     }
 
@@ -43,7 +43,7 @@
     .org-children::before {
         content: '';
         position: absolute;
-        top: -40px;
+        top: -25px;
         left: var(--line-left, 0);
         width: var(--line-width, 100%);
         height: 2px;
@@ -63,11 +63,11 @@
     .org-child::before {
         content: '';
         position: absolute;
-        top: -40px;
+        top: -25px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 40px;
+        height: 25px;
         background: #00425A;
     }
 
@@ -75,15 +75,15 @@
     .org-grandchildren {
         display: flex;
         justify-content: center;
-        gap: 30px;
-        margin-top: 80px;
+        gap: 25px;
+        margin-top: 50px;
         position: relative;
     }
 
     .org-grandchildren::before {
         content: '';
         position: absolute;
-        top: -40px;
+        top: -25px;
         left: var(--line-left, 0);
         width: var(--line-width, 100%);
         height: 2px;
@@ -101,11 +101,11 @@
     .org-grandchild::before {
         content: '';
         position: absolute;
-        top: -40px;
+        top: -25px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 40px;
+        height: 25px;
         background: #00425A;
     }
 
@@ -113,11 +113,11 @@
     .org-child.has-children::after {
         content: '';
         position: absolute;
-        bottom: -40px;
+        bottom: -25px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 40px;
+        height: 25px;
         background: #00425A;
     }
 
@@ -125,11 +125,11 @@
     .org-grandchild.has-children::after {
         content: '';
         position: absolute;
-        bottom: -40px;
+        bottom: -25px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 40px;
+        height: 25px;
         background: #00425A;
     }
 
@@ -139,95 +139,84 @@
         display: none;
     }
 
-    .org-children.single .org-child::before,
-    .org-grandchildren.single .org-grandchild::before {
-        display: block;
-    }
-
-    /* Card Styling */
+    /* ORG CARD - Compact Design dengan Foto Circular */
     .org-card {
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 20px 16px;
-        text-align: center;
-        width: 200px;
-        height: auto;
-        min-height: 240px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        position: relative;
-        z-index: 10;
-        flex-shrink: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
+        gap: 8px;
+        width: 130px;
+        padding: 12px 10px;
+        min-height: auto;
+        background: white;
+        border: 1.5px solid #e0e7ff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        text-align: center;
     }
 
     .org-card:hover {
         border-color: #00425A;
-        transform: translateY(-5px);
-        box-shadow: 0 12px 20px -5px rgba(0, 66, 90, 0.25);
+        box-shadow: 0 4px 12px rgba(0, 66, 90, 0.15);
+        transform: translateY(-2px);
     }
 
+    /* Foto circular dalam org card */
     .org-card img {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
-        margin: 0 auto 12px auto;
-        border: 3px solid #00425A;
         object-fit: cover;
-        display: block;
+        border: 3px solid #00425A;
         flex-shrink: 0;
     }
 
+    /* Icon placeholder circular */
     .org-card .icon-placeholder {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-        margin: 0 auto 12px auto;
+        background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+        border: 3px solid #00425A;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 3px solid #00425A;
         flex-shrink: 0;
     }
 
     .org-card .icon-placeholder i {
-        color: #00425A;
         font-size: 28px;
+        color: #00425A;
     }
 
+    /* Nama dalam org card */
     .org-card h4 {
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 700;
         color: #00425A;
-        margin-bottom: 4px;
+        margin: 0;
         line-height: 1.3;
-        min-height: 35px;
+        min-height: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
     }
 
+    /* Jabatan dalam org card */
     .org-card p {
-        font-size: 12px;
-        color: #64748b;
-        font-weight: 500;
-        min-height: 30px;
+        font-size: 10px;
+        color: #f85e38;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+        min-height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
     }
 
-    /* Toggle Button Styles */
-    .view-toggle {
+    /* Banner uses shared page-header styling */
         display: flex;
         align-items: center;
         gap: 8px;
@@ -270,46 +259,50 @@
     /* Responsive */
     @media (max-width: 1024px) {
         .org-children, .org-grandchildren {
-            gap: 30px;
+            gap: 25px;
         }
 
         .org-card {
-            width: 180px;
-            padding: 18px 14px;
-            min-height: 220px;
+            width: 125px;
+            padding: 11px 9px;
         }
 
         .org-card img {
-            width: 70px;
-            height: 70px;
+            width: 55px;
+            height: 55px;
+        }
+
+        .org-card .icon-placeholder {
+            width: 55px;
+            height: 55px;
         }
 
         .org-card h4 {
-            font-size: 13px;
-            min-height: 32px;
+            font-size: 11px;
+            min-height: 24px;
         }
 
         .org-card p {
-            font-size: 11px;
-            min-height: 28px;
+            font-size: 9px;
+            min-height: 18px;
         }
     }
 
     @media (max-width: 768px) {
         /* Tetap gunakan desktop layout, biarkan parent scroll */
         .orgchart-container {
-            padding: 40px 20px;
+            padding: 30px 15px;
             min-width: max-content;
         }
 
         .org-root::after {
-            height: 40px;
-            bottom: -40px;
+            height: 30px;
+            bottom: -30px;
         }
 
         .org-children, .org-grandchildren {
-            gap: 40px;
-            margin-top: 80px;
+            gap: 20px;
+            margin-top: 60px;
         }
 
         /* Jangan ubah ke flex-direction: column */
@@ -319,167 +312,146 @@
 
         .org-child::before, .org-grandchild::before {
             display: block !important;
-            height: 40px;
-            top: -40px;
+            height: 30px;
+            top: -30px;
         }
 
         .org-child.has-children::after, .org-grandchild.has-children::after {
-            height: 40px;
-            bottom: -40px;
+            height: 30px;
+            bottom: -30px;
         }
 
         .org-card {
-            width: 160px;
-            padding: 16px 12px;
-            min-height: 200px;
-            border-radius: 12px;
+            width: 120px;
+            padding: 10px 8px;
+            gap: 6px;
         }
 
         .org-card img {
-            width: 65px;
-            height: 65px;
-            border-width: 2px;
-        }
-
-        .org-card h4 {
-            font-size: 12px;
-            min-height: 30px;
-            margin-bottom: 3px;
-        }
-
-        .org-card p {
-            font-size: 10px;
-            min-height: 26px;
+            width: 52px;
+            height: 52px;
         }
 
         .org-card .icon-placeholder {
-            width: 65px;
-            height: 65px;
-            border-width: 2px;
+            width: 52px;
+            height: 52px;
         }
 
-        .org-card .icon-placeholder i {
-            font-size: 24px;
+        .org-card h4 {
+            font-size: 10px;
+            min-height: 22px;
+        }
+
+        .org-card p {
+            font-size: 9px;
+            min-height: 18px;
         }
     }
 
     @media (max-width: 480px) {
         .orgchart-container {
-            padding: 30px 15px;
+            padding: 20px 10px;
             min-width: max-content;
         }
 
         .org-root::after {
-            height: 35px;
-            bottom: -35px;
+            height: 25px;
+            bottom: -25px;
         }
 
         .org-children, .org-grandchildren {
-            gap: 35px;
-            margin-top: 70px;
+            gap: 15px;
+            margin-top: 50px;
         }
 
         .org-child::before, .org-grandchild::before {
-            height: 35px;
-            top: -35px;
+            height: 25px;
+            top: -25px;
         }
 
         .org-child.has-children::after, .org-grandchild.has-children::after {
-            height: 35px;
-            bottom: -35px;
+            height: 25px;
+            bottom: -25px;
         }
 
         .org-card {
-            width: 150px;
-            padding: 14px 10px;
-            min-height: 190px;
-            border-radius: 10px;
+            width: 110px;
+            padding: 9px 7px;
+            gap: 5px;
         }
 
         .org-card img {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 10px;
-            border-width: 2px;
-        }
-
-        .org-card h4 {
-            font-size: 11px;
-            min-height: 28px;
-            margin-bottom: 2px;
-            line-height: 1.2;
-        }
-
-        .org-card p {
-            font-size: 9px;
-            min-height: 24px;
-            line-height: 1.2;
+            width: 48px;
+            height: 48px;
         }
 
         .org-card .icon-placeholder {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 10px;
-            border-width: 2px;
+            width: 48px;
+            height: 48px;
+        }
+
+        .org-card h4 {
+            font-size: 9px;
+            min-height: 20px;
+        }
+
+        .org-card p {
+            font-size: 8px;
+            min-height: 16px;
         }
 
         .org-card .icon-placeholder i {
-            font-size: 20px;
+            font-size: 22px;
         }
     }
 
     @media (max-width: 360px) {
         .orgchart-container {
-            padding: 25px 12px;
+            padding: 15px 8px;
             min-width: max-content;
         }
 
         .org-children, .org-grandchildren {
-            gap: 30px;
-            margin-top: 65px;
+            gap: 12px;
+            margin-top: 40px;
         }
 
         .org-root::after,
         .org-child::before, .org-grandchild::before,
         .org-child.has-children::after, .org-grandchild.has-children::after {
-            height: 30px;
-            top: -30px;
-            bottom: -30px;
+            height: 20px;
+            top: -20px;
+            bottom: -20px;
         }
 
         .org-card {
-            width: 140px;
-            padding: 12px 8px;
-            min-height: 180px;
-            gap: 6px;
+            width: 100px;
+            padding: 8px 6px;
+            gap: 4px;
         }
 
         .org-card img {
-            width: 55px;
-            height: 55px;
-            margin-bottom: 8px;
-            border-width: 2px;
-        }
-
-        .org-card h4 {
-            font-size: 10px;
-            min-height: 26px;
-        }
-
-        .org-card p {
-            font-size: 8px;
-            min-height: 22px;
+            width: 45px;
+            height: 45px;
         }
 
         .org-card .icon-placeholder {
-            width: 55px;
-            height: 55px;
-            margin-bottom: 8px;
-            border-width: 2px;
+            width: 45px;
+            height: 45px;
+        }
+
+        .org-card h4 {
+            font-size: 8px;
+            min-height: 18px;
+        }
+
+        .org-card p {
+            font-size: 7px;
+            min-height: 15px;
         }
 
         .org-card .icon-placeholder i {
-            font-size: 18px;
+            font-size: 20px;
         }
     }
 </style>
@@ -566,7 +538,7 @@
     }
 </style>
 
-<div class="modern-page-header">
+<div class="page-header">
     <div class="header-content">
         <div class="header-left">
             <span><i class="fas fa-users mr-2"></i>Tim Kami</span>
@@ -604,31 +576,34 @@
 
         <!-- Slider Content -->
         <div id="sliderContent" class="view-content transition-opacity duration-300">
-            @if(isset($pegawai) && $pegawai->count())
+            @if(isset($slides) && $slides->count())
                 <div class="relative group">
                     <div class="overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100">
                         <div id="slider" class="flex transition-transform duration-500 ease-in-out">
-                            @foreach($pegawai as $p)
-                                <div class="w-full flex-shrink-0 p-8 md:p-16">
-                                    <div class="flex flex-col md:flex-row items-center gap-10">
-                                        <div class="flex-shrink-0 relative">
-                                            <div class="absolute inset-0 bg-[#f85e38] rounded-full blur-lg opacity-20 transform translate-y-4"></div>
-                                            @if($p->foto_path)
-                                                <img src="{{ asset('storage/' . $p->foto_path) }}" alt="{{ $p->nama }}" class="relative w-40 h-40 md:w-56 md:h-56 rounded-full object-cover border-4 border-white shadow-lg">
-                                            @else
-                                                <div class="relative w-40 h-40 md:w-56 md:h-56 bg-gray-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                                                    <i class="fas fa-user text-gray-300 text-6xl"></i>
+                            @foreach($slides as $slideIndex => $profilesInSlide)
+                                <div class="w-full flex-shrink-0 p-8">
+                                    <div class="flex justify-center gap-8">
+                                        @foreach($profilesInSlide as $p)
+                                            <div class="flex flex-col items-center text-center space-y-3 flex-1 max-w-max">
+                                                <!-- Foto -->
+                                                <div class="relative">
+                                                    <div class="absolute inset-0 bg-[#f85e38] rounded-full blur-lg opacity-20 transform translate-y-2"></div>
+                                                    @if($p->foto_path)
+                                                        <img src="{{ asset('storage/' . $p->foto_path) }}" alt="{{ $p->nama }}" class="relative w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg">
+                                                    @else
+                                                        <div class="relative w-28 h-28 bg-gray-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                                                            <i class="fas fa-user text-gray-300 text-3xl"></i>
+                                                        </div>
+                                                    @endif
                                                 </div>
-                                            @endif
-                                        </div>
-                                        <div class="flex-1 text-center md:text-left space-y-4">
-                                            <div>
-                                                <h2 class="text-3xl md:text-4xl font-bold text-[#00425A]">{{ $p->nama }}</h2>
-                                                <p class="text-xl text-[#f85e38] font-semibold mt-1">{{ $p->jabatan ? $p->jabatan->name : 'Jabatan Tidak Ditemukan' }}</p>
+                                                <!-- Nama -->
+                                                <h3 class="text-base font-bold text-[#00425A] leading-tight min-h-10">{{ $p->nama }}</h3>
+                                                <!-- Posisi/Jabatan -->
+                                                <p class="text-sm text-[#f85e38] font-semibold leading-tight min-h-8">{{ $p->jabatan ? $p->jabatan->name : 'Jabatan' }}</p>
+                                                <!-- Deskripsi -->
+                                                <p class="text-gray-600 text-xs leading-relaxed line-clamp-4 min-h-16">{{ $p->deskripsi ?? 'Berdedikasi untuk memberikan pelayanan terbaik bagi pengunjung perpustakaan.' }}</p>
                                             </div>
-                                            <div class="w-16 h-1 bg-gray-200 mx-auto md:mx-0 rounded-full"></div>
-                                            <p class="text-gray-600 leading-relaxed text-lg max-w-2xl">{{ $p->deskripsi ?? 'Berdedikasi untuk memberikan pelayanan terbaik bagi pengunjung perpustakaan.' }}</p>
-                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             @endforeach
@@ -645,7 +620,7 @@
                     
                     <!-- Dots -->
                     <div class="flex justify-center mt-8 space-x-3">
-                        @for($i = 0; $i < $pegawai->count(); $i++)
+                        @for($i = 0; $i < $slides->count(); $i++)
                             <button class="dot w-3 h-3 rounded-full bg-gray-300 hover:bg-[#00425A] transition-colors" data-slide="{{ $i }}"></button>
                         @endfor
                     </div>
@@ -661,14 +636,14 @@
 
         <!-- OrgChart Content -->
         <div id="orgContent" class="view-content hidden">
-            @if(isset($jabatans) && $jabatans->count() > 0 && isset($pegawai) && $pegawai->count() > 0)
+            @if(isset($jabatans) && $jabatans->count() > 0 && isset($allPegawai) && $allPegawai->count() > 0)
                 <div class="bg-white rounded-2xl p-8 md:p-12 overflow-x-auto shadow-sm border border-gray-200 min-h-[500px]">
                     
                     @php
                         $sortedJabatans = $jabatans->sortBy('order')->values();
                         $jabatanLevels = [];
                         foreach($sortedJabatans as $jabatan) {
-                            $jabatanPegawais = collect($pegawai->items())->where('jabatan_id', $jabatan->id);
+                            $jabatanPegawais = $allPegawai->where('jabatan_id', $jabatan->id);
                             if($jabatanPegawais->count() > 0) {
                                 $jabatanLevels[] = [
                                     'jabatan' => $jabatan,
@@ -784,13 +759,6 @@
                 </div>
             @endif
         </div>
-        
-        {{-- Pagination --}}
-        @if(isset($pegawai) && $pegawai->hasPages())
-            <div class="d-flex justify-content-center mt-6">
-                {{ $pegawai->appends(['search' => $search ?? ''])->links() }}
-            </div>
-        @endif
     </div>
 </div>
 

@@ -14,11 +14,88 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-      @vite(['resources/css/app.css', 'resources/css/brand.css', 'resources/js/app.js'])
+      @vite(['resources/css/app.css', 'resources/css/brand.css', 'resources/css/consistent-layout.css', 'resources/js/app.js'])
     @else
       <link rel="stylesheet" href="{{ asset('css/app.css') }}">
       <link rel="stylesheet" href="{{ asset('css/brand.css') }}">
+      <link rel="stylesheet" href="{{ asset('css/consistent-layout.css') }}">
     @endif
+
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <style>
+        .ql-container {
+            font-size: 16px;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .ql-editor {
+            min-height: 300px;
+            padding: 12px;
+        }
+        .ql-toolbar {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            border-color: #d1d5db;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Quill editors for all elements with editor div containers
+            const editorDivs = document.querySelectorAll('[id^="editor-"]');
+            
+            editorDivs.forEach(function(editorDiv) {
+                // Extract the field name from the div id (e.g., editor-description -> description)
+                const fieldName = editorDiv.id.replace('editor-', '');
+                
+                // Find the corresponding textarea
+                const textarea = document.querySelector(`textarea[id="${fieldName}"]`);
+                
+                if (textarea) {
+                    const quill = new Quill('#' + editorDiv.id, {
+                        theme: 'snow',
+                        placeholder: textarea.placeholder || 'Mulai mengetik...',
+                        modules: {
+                            toolbar: [
+                                ['bold', 'italic', 'underline', 'strike'],
+                                ['blockquote', 'code-block'],
+                                [{ 'header': 1 }, { 'header': 2 }],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'script': 'sub'}, { 'script': 'super' }],
+                                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                                [{ 'size': ['small', false, 'large', 'huge'] }],
+                                [{ 'color': [] }, { 'background': [] }],
+                                [{ 'align': [] }],
+                                [{ 'font': [] }],
+                                ['link', 'image', 'video'],
+                                ['clean']
+                            ]
+                        }
+                    });
+                    
+                    // Set initial content from textarea if it exists
+                    if (textarea.value) {
+                        quill.root.innerHTML = textarea.value;
+                    }
+                    
+                    // Update textarea on form submit
+                    const form = textarea.closest('form');
+                    if (form) {
+                        form.addEventListener('submit', function(e) {
+                            textarea.value = quill.root.innerHTML;
+                            console.log('Quill content updated to textarea:', textarea.value);
+                        }, true); // Use capture phase to ensure it runs first
+                    }
+                    
+                    // Store reference for later access
+                    if (!window.quillEditors) window.quillEditors = {};
+                    window.quillEditors[fieldName] = quill;
+                    console.log('Quill editor initialized for field:', fieldName);
+                }
+            });
+        });
+    </script>
 
     <style>
     </style>
@@ -26,6 +103,9 @@
   <body class="bg-white text-gray-900 antialiased font-primary">
     <div id="app">
       @includeIf('components.navbar')
+
+      <!-- Notification Toast -->
+      @include('components.notification-toast')
 
       <main class="min-h-screen">
         @yield('content')

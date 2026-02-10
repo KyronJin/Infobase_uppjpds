@@ -13,7 +13,7 @@
         
         <div class="flex items-center justify-between mb-6">
             <h1 class="h2">Profile Ruangan</h1>
-            <button onclick="openCreateModal()" class="admin-button">Create</button>
+            <a href="{{ route('admin.profile.create') }}" class="admin-button">Create</a>
         </div>
 
         <!-- Search Form -->

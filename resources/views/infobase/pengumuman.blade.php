@@ -2,224 +2,29 @@
 
 @section('content')
 <style>
-    * { box-sizing: border-box; }
-    body, html { padding: 0; margin: 0; }
-
-    /* Modal Styles */
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 999;
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .modal-overlay.active {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2.5rem;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        animation: slideUp 0.3s ease-out;
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-        margin-bottom: 1.5rem;
-        border-bottom: 2px solid #f85e38;
-        padding-bottom: 1rem;
-    }
-
-    .modal-header h2 {
-        margin: 0;
-        color: #00425A;
-        font-size: 1.5rem;
-        max-width: 80%;
-    }
-
-    .modal-close {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        color: #666;
-        cursor: pointer;
-        padding: 0;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: color 0.2s;
-    }
-
-    .modal-close:hover {
-        color: #f85e38;
-    }
-
-    .modal-body {
-        color: #555;
-        line-height: 1.8;
-    }
-
-    .modal-body img {
-        max-width: 100%;
-        height: auto;
-        margin: 1rem 0;
-        border-radius: 8px;
-    }
-
-    .modal-footer {
-        margin-top: 2rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
-        color: #999;
-        font-size: 0.875rem;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .page-header {
-        background: linear-gradient(135deg, #063A76 0%, #042354 100%);
-        padding: 4rem 0;
-        color: white;
-        margin-top: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 500px;
-        height: 500px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        z-index: 0;
-    }
-
-    .page-header .header-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        gap: 2rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-header .header-left span {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        font-size: 0.875rem;
-        font-weight: 700;
-        border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .page-header h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        color: white;
-        margin: 0;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .page-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.125rem;
-        margin-top: 0.5rem;
-    }
-
-    .page-header .back-link {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s;
-        padding: 0.75rem 1.5rem;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 0.5rem;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .page-header .back-link:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateX(-4px);
-    }
-
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        background: linear-gradient(135deg, rgba(248, 94, 56, 0.02) 0%, rgba(0, 66, 90, 0.02) 100%);
-        border-radius: 0;
-    }
-
-    .content-wrapper {
-        padding: 3rem 0;
-        background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5));
-    }
+    /* Pengumuman specific styles */
 
     .pengumuman-card {
         background: white;
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        border-radius: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(248, 94, 56, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 82, 204, 0.1);
         transition: all 0.3s ease;
     }
 
     .pengumuman-card:hover {
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
         transform: translateY(-4px);
     }
 
     .pengumuman-header {
         display: flex;
-        gap: 2rem;
-        margin-bottom: 1.5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
     }
 
     .pengumuman-date {
@@ -227,30 +32,30 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-width: 100px;
-        padding: 1rem;
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        min-width: 85px;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #0052CC 0%, #0044A3 100%);
         color: white;
-        border-radius: 1rem;
+        border-radius: 8px;
         font-weight: 700;
     }
 
     .pengumuman-date-day {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
         line-height: 1;
     }
 
     .pengumuman-date-month {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        opacity: 0.9;
-        margin-top: 0.25rem;
+        opacity: 0.85;
+        margin-top: 0.2rem;
     }
 
     .pengumuman-date-year {
-        font-size: 0.75rem;
-        opacity: 0.8;
-        margin-top: 0.25rem;
+        font-size: 0.65rem;
+        opacity: 0.75;
+        margin-top: 0.15rem;
     }
 
     .pengumuman-content {
@@ -259,74 +64,74 @@
 
     .pengumuman-image {
         width: 100%;
-        height: 250px;
+        height: 180px;
         object-fit: cover;
-        border-radius: 1rem;
-        margin-bottom: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
     }
 
     .pengumuman-title {
-        font-size: 1.75rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: #1f2937;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         transition: all 0.3s ease;
     }
 
     .pengumuman-card:hover .pengumuman-title {
-        color: #f85e38;
+        color: #0052CC;
     }
 
     .pengumuman-description {
         color: #374151;
-        line-height: 1.8;
-        margin-bottom: 1.5rem;
-        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
     }
 
     .pengumuman-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 1.5rem;
+        padding-top: 1rem;
         border-top: 1px solid #e5e7eb;
     }
 
     .pengumuman-date-valid {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
         color: #6b7280;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .pengumuman-date-valid::before {
         content: '';
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         background: #10b981;
         border-radius: 50%;
     }
 
     .pengumuman-read-more {
-        color: #f85e38;
+        color: #0052CC;
         text-decoration: none;
         font-weight: 700;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
         transition: all 0.3s;
         border: none;
         background: none;
         cursor: pointer;
         padding: 0;
         font-family: inherit;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .pengumuman-read-more:hover {
-        gap: 1rem;
-        color: #d94e2e;
+        gap: 0.75rem;
+        color: #003A99;
     }
 
     .empty-state {
@@ -361,22 +166,25 @@
 <div class="page-header">
     <div class="header-content">
         <div class="header-left">
-            <span><i class="fas fa-bell mr-2"></i>Pengumuman</span>
-            <h1><i class="fas fa-megaphone mr-3 text-white"></i>Pengumuman & Informasi</h1>
-            <p>Dapatkan berita dan informasi terbaru dari perpustakaan kami.</p>
+            <span><i class="fas fa-bullhorn mr-2"></i>Informasi Terkini</span>
+            <h1><i class="fas fa-bullhorn mr-3 text-white"></i>Pengumuman</h1>
+            <p>Dapatkan berita dan informasi terbaru mengenai layanan dan kegiatan Perpustakaan Jakarta.</p>
         </div>
+        <a href="{{ route('home') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
+        </a>
     </div>
 </div>
 
 <!-- Breadcrumb -->
 <div class="bg-gray-100 border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 py-3">
+    <div class="max-w-7xl mx-auto px-6 py-3">
         <nav class="flex items-center gap-2 text-sm">
-            <a href="{{ route('home') }}" class="text-gray-600 hover:text-[#00425A] transition duration-300">
+            <a href="{{ route('home') }}" class="text-gray-600 hover:text-[#063A76] transition duration-300">
                 <i class="fas fa-home mr-1"></i>Beranda
             </a>
             <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-            <span class="text-gray-900 font-semibold">Pengumuman</span>
+            <span class="text-[#063A76] font-semibold">Pengumuman</span>
         </nav>
     </div>
 </div>
@@ -389,8 +197,9 @@
     'resultCount' => isset($pengumumans) ? $pengumumans->total() : null
 ])
 
-<div class="container">
-    <div class="content-wrapper">
+<div class="min-h-screen bg-[#f8fafc] pt-12 pb-24">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="content-wrapper grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         @if(isset($pengumumans) && $pengumumans->count())
             @foreach($pengumumans as $item)
                 <div class="pengumuman-card">
@@ -405,12 +214,12 @@
                                 <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="pengumuman-image">
                             @endif
                             <h2 class="pengumuman-title">{{ $item->title }}</h2>
-                            <p class="pengumuman-description">{!! nl2br(e($item->description)) !!}</p>
+                            <p class="pengumuman-description">{!! $item->description !!}</p>
                             <div class="pengumuman-footer">
                                 <div class="pengumuman-date-valid">
                                     Berlaku: {{ $item->valid_from?->format('d/m/Y') ?? '-' }} - {{ $item->valid_until?->format('d/m/Y') ?? '-' }}
                                 </div>
-                                <button class="pengumuman-read-more" onclick="openModal({{ $item->id }}, '{{ addslashes($item->title) }}', '{!! addslashes(nl2br(e($item->description))) !!}', '{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}')">
+                                <button class="pengumuman-read-more" onclick="openModal({{ $item->id }}, @json($item->title), @json($item->description), '{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}')">
                                     Baca Selengkapnya <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
@@ -421,7 +230,7 @@
 
             <!-- Pagination -->
             <div style="max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem; display: flex; justify-content: center;">
-                {{ $pengumumans->links() }}
+                {{ $pengumumans->appends(['search' => $search ?? ''])->links() }}
             </div>
         @else
             <div class="empty-state">
@@ -436,6 +245,7 @@
                 </p>
             </div>
         @endif
+    </div>
     </div>
 </div>
 

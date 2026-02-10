@@ -125,7 +125,7 @@
                 <button id="manage-jabatan-btn" class="admin-button bg-green-600 hover:bg-green-700">
                     <i class="fas fa-briefcase mr-2"></i> Kelola Posisi
                 </button>
-                <a href="#" class="admin-button" id="create-staff-btn">
+                <a href="{{ route('admin.staff-of-month.create') }}" class="admin-button">
                     <i class="fas fa-plus mr-2"></i> Create
                 </a>
             </div>

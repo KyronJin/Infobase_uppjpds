@@ -22,6 +22,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        // Create jabatan data
+        $this->call(\Database\Seeders\JabatanSeeder::class);
+
+        // Create profil pegawai data
+        $this->call(\Database\Seeders\ProfilPegawaiSeeder::class);
+
         // Create admin user for accessing admin panel
         $this->call(\Database\Seeders\AdminUserSeeder::class);
     }

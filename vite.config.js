@@ -8,6 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/brand.css',
+                'resources/css/consistent-layout.css',
                 'resources/js/app.js'
             ],
             refresh: true,

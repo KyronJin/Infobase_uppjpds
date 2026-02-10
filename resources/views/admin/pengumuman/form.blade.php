@@ -44,22 +44,6 @@
         @enderror
     </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-700 mb-1">Tanggal Mulai Berlaku</label>
-        <input type="date" name="valid_from" class="w-full border rounded px-3 py-2" value="{{ old('valid_from') }}">
-        @error('valid_from')
-            <span class="text-red-500 text-sm">{{ $message }}</span>
-        @enderror
-    </div>
-
-    <div class="mb-4">
-        <label class="block text-gray-700 mb-1">Tanggal Akhir Berlaku</label>
-        <input type="date" name="valid_until" class="w-full border rounded px-3 py-2" value="{{ old('valid_until') }}">
-        @error('valid_until')
-            <span class="text-red-500 text-sm">{{ $message }}</span>
-        @enderror
-    </div>
-
     <div class="flex justify-end space-x-3">
         <button type="button" id="cancel-btn" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">
             Batal

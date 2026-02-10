@@ -36,7 +36,8 @@
 
             <div class="form-group">
                 <label class="form-label">Deskripsi</label>
-                <textarea name="description" class="form-control" rows="6">{{ old('description', $profile_ruangan->description) }}</textarea>
+                <div id="editor-description" class="border border-gray-300 rounded-lg shadow-sm" style="border-radius: 0.5rem; overflow: hidden; min-height: 300px;"></div>
+                <textarea name="description" id="description" class="editor hidden">{{ old('description', $profile_ruangan->description) }}</textarea>
             </div>
 
             <div class="form-group">

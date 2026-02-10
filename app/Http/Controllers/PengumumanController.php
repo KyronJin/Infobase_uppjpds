@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Carbon\Carbon;
 
 class PengumumanController extends Controller
@@ -12,6 +14,7 @@ class PengumumanController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $status = $request->input('status');
         
         $query = Pengumuman::query();
         
@@ -21,10 +24,20 @@ class PengumumanController extends Controller
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
+
+        // Filter berdasarkan status di admin (opsional, bisa dikosongkan)
+        if (!empty($status) && Schema::hasColumn('pengumumans', 'status')) {
+            if ($status === 'active') {
+                $query->where('status', 'active');
+            } elseif ($status === 'inactive') {
+                $query->where('status', 'inactive');
+            }
+        }
         
         // Untuk admin, tampilkan semua pengumuman, bukan hanya aktif
         $pengumumans = $query->latest('published_at')->paginate(10);
-        return view('admin.pengumuman.index', compact('pengumumans', 'search'));
+        
+        return view('admin.pengumuman.index', compact('pengumumans', 'search', 'status'));
     }
 
     public function create()
@@ -39,8 +52,6 @@ class PengumumanController extends Controller
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'published_at' => 'nullable|date_format:Y-m-d\TH:i',
-            'valid_from' => 'nullable|date_format:Y-m-d',
-            'valid_until' => 'nullable|date_format:Y-m-d',
         ], [
             'title.required' => 'Judul pengumuman harus diisi.',
             'title.string' => 'Judul pengumuman harus berupa teks.',
@@ -51,8 +62,6 @@ class PengumumanController extends Controller
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
             'image.max' => 'Ukuran gambar maksimal 2 MB.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
-            'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
-            'valid_until.date_format' => 'Format tanggal berakhir tidak valid.',
         ]);
 
         // Handle image upload
@@ -65,19 +74,27 @@ class PengumumanController extends Controller
         if ($validated['published_at']) {
             $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
         }
-        if ($validated['valid_from']) {
-            $validated['valid_from'] = Carbon::parse($validated['valid_from'], 'Asia/Jakarta')->setTimezone('UTC');
+
+        // Add status column if not exists
+        if (!Schema::hasColumn('pengumumans', 'status')) {
+            Schema::table('pengumumans', function (Blueprint $table) {
+                $table->string('status')->default('active');
+            });
         }
-        if ($validated['valid_until']) {
-            $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
+
+        // Set default status to active
+        $validated['status'] = 'active';
 
         // Remove image key if it wasn't processed
         unset($validated['image']);
 
-        Pengumuman::create($validated);
+        $pengumuman = Pengumuman::create($validated);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman berhasil ditambahkan!');
+        return redirect()->route('admin.pengumuman.index')->with('success', [
+            'title' => '✓ Pengumuman Dibuat',
+            'message' => '"' . $pengumuman->title . '" telah berhasil ditambahkan ke sistem.',
+            'type' => 'success',
+        ]);
     }
 
     public function edit(Pengumuman $pengumuman)
@@ -89,8 +106,7 @@ class PengumumanController extends Controller
                 'title' => $pengumuman->title,
                 'description' => $pengumuman->description,
                 'published_at' => $pengumuman->published_at?->format('Y-m-d\TH:i'),
-                'valid_from' => $pengumuman->valid_from?->format('Y-m-d'),
-                'valid_until' => $pengumuman->valid_until?->format('Y-m-d'),
+                'status' => $pengumuman->status,
                 'image_path' => $pengumuman->image_path,
             ]);
         }
@@ -105,8 +121,7 @@ class PengumumanController extends Controller
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'published_at' => 'nullable|date_format:Y-m-d\TH:i',
-            'valid_from' => 'nullable|date_format:Y-m-d',
-            'valid_until' => 'nullable|date_format:Y-m-d',
+            'status' => 'required|in:active,inactive',
         ], [
             'title.required' => 'Judul pengumuman harus diisi.',
             'title.string' => 'Judul pengumuman harus berupa teks.',
@@ -117,8 +132,8 @@ class PengumumanController extends Controller
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
             'image.max' => 'Ukuran gambar maksimal 2 MB.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
-            'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
-            'valid_until.date_format' => 'Format tanggal berakhir tidak valid.',
+            'status.required' => 'Status harus dipilih.',
+            'status.in' => 'Status harus berupa "active" atau "inactive".',
         ]);
 
         // Handle image upload
@@ -135,33 +150,56 @@ class PengumumanController extends Controller
         if ($validated['published_at']) {
             $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
         }
-        if ($validated['valid_from']) {
-            $validated['valid_from'] = Carbon::parse($validated['valid_from'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
-        if ($validated['valid_until']) {
-            $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
 
         // Remove image key if it wasn't processed
         unset($validated['image']);
 
         $pengumuman->update($validated);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman berhasil diperbarui!');
+        return redirect()->route('admin.pengumuman.index')->with('success', [
+            'title' => '✓ Pengumuman Diperbarui',
+            'message' => '"' . $pengumuman->title . '" telah berhasil diperbarui di sistem.',
+            'type' => 'success',
+        ]);
     }
 
     public function destroy(Pengumuman $pengumuman)
     {
+        $title = $pengumuman->title;
+        
         if ($pengumuman->image_path) {
             Storage::disk('public')->delete($pengumuman->image_path);
         }
         $pengumuman->delete();
 
-        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman berhasil dihapus!');
+        return redirect()->route('admin.pengumuman.index')->with('success', [
+            'title' => '✓ Pengumuman Dihapus',
+            'message' => '"' . $title . '" telah berhasil dihapus dari sistem.',
+            'type' => 'success',
+        ]);
     }
 
     public function show(Pengumuman $pengumuman)
     {
+        // Update expired status terlebih dahulu
+        Pengumuman::updateExpiredStatus();
+        
+        // Refresh model untuk mendapat status terbaru
+        $pengumuman->refresh();
+        
+        // Cek apakah pengumuman masih aktif dan dalam range berlaku
+        $now = now();
+        $isPublished = !$pengumuman->published_at || $pengumuman->published_at <= $now;
+        $isNotUnpublished = !$pengumuman->unpublished_at || $pengumuman->unpublished_at >= $now;
+        $isValidFromPassed = !$pengumuman->valid_from || $pengumuman->valid_from <= $now;
+        $isValidUntilNotPassed = !$pengumuman->valid_until || $pengumuman->valid_until >= $now;
+        $isActive = $pengumuman->status === 'active';
+        
+        // Jika pengumuman tidak aktif atau sudah expired, tampilkan 404
+        if (!($isPublished && $isNotUnpublished && $isValidFromPassed && $isValidUntilNotPassed && $isActive)) {
+            abort(404, 'Pengumuman tidak ditemukan');
+        }
+        
         return view('infobase.pengumuman-detail', compact('pengumuman'));
     }
 }

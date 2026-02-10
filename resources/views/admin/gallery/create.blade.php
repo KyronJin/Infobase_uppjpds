@@ -2,9 +2,14 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Tambah Foto Galeri</h1>
-        <p class="text-gray-600 mt-2">Tambahkan foto baru ke galeri perpustakaan</p>
+    <div class="mb-8 flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Tambah Foto Galeri</h1>
+            <p class="text-gray-600 mt-2">Tambahkan foto baru ke galeri perpustakaan</p>
+        </div>
+        <a href="{{ route('admin.gallery.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali
+        </a>
     </div>
 
     @if($errors->any())

@@ -48,6 +48,12 @@ class ProfilPegawaiController extends Controller
         return redirect()->back()->with('success', '✓ Jabatan berhasil ditambahkan!');
     }
 
+    public function create()
+    {
+        $jabatans = Jabatan::ordered()->get();
+        return view('admin.profil_pegawai.create', compact('jabatans'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -141,18 +147,59 @@ class ProfilPegawaiController extends Controller
     {
         try {
             $profil_pegawai = ProfilPegawai::findOrFail($id);
+            
+            $nama = $profil_pegawai->nama;
 
+            // Delete foto jika ada
             if ($profil_pegawai->foto_path) {
-                Storage::disk('public')->delete($profil_pegawai->foto_path);
+                try {
+                    Storage::disk('public')->delete($profil_pegawai->foto_path);
+                } catch (\Exception $e) {
+                    \Log::warning('Failed to delete photo: ' . $e->getMessage());
+                }
             }
 
+            // Delete profil pegawai record
             $profil_pegawai->delete();
 
+            $message = '✓ Profil Pegawai "' . $nama . '" berhasil dihapus!';
+            
+            // For AJAX requests, return JSON
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message
+                ]);
+            }
+
             return redirect()->route('admin.profil_pegawai.index')
-                ->with('success', '✓ Profil Pegawai berhasil dihapus!');
-        } catch (ModelNotFoundException $e) {
+                ->with('success', $message);
+                
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            $error = '✗ Data pegawai tidak ditemukan!';
+            
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $error
+                ], 404);
+            }
+            
             return redirect()->route('admin.profil_pegawai.index')
-                ->with('error', '✗ Data pegawai tidak ditemukan!');
+                ->with('error', $error);
+        } catch (\Exception $e) {
+            \Log::error('Delete profil pegawai error: ' . $e->getMessage());
+            $error = '✗ Terjadi kesalahan saat menghapus: ' . $e->getMessage();
+            
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $error
+                ], 500);
+            }
+            
+            return redirect()->route('admin.profil_pegawai.index')
+                ->with('error', $error);
         }
     }
 

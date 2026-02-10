@@ -3,105 +3,12 @@
 @section('content')
 
 <style>
-    * { box-sizing: border-box; }
-    body, html { padding: 0; margin: 0; }
-
-    .page-header {
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
-        padding: 4rem 0;
-        color: white;
-        margin-top: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 500px;
-        height: 500px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        z-index: 0;
-    }
-
-    .page-header .header-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        gap: 2rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-header .header-left span {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        font-size: 0.875rem;
-        font-weight: 700;
-        border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .page-header h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        color: white;
-        margin: 0;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .page-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.125rem;
-        margin-top: 0.5rem;
-    }
-
-    .page-header .back-link {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s;
-        padding: 0.75rem 1.5rem;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 0.5rem;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .page-header .back-link:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateX(-4px);
-    }
-
-    .glass-card { 
-        background: rgba(255,255,255,0.95);
-        border: 1px solid rgba(0,0,0,0.05);
-        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
-    }
-
-    .event-card {
-        transition: all 0.3s ease;
-        background: white;
-        border: 1px solid rgba(0,0,0,0.05);
-    }
+    /* Calendar Aktifitas specific styles */
 
     .event-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(248, 94, 56, 0.15);
-        border-color: #f85e38;
+        box-shadow: 0 20px 25px -5px rgba(0, 82, 204, 0.15);
+        border-color: #0052CC;
     }
 
     .room-badge {
@@ -135,18 +42,18 @@
     }
 
     .filter-btn.active {
-        background: #f85e38;
+        background: #0052CC;
         color: white;
-        border-color: #f85e38;
+        border-color: #0052CC;
     }
 
     .filter-btn:hover {
-        border-color: #f85e38;
-        color: #f85e38;
+        border-color: #0052CC;
+        color: #0052CC;
     }
 
     .filter-btn.active:hover {
-        background: #d94e2e;
+        background: #003A99;
     }
 
     .pagination-btn {
@@ -155,22 +62,22 @@
         border-radius: 8px;
         border: 2px solid #e2e8f0;
         background: white;
-        color: #f85e38;
+        color: #0052CC;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 600;
     }
 
     .pagination-btn:hover:not(:disabled) {
-        border-color: #f85e38;
-        background: #f85e38;
+        border-color: #0052CC;
+        background: #0052CC;
         color: white;
     }
 
     .pagination-btn.active {
-        background: #f85e38;
+        background: #0052CC;
         color: white;
-        border-color: #f85e38;
+        border-color: #0052CC;
     }
 
     .pagination-btn:disabled {
@@ -245,7 +152,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold uppercase tracking-wide">Total Event</p>
-                            <p class="text-4xl font-bold text-[#f85e38] mt-2" id="eventCount">0</p>
+                            <p class="text-4xl font-bold text-[#0052CC] mt-2" id="eventCount">0</p>
                         </div>
                         <div class="text-5xl opacity-30 text-orange-500">
                             <i class="fas fa-chart-bar"></i>
@@ -257,7 +164,7 @@
             <!-- Filter Section -->
             <div class="glass-card rounded-xl p-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <i class="fas fa-filter text-[#f85e38]"></i>
+                    <i class="fas fa-filter text-[#0052CC]"></i>
                     Filter Jadwal
                 </h3>
                 <div class="flex flex-wrap gap-3">
@@ -620,10 +527,10 @@ function toLocal24Hour(utcString) {
 
         const eventsList = document.getElementById('eventsList');
         eventsList.innerHTML = paginatedEvents.map(event => `
-            <div class="event-card rounded-xl p-6 border-l-4 border-orange-500 hover:border-[#f85e38]">
+            <div class="event-card rounded-xl p-6 border-l-4 border-blue-500 hover:border-[#0052CC]">
                 <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                     <div class="flex-1">
-                        <h3 class="text-lg font-bold text-[#f85e38]">${escapeHtml(event.title)}</h3>
+                        <h3 class="text-lg font-bold text-[#0052CC]">${escapeHtml(event.title)}</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm">
                             <div class="flex items-center gap-2 text-gray-600">
@@ -663,25 +570,25 @@ function toLocal24Hour(utcString) {
 
                             ${event.contact && event.contact !== '-' ? `
                                 <div class="flex items-center gap-2 text-gray-600">
-                                    <i class="fas fa-phone w-4 text-orange-500"></i>
-                                    <a href="tel:${event.contact}" class="hover:text-[#f85e38]">${event.contact}</a>
+                                    <i class="fas fa-phone w-4 text-blue-500"></i>
+                                    <a href="tel:${event.contact}" class="hover:text-[#0052CC]">${event.contact}</a>
                                 </div>
                             ` : ''}
                         </div>
 
                         ${event.notes ? `
-                            <div class="mt-4 p-3 bg-orange-50 rounded-lg border-l-2 border-orange-300">
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg border-l-2 border-blue-300">
                                 <p class="text-sm text-gray-700"><strong>Catatan:</strong> ${escapeHtml(event.notes)}</p>
                             </div>
                         ` : ''}
 
                         ${event.meetingLink ? `
                             <div class="mt-3">
-                                <a href="${event.meetingLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-[#f85e38] text-white rounded-lg hover:bg-[#d94e2e] transition font-semibold">
+                                <a href="${event.meetingLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-[#0052CC] text-white rounded-lg hover:bg-[#003A99] transition font-semibold">
                                     <i class="fas fa-video"></i> Buka Link Meeting
                                 </a>
                             </div>
-                        ` : ''}
+                        ` : ''}`
                     </div>
                 </div>
             </div>

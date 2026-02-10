@@ -3,70 +3,70 @@
 @section('content')
 
 <style>
-    * { box-sizing: border-box; }
-    body, html { padding: 0; margin: 0; }
+    /* Profile Ruangan specific styles */
 
-    .page-header {
-        background: linear-gradient(135deg, #063A76 0%, #042354 100%);
-        padding: 2.5rem 0;
+    /* Modern hero header (match other infobase pages) */
+    .modern-page-header {
+        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        padding: 4rem 0;
         color: white;
         margin-top: 2rem;
         position: relative;
         overflow: hidden;
     }
 
-    .page-header::before {
+    .modern-page-header::before {
         content: '';
         position: absolute;
         top: -50%;
         right: -10%;
-        width: 350px;
-        height: 350px;
+        width: 500px;
+        height: 500px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         z-index: 0;
     }
 
-    .page-header .header-content {
-        max-width: 1200px;
+    .modern-page-header .header-content {
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        gap: 1.5rem;
+        gap: 2rem;
         position: relative;
         z-index: 1;
     }
 
-    .page-header .header-left span {
+    .modern-page-header .header-left span {
         display: inline-block;
-        padding: 0.4rem 0.8rem;
+        padding: 0.5rem 1rem;
         background: rgba(255, 255, 255, 0.2);
         color: white;
-        font-size: 0.75rem;
+        font-size: 0.875rem;
         font-weight: 700;
         border-radius: 9999px;
         border: 1px solid rgba(255, 255, 255, 0.4);
-        margin-bottom: 0.8rem;
+        margin-bottom: 1rem;
         backdrop-filter: blur(10px);
     }
 
-    .page-header h1 {
-        font-size: 2.2rem;
+    .modern-page-header h1 {
+        font-size: 3rem;
         font-weight: 700;
         color: white;
         margin: 0;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .page-header p {
+    .modern-page-header p {
         color: rgba(255, 255, 255, 0.9);
-        font-size: 0.95rem;
-        margin-top: 0.4rem;
+        font-size: 1.125rem;
+        margin-top: 0.5rem;
     }
 
-    .page-header .back-link {
+    .modern-page-header .back-link {
         color: white;
         text-decoration: none;
         font-weight: 600;
@@ -81,25 +81,16 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .page-header .back-link:hover {
+    .modern-page-header .back-link:hover {
         background: rgba(255, 255, 255, 0.25);
         transform: translateX(-4px);
     }
-
-    /* Container Grid Layout */
-    .rooms-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
-    }
-
     .room-card {
         background: white;
-        border-radius: 1rem;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(248, 94, 56, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 82, 204, 0.1);
         transition: all 0.3s ease;
     }
 
@@ -118,7 +109,7 @@
     .slider {
         position: relative;
         width: 100%;
-        height: 250px;
+        height: 200px;
         background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
         overflow: hidden;
         border-radius: 0;
@@ -229,8 +220,8 @@
     .slider input[type="radio"]:nth-of-type(3):checked ~ .slider-dots .slider-dot:nth-child(3),
     .slider input[type="radio"]:nth-of-type(4):checked ~ .slider-dots .slider-dot:nth-child(4),
     .slider input[type="radio"]:nth-of-type(5):checked ~ .slider-dots .slider-dot:nth-child(5) {
-        background: #f85e38;
-        border-color: #f85e38;
+        background: #0052CC;
+        border-color: #0052CC;
         transform: scale(1.3);
     }
 
@@ -253,17 +244,17 @@
     /* Compact Room Info */
     .room-info {
         background: white;
-        padding: 1.5rem;
+        padding: 1.25rem;
         margin: 0;
         border-radius: 0;
     }
 
     .room-title {
-        font-size: 1.3rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: #1f2937;
-        margin-bottom: 0.6rem;
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -273,27 +264,27 @@
     .room-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 0.8rem;
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
     }
 
     .room-badge {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.4rem 0.8rem;
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        padding: 0.35rem 0.7rem;
+        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
         color: white;
-        border-radius: 0.5rem;
-        font-size: 0.75rem;
+        border-radius: 0.4rem;
+        font-size: 0.7rem;
         font-weight: 600;
-        box-shadow: 0 2px 8px rgba(248, 94, 56, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 82, 204, 0.25);
         transition: all 0.3s ease;
     }
 
     .room-badge:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(248, 94, 56, 0.4);
+        box-shadow: 0 4px 15px rgba(0, 82, 204, 0.35);
     }
 
     .room-badge i {
@@ -301,14 +292,14 @@
     }
 
     .room-description {
-        background: linear-gradient(135deg, #fee8e0 0%, rgba(248, 94, 56, 0.05) 100%);
-        border-left: 3px solid #f85e38;
-        padding: 0.8rem;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #E0EAFF 0%, rgba(0, 82, 204, 0.05) 100%);
+        border-left: 3px solid #0052CC;
+        padding: 0.7rem;
+        border-radius: 0.4rem;
         color: #374151;
         line-height: 1.5;
-        font-size: 0.85rem;
-        margin-top: 0.8rem;
+        font-size: 0.8rem;
+        margin-top: 0.6rem;
     }
 
     /* Modal */
@@ -422,12 +413,19 @@
     .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1.5rem;
+    }
+
+    .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
     }
 
     .empty-state {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: 3rem 1.5rem;
         background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f3 100%);
         border-radius: 1.5rem;
         border: 2px dashed #e5e7eb;
@@ -435,7 +433,7 @@
     }
 
     .empty-state i {
-        font-size: 4rem;
+        font-size: 3rem;
         color: #d1d5db;
         margin-bottom: 1rem;
         opacity: 0.5;
@@ -443,7 +441,7 @@
 
     .empty-state p {
         color: #6b7280;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         margin: 0;
     }
@@ -459,7 +457,7 @@
             height: 200px;
         }
         
-        .page-header h1 {
+        .modern-page-header h1 {
             font-size: 1.8rem;
         }
         
@@ -473,7 +471,7 @@
     <div class="header-content">
         <div class="header-left">
             <span><i class="fas fa-door-open mr-2"></i>Profil Ruangan</span>
-            <h1><i class="fas fa-building mr-3 text-[#f85e38]"></i>Ruangan & Fasilitas</h1>
+            <h1><i class="fas fa-building mr-3 text-[#0052CC]"></i>Ruangan & Fasilitas</h1>
             <p>Jelajahi ruangan dan fasilitas yang tersedia di perpustakaan kami.</p>
         </div>
         <a href="{{ route('home') }}" class="back-link">

@@ -2,96 +2,22 @@
 
 @section('content')
 <style>
-    * { box-sizing: border-box; }
-    body, html { padding: 0; margin: 0; }
-
-    .page-header {
-        background: linear-gradient(135deg, #063A76 0%, #042354 100%);
-        padding: 3rem 0;
-        color: white;
-        margin-top: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 600px;
-        height: 600px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        z-index: 0;
-    }
-
-    .page-header .header-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-header h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: white;
-        margin: 0;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        line-height: 1.1;
-    }
-
-    .page-header .back-link {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        padding: 1rem 2rem;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        font-size: 1rem;
-    }
-
-    .page-header .back-link:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-    }
-
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-    }
-
-    .content-wrapper {
-        padding: 3rem 0;
-    }
+    /* Staff of Month specific styles */
 
     .position-filters {
         display: flex;
         justify-content: center;
         gap: 1rem;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
         flex-wrap: wrap;
-        padding: 2rem;
+        padding: 1.5rem;
         background: white;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
     .position-filter {
-        padding: 1rem 2rem;
+        padding: 0.75rem 1.5rem;
         background: #f8fafc;
         border: 2px solid #e2e8f0;
         border-radius: 50px;
@@ -100,8 +26,8 @@
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        font-size: 1rem;
-        min-width: 120px;
+        font-size: 0.9rem;
+        min-width: 110px;
         text-align: center;
     }
 
@@ -145,24 +71,24 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 4rem 2rem;
+        padding: 2.5rem 1.5rem;
         text-align: center;
-        min-height: 80vh;
+        min-height: auto;
     }
 
     .staff-image-section {
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
         position: relative;
     }
 
     .staff-image-container {
-        width: 400px;
-        height: 400px;
+        width: 280px;
+        height: 280px;
         border-radius: 50%;
         overflow: hidden;
         box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
         position: relative;
-        border: 10px solid white;
+        border: 8px solid white;
         margin: 0 auto;
     }
 
@@ -190,35 +116,35 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
+        padding: 0.6rem 1.2rem;
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
         color: white;
         border-radius: 50px;
-        font-size: 0.875rem;
+        font-size: 0.8rem;
         font-weight: 700;
         text-transform: uppercase;
-        margin-bottom: 2rem;
+        margin-bottom: 1.25rem;
         letter-spacing: 0.5px;
         box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
         width: fit-content;
     }
 
     .staff-name {
-        font-size: 3rem;
+        font-size: 2rem;
         font-weight: 800;
         color: #1e293b;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         line-height: 1.1;
     }
 
     .staff-position {
-        font-size: 1.5rem;
-        color: #2563eb;
+        font-size: 1.1rem;
+        color: #0052CC;
         font-weight: 600;
-        margin-bottom: 2rem;
-        padding: 1rem 2rem;
-        background: rgba(37, 99, 235, 0.1);
-        border-radius: 16px;
+        margin-bottom: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(0, 82, 204, 0.08);
+        border-radius: 12px;
         display: inline-block;
         width: fit-content;
     }

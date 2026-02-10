@@ -2,9 +2,14 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Edit Foto Galeri</h1>
-        <p class="text-gray-600 mt-2">Edit foto: <span class="font-semibold">{{ $gallery->title }}</span></p>
+    <div class="mb-8 flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Edit Foto Galeri</h1>
+            <p class="text-gray-600 mt-2">Edit foto: <span class="font-semibold">{{ $gallery->title }}</span></p>
+        </div>
+        <a href="{{ route('admin.gallery.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali
+        </a>
     </div>
 
     @if($errors->any())
@@ -112,7 +117,7 @@
                     <div id="placeholder">
                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2 block"></i>
                         <p class="text-gray-500">Klik atau drag-drop foto baru di sini</p>
-                        <p class="text-sm text-gray-400 mt-1">Abaikan jika tidak ingin mengubah foto</p>
+                        <p class="text-sm text-gray-400 mt-1">Format: JPG, PNG, GIF, WebP (Max 5MB)</p>
                     </div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ use App\Models\Pengumuman;
 use App\Models\JenisTataTertib;
 use App\Models\StaffOfMonth;
 use App\Models\ProfilPegawai;
+use App\Models\Jabatan;
 use App\Models\TataTertib;
 use App\Models\GalleryPhoto;
 use Illuminate\Http\Request;
@@ -17,12 +18,20 @@ class InfobaseController extends Controller
 {
     public function home(): View
     {
-        // Get latest 3 announcements
+        // Update status pengumuman yang sudah expired
+        // Pengumuman::updateExpiredStatus();
+
+        // Get latest 3 announcements - only show active and within valid date range
         $latestAnnouncements = Pengumuman::where(function ($q) {
             $now = now();
             $q->whereNull('published_at')
               ->orWhere('published_at', '<=', $now);
-        })->latest('published_at')->limit(3)->get();
+        })
+        ->validByDate()
+        // ->where('status', 'active')
+        ->latest('published_at')
+        ->limit(3)
+        ->get();
 
         // Get gallery photos for home page
         $homePhotos = GalleryPhoto::active()
@@ -89,13 +98,17 @@ class InfobaseController extends Controller
 
     public function pengumuman(Request $request)
     {
+        // Update status pengumuman yang sudah expired
+        // Pengumuman::updateExpiredStatus();
+
         $search = $request->query('search', '');
         
         $query = Pengumuman::where(function ($q) {
             $now = now();
             $q->whereNull('published_at')
               ->orWhere('published_at', '<=', $now);
-        });
+        })
+        ->validByDate();
 
         // Apply search if provided
         if (!empty($search)) {
@@ -177,9 +190,16 @@ class InfobaseController extends Controller
             $query->search($search);
         }
 
-        $pegawai = $query->orderBy('nama', 'asc')->paginate(12);
+        $allPegawai = $query->orderBy('nama', 'asc')->get();
+        
+        // Chunk into groups of 5 for slides
+        $slides = $allPegawai->chunk(5);
+        
+        // Get all jabatans for org chart
+        $jabatans = Jabatan::orderBy('order')->get();
+        
         $title = 'Profil Pegawai';
 
-        return view('infobase.profil-pegawai', compact('pegawai', 'title', 'search'));
+        return view('infobase.profil-pegawai', compact('slides', 'allPegawai', 'jabatans', 'title', 'search'));
     }
 }

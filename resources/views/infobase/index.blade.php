@@ -2,102 +2,7 @@
 
 @section('content')
 <style>
-    * { box-sizing: border-box; }
-    body, html { padding: 0; margin: 0; }
-
-    .page-header {
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
-        padding: 4rem 0;
-        color: white;
-        margin-top: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 500px;
-        height: 500px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        z-index: 0;
-    }
-
-    .page-header .header-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-header span {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        font-size: 0.875rem;
-        font-weight: 700;
-        border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .page-header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: white;
-        margin: 0 0 0.5rem 0;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .page-header .subtitle {
-        font-size: 1.125rem;
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0;
-    }
-
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-    }
-
-    .content-wrapper {
-        padding: 3rem 0;
-    }
-
-    .section-title {
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: #1f2937;
-        margin-bottom: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .section-title i {
-        color: #f85e38;
-        font-size: 1.75rem;
-    }
-
-    .infobase-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .infobase-card {
-        background: white;
-        border-radius: 1.5rem;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(248, 94, 56, 0.1);
+    /* Infobase Index specific styles */
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
@@ -112,8 +17,8 @@
 
     .infobase-card-header {
         width: 100%;
-        height: 180px;
-        background: linear-gradient(135deg, #f85e38 0%, #d94e2e 100%);
+        height: 140px;
+        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -122,7 +27,7 @@
 
     .infobase-card-header i {
         color: white;
-        font-size: 3.5rem;
+        font-size: 2.75rem;
         transition: transform 0.3s ease;
     }
 
@@ -131,24 +36,24 @@
     }
 
     .infobase-card-body {
-        padding: 2rem;
+        padding: 1.5rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
 
     .infobase-card-title {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: #1f2937;
-        margin: 0 0 0.75rem 0;
+        margin: 0 0 0.6rem 0;
     }
 
     .infobase-card-description {
         color: #6b7280;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         line-height: 1.6;
-        margin: 0 0 1.5rem 0;
+        margin: 0 0 1rem 0;
         flex: 1;
     }
 
@@ -156,9 +61,10 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: #f85e38;
+        color: #0052CC;
         font-weight: 700;
         transition: all 0.3s;
+        font-size: 0.9rem;
     }
 
     .infobase-card:hover .infobase-card-link {
@@ -167,10 +73,10 @@
 
     .officer-section {
         background: white;
-        padding: 2.5rem;
+        padding: 1.75rem;
         border-radius: 1.5rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(248, 94, 56, 0.1);
+        border: 1px solid rgba(0, 82, 204, 0.1);
     }
 
     .officer-card {
@@ -178,26 +84,26 @@
     }
 
     .officer-image {
-        width: 160px;
-        height: 160px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid #f85e38;
-        margin: 0 auto 1.5rem;
-        box-shadow: 0 10px 30px rgba(248, 94, 56, 0.2);
+        border: 3px solid #0052CC;
+        margin: 0 auto 1.25rem;
+        box-shadow: 0 10px 30px rgba(0, 82, 204, 0.15);
     }
 
     .officer-name {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: #1f2937;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
     }
 
     .officer-position {
-        color: #f85e38;
+        color: #0052CC;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 </style>
 

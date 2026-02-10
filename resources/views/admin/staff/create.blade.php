@@ -1,45 +1,131 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-6 py-12">
-    <div class="admin-section">
-        <h1 class="admin-header">Create Staff</h1>
-        <form action="{{ route('admin.staff-of-month.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="form-group"><label class="form-label">Name</label><input name="name" class="form-control" required></div>
-            <div class="form-group"><label class="form-label">Position</label><input name="position" class="form-control"></div>
-            <div class="form-group"><label class="form-label">Month</label><input name="month" type="number" min="1" max="12" class="form-control"></div>
-            <div class="form-group"><label class="form-label">Year</label><input name="year" type="number" class="form-control"></div>
-            <div class="form-group"><label class="form-label">Bio</label><textarea name="bio" class="form-control"></textarea></div>
-            <div class="form-group">
-                <label class="form-label">🖼️ Foto</label>
-                
-                <input type="file" name="photo" accept="image/*" onchange="showPreviewCreate(this)" class="form-control mb-3">
-                
-                <div id="preview-area-create" style="display: none; margin-top: 15px;">
-                    <div style="text-align: center; background: #f0fdf4; padding: 15px; border-radius: 8px; border: 2px solid #22c55e;">
-                        <img id="preview-img-create" style="max-width: 200px; border-radius: 8px; margin-bottom: 10px;">
-                        <p style="color: #15803d; font-weight: bold; margin-bottom: 15px;">✅ Gambar siap untuk di-crop!</p>
-                        <button type="button" onclick="testClickCreate()" style="background: #059669; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">
-                            ✂️ KLIK TEST CROP
-                        </button>
+<div class="bg-gray-50 min-h-screen py-12 pt-28">
+    <div class="max-w-6xl mx-auto px-6">
+        <!-- Header dengan Navigation -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('admin.staff-of-month.index') }}" class="inline-flex items-center justify-center w-10 h-10 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors" title="Kembali">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </a>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Buat Staff of the Month Baru</h1>
+                        <p class="text-sm text-gray-600 mt-1">Tambahkan penghargaan karyawan terbaik bulan ini</p>
                     </div>
                 </div>
-                
-                <small class="text-gray-500">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop dan edit</small>
             </div>
-            <div class="form-group"><label class="form-label">Photo Link (Optional)</label><input name="photo_link" class="form-control" placeholder="URL foto eksternal jika tidak upload file"></div>
-            <div class="form-group"><label class="form-label inline-flex items-center"><input type="checkbox" name="is_active" checked class="mr-2"> Active</label></div>
-            <button class="form-submit">Save</button>
-        </form>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            @if($errors->any())
+                <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mb-6">
+                    <h3 class="font-semibold mb-2">Terjadi Kesalahan:</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('admin.staff-of-month.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                
+                <!-- Nama -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Nama *</label>
+                    <input type="text" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('name') border-red-500 @enderror" value="{{ old('name') }}" placeholder="Nama karyawan" required>
+                    @error('name')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Posisi -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Posisi/Jabatan</label>
+                    <input type="text" name="position" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="{{ old('position') }}" placeholder="Posisi atau jabatan">
+                    @error('position')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Bulan dan Tahun -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Bulan</label>
+                        <input type="number" name="month" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" min="1" max="12" value="{{ old('month') }}" placeholder="1-12">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tahun</label>
+                        <input type="number" name="year" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="{{ old('year') }}" placeholder="2026">
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Bio / Pencapaian</label>
+                    <div id="editor-bio" class="border border-gray-300 rounded-lg shadow-sm" style="border-radius: 0.5rem; overflow: hidden; min-height: 300px;"></div>
+                    <textarea name="bio" id="bio" class="editor hidden" placeholder="Deskripsikan pencapaian dan kontribusi...">{{ old('bio') }}</textarea>
+                    @error('bio')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Foto -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Foto</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition cursor-pointer" onclick="document.getElementById('photo-input').click()">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <p class="text-gray-700 font-medium">Klik untuk upload foto</p>
+                        <p class="text-gray-500 text-sm">Format: JPG, PNG, GIF • Maks: 10MB</p>
+                    </div>
+                    <input type="file" id="photo-input" name="photo" accept="image/*" class="hidden" onchange="previewPhoto(this)">
+                    <div id="photo-preview" class="mt-4" style="display:none;">
+                        <p class="text-sm text-gray-600 mb-2">Preview Foto:</p>
+                        <img id="preview-photo-img" src="" alt="Preview" class="max-w-xs rounded-lg border border-gray-300">
+                    </div>
+                    @error('photo')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Link Foto Eksternal -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Link Foto Eksternal (Opsional)</label>
+                    <input type="url" name="photo_link" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="{{ old('photo_link') }}" placeholder="https://...">
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="is_active" value="1" checked class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                        <span class="text-sm font-semibold text-gray-700">Aktifkan Staff</span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 pt-6 border-t border-gray-200">
+                    <a href="{{ route('admin.staff-of-month.index') }}" class="flex-1 px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors text-center">
+                        Batal
+                    </a>
+                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Buat Staff of the Month
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
-function showPreviewCreate(input) {
+function previewPhoto(input) {
     const file = input.files[0];
-    const previewArea = document.getElementById('preview-area-create');
-    const previewImg = document.getElementById('preview-img-create');
+    const previewArea = document.getElementById('photo-preview');
+    const previewImg = document.getElementById('preview-photo-img');
     
     if (file) {
         previewImg.src = URL.createObjectURL(file);
@@ -47,19 +133,6 @@ function showPreviewCreate(input) {
     } else {
         previewArea.style.display = 'none';
     }
-}
-
-function testClickCreate() {
-    alert('🎉 TOMBOL CREATE CROP BERHASIL!\n\nSekarang tombol sudah berfungsi sempurna!\n\nTidak ada file dialog yang terbuka lagi.');
-    
-    // Ubah tombol jadi merah sebagai feedback
-    event.target.style.background = '#dc2626';
-    event.target.innerHTML = '✅ SUCCESS!';
-    
-    setTimeout(function() {
-        event.target.style.background = '#059669';
-        event.target.innerHTML = '✂️ KLIK TEST CROP';
-    }, 3000);
 }
 </script>
 @endsection
