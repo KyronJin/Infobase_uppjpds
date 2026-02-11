@@ -39,7 +39,10 @@
             </div>
             <div class="form-group"><label class="form-label">Photo Link (Optional)</label><input name="photo_link" class="form-control" value="{{ old('photo_link', $staff_of_month->photo_link) }}" placeholder="URL foto eksternal"></div>
             <div class="form-group"><label class="form-label inline-flex items-center"><input type="checkbox" name="is_active" {{ $staff_of_month->is_active ? 'checked' : '' }} class="mr-2"> Active</label></div>
-            <button class="form-submit">Save</button>
+            <div class="flex gap-3">
+                <x-button variant="primary" size="lg">Save</x-button>
+                <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.staff-of-month.index') }}">Batal</x-button>
+            </div>
         </form>
     </div>
 </div>

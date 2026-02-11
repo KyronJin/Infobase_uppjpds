@@ -118,15 +118,8 @@
 
                 <!-- Action Buttons -->
                 <div class="flex gap-3 pt-6 border-t border-gray-200">
-                    <a href="{{ route('admin.profil_pegawai.index') }}" class="flex-1 px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors text-center">
-                        Batal
-                    </a>
-                    <button 
-                        type="submit" 
-                        class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Tambah Pegawai
-                    </button>
+                    <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.profil_pegawai.index') }}">Batal</x-button>
+                    <x-button variant="primary" size="lg" type="submit" icon="check">Tambah Pegawai</x-button>
                 </div>
             </form>
         </div>

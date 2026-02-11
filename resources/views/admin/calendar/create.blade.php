@@ -39,9 +39,9 @@
             </label>
         </div>
 
-            <div>
-                <button class="form-submit">Simpan</button>
-                <a href="{{ route('admin.calendar.index') }}" class="inline-block ml-3">Batal</a>
+            <div class="flex gap-3">
+                <x-button variant="primary" size="lg">Simpan</x-button>
+                <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.calendar.index') }}">Batal</x-button>
             </div>
         </form>
     </div>

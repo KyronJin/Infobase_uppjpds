@@ -1,20 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-24 bg-white pt-28">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="admin-section">
-        @if(session('success'))
-        <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded flex items-center gap-2">
-            <i class="fas fa-check-circle"></i>
-            {{ session('success') }}
-        </div>
-        @endif
+<div class="bg-gray-50 min-h-screen py-24 pt-28 font-cairo">
+    <div class="max-w-6xl mx-auto px-6">
         
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="h2">Profile Ruangan</h1>
-            <a href="{{ route('admin.profile.create') }}" class="admin-button">Create</a>
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <div>
+                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Profile Ruangan</h1>
+                <p class="text-gray-500 mt-2 font-medium">Kelola informasi dan fasilitas ruangan di sini.</p>
+            </div>
+            <x-button variant="primary" size="lg" icon="plus" class="rounded-2xl shadow-lg shadow-teal-200" onclick="openCreateModal()">Buat Ruangan Baru</x-button>
         </div>
+
+        @if(session('success'))
+            <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top duration-300">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <span class="font-bold">{{ session('success') }}</span>
+            </div>
+        @endif
 
         <!-- Search Form -->
         <div class="mb-6">
@@ -28,19 +31,13 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                     >
                 </div>
-                <button 
-                    type="submit" 
-                    class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-300"
-                >
+                <x-button variant="primary" size="md" type="submit">
                     <i class="fas fa-search mr-2"></i>Cari
-                </button>
+                </x-button>
                 @if(!empty($search))
-                    <a 
-                        href="{{ route('admin.profile.index') }}" 
-                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
-                    >
+                    <x-button variant="secondary" size="md" type="link" href="{{ route('admin.profile.index') }}">
                         <i class="fas fa-times"></i>
-                    </a>
+                    </x-button>
                 @endif
             </form>
             @if(!empty($search))
@@ -50,128 +47,142 @@
             @endif
         </div>
 
-        <div class="space-y-4">
-            @if($items->isEmpty())
-                <div class="bg-gray-50 p-8 rounded-lg text-center text-gray-600">
-                    Belum ada profile ruangan saat ini
-                </div>
-            @else
-                @foreach($items as $item)
-                <div class="flex gap-6 bg-gray-50 p-6 rounded hover:shadow-md transition-shadow">
-                    <!-- Badge Lantai -->
-                    <div class="flex-shrink-0">
-                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex flex-col items-center justify-center text-white shadow-lg">
-                            <div class="text-3xl font-bold">{{ $item->floor ?? '—' }}</div>
-                            <div class="text-xs font-semibold uppercase">LANTAI</div>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="flex-1 min-w-0">
-                        <h3 class="h3 mb-2 text-gray-800">{{ $item->room_name }}</h3>
-                        
-                        <div class="grid grid-cols-2 gap-4 mb-3 text-sm">
-                            <div>
-                                <p class="text-gray-500 font-semibold mb-1">Kapasitas</p>
-                                <p class="text-gray-800">{{ $item->capacity ?? '—' }} orang</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 font-semibold mb-1">Status</p>
-                                <p>
-                                    @if($item->is_active)
-                                        <span class="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold">Aktif</span>
-                                    @else
-                                        <span class="inline-block px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs font-semibold">Tidak Aktif</span>
+        <!-- Daftar Ruangan -->
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold">
+                        <tr>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Gambar</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Ruangan</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Kapasitas</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Deskripsi</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400 text-center">Status</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        @forelse($items as $item)
+                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
+                            <td class="px-8 py-4">
+                                <div class="flex -space-x-4">
+                                    @foreach($item->images->take(3) as $image)
+                                        <div class="w-12 h-12 rounded-xl overflow-hidden shadow-sm bg-gray-100 ring-4 ring-white transition-transform hover:z-10 hover:scale-110">
+                                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Room" class="w-full h-full object-cover">
+                                        </div>
+                                    @endforeach
+                                    @if($item->images->count() == 0)
+                                        <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-300 border-2 border-dashed border-gray-100 italic text-[10px]">No Pic</div>
                                     @endif
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Deskripsi -->
-                        @if($item->description)
-                        <p class="text-gray-600 text-sm mb-3">{{ Str::limit($item->description, 80) }}</p>
-                        @endif
-                    </div>
-
-                    <!-- Tombol Aksi -->
-                    <div class="flex-shrink-0 flex gap-2 self-center">
-                        <button type="button" onclick="editProfileRuangan({{ $item->id }})" class="px-3 py-1.5 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded text-xs font-semibold transition-colors flex items-center gap-1">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button type="button" onclick="deleteProfileRuangan({{ $item->id }}, '{{ $item->room_name }}')" class="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded text-xs font-semibold transition-colors flex items-center gap-1">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-            @endif
+                                </div>
+                            </td>
+                            <td class="px-8 py-4 font-bold text-gray-900 leading-tight">
+                                {{ $item->room_name }}
+                                <div class="text-[10px] text-gray-400 font-medium tracking-tight uppercase">LANTAI {{ $item->floor ?? '-' }}</div>
+                            </td>
+                            <td class="px-8 py-4 text-gray-600 font-semibold">{{ $item->capacity ?? '—' }} Orang</td>
+                            <td class="px-8 py-4 text-gray-500 text-xs italic max-w-xs truncate">
+                                {{ $item->description ?? '-' }}
+                            </td>
+                            <td class="px-8 py-4 text-center">
+                                @if($item->is_active)
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
+                                @else
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">NON-AKTIF</span>
+                                @endif
+                            </td>
+                            <td class="px-8 py-4 whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <x-button variant="ghost" size="sm" icon="edit" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" onclick="editProfileRuangan({{ $item->id }})">Edit</x-button>
+                                    <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteProfileRuanganModal', '{{ $item->room_name }}', '/admin/profile-ruangan/{{ $item->id }}')">Hapus</x-button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-8 py-20 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-folder-open text-gray-100 text-6xl mb-4"></i>
+                                    <p class="text-gray-400 italic font-medium">Belum ada profile ruangan yang terdaftar.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
             
-            <!-- Pagination -->
             @if($items->hasPages())
-                <div class="mt-8 flex justify-center">
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
                     {{ $items->appends(['search' => $search ?? ''])->links() }}
                 </div>
             @endif
         </div>
 
+
         <!-- Modal Create -->
-        <div id="createModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-gray-900">Buat Profile Ruangan</h3>
-                        <button onclick="closeModal('createModal')" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
+        <div id="createModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-teal-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-plus text-teal-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Buat Profile Ruangan</h3>
+                            <p class="text-xs text-gray-500">Tambahkan informasi ruangan baru</p>
+                        </div>
                     </div>
-                    <div id="createErrors" class="hidden mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm"></div>
-                    <form id="createForm" action="{{ route('admin.profile.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <button onclick="closeModal('createModal')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 max-h-[70vh] overflow-y-auto font-cairo">
+                    <div id="createErrors" class="hidden bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-xl mb-6 text-sm"></div>
+                    
+                    <form id="createForm" action="{{ route('admin.profile.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nama Ruangan <span class="text-red-500">*</span></label>
-                            <input type="text" id="create-room_name" name="room_name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Lantai</label>
-                            <input type="number" id="create-floor" name="floor" min="1" max="7" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                            <input type="number" id="create-capacity" name="capacity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                            <textarea id="create-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Gambar (Maks 3 file)</label>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Gambar 1</label>
-                                    <input type="file" id="create-slot_1_image" name="slot_1_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                </div>
-                                <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Gambar 2</label>
-                                    <input type="file" id="create-slot_2_image" name="slot_2_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                </div>
-                                <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Gambar 3</label>
-                                    <input type="file" id="create-slot_3_image" name="slot_3_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Ruangan <span class="text-red-500">*</span></label>
+                                <input type="text" id="create-room_name" name="room_name" required class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Contoh: Ruang Galeri">
                             </div>
-                            <p class="text-xs text-gray-500 mt-2">Maksimal 2MB per file - Format: JPG, PNG, GIF</p>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Lantai</label>
+                                <input type="number" id="create-floor" name="floor" min="1" max="7" class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all" placeholder="1-7">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Kapasitas</label>
+                                <input type="number" id="create-capacity" name="capacity" class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all" placeholder="Orang">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi</label>
+                                <textarea id="create-description" name="description" rows="4" class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all" placeholder="Gunakan bahasa yang menarik..."></textarea>
+                            </div>
                         </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="create-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500" value="1" checked>
-                            <label for="create-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-3">🖼️ Foto Ruangan (Maks 3)</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                @for($i = 1; $i <= 3; $i++)
+                                <div class="border-2 border-dashed border-gray-200 rounded-xl p-3 hover:border-teal-400 transition-colors">
+                                    <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Slot {{ $i }}</p>
+                                    <input type="file" id="create-slot_{{ $i }}_image" name="slot_{{ $i }}_image" accept="image/*" class="text-xs w-full">
+                                </div>
+                                @endfor
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-2 italic">* Format JPG/PNG, Maks 20MB</p>
                         </div>
-                        <div class="flex justify-end gap-3 pt-4">
-                            <button type="button" onclick="closeModal('createModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                Batal
-                            </button>
-                            <button type="submit" id="createSubmitBtn" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                Simpan
-                            </button>
+
+                        <div class="flex items-center gap-2 bg-gray-50 p-4 rounded-2xl">
+                            <input type="checkbox" id="create-is_active" name="is_active" value="1" checked class="w-5 h-5 text-teal-600 rounded-lg focus:ring-teal-500">
+                            <label for="create-is_active" class="text-sm font-bold text-gray-700 cursor-pointer">Tampilkan di Publik</label>
+                        </div>
+
+                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                            <x-button variant="secondary" size="md" type="button" onclick="closeModal('createModal')">Batal</x-button>
+                            <x-button variant="primary" size="md" icon="check" type="submit" id="createSubmitBtn">Simpan Profile</x-button>
                         </div>
                     </form>
                 </div>
@@ -179,67 +190,76 @@
         </div>
 
         <!-- Modal Edit -->
-        <div id="editModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-bold text-gray-900">Edit Profile Ruangan</h3>
-                        <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
+        <div id="editModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-orange-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-edit text-orange-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Perbarui Profile Ruangan</h3>
+                            <p class="text-xs text-gray-500">Edit informasi detail ruangan</p>
+                        </div>
                     </div>
-                    <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-8 max-h-[70vh] overflow-y-auto font-cairo">
+                    <div id="editErrors" class="hidden bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-xl mb-6 text-sm"></div>
+                    
+                    <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         @method('PUT')
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nama Ruangan</label>
-                            <input type="text" id="edit-room_name" name="room_name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Lantai</label>
-                            <input type="number" id="edit-floor" name="floor" min="1" max="7" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                            <input type="number" id="edit-capacity" name="capacity" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                            <textarea id="edit-description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Gambar yang Ada</label>
-                            <div id="edit-images-preview" class="grid grid-cols-3 gap-2 mb-4"></div>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Tambah/Ganti Gambar (Maks 3 file)</label>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Gambar 1</label>
-                                    <input type="file" name="slot_1_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                </div>
-                                <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Gambar 2</label>
-                                    <input type="file" name="slot_2_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                </div>
-                                <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Gambar 3</label>
-                                    <input type="file" name="slot_3_image" accept="image/*" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Ruangan <span class="text-red-500">*</span></label>
+                                <input type="text" id="edit-room_name" name="room_name" required class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">Maksimal 2MB per file - Kosongkan jika tidak ingin mengubah</p>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Lantai</label>
+                                <input type="number" id="edit-floor" name="floor" min="1" max="7" class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Kapasitas</label>
+                                <input type="number" id="edit-capacity" name="capacity" class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi</label>
+                                <textarea id="edit-description" name="description" rows="4" class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium"></textarea>
+                            </div>
                         </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="edit-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                            <label class="ml-2 text-gray-700 font-semibold">Aktif</label>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider text-[10px]">🖼️ Foto Saat Ini</label>
+                            <div id="edit-images-preview" class="grid grid-cols-3 gap-4 mb-6 bg-gray-50/50 p-6 rounded-3xl border-2 border-dashed border-gray-100 min-h-[120px] flex items-center justify-center">
+                                <!-- JS injects here -->
+                            </div>
+
+                            <label class="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider text-[10px]">Ganti/Tambah Foto Baru</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                @for($i = 1; $i <= 3; $i++)
+                                <div class="group relative border-2 border-dashed border-gray-100 rounded-2xl p-4 hover:border-orange-400 hover:bg-orange-50/30 transition-all duration-300">
+                                    <p class="text-[10px] uppercase font-black text-gray-300 group-hover:text-orange-400 mb-2 transition-colors">Slot {{ $i }}</p>
+                                    <input type="file" name="slot_{{ $i }}_image" accept="image/*" class="text-[10px] w-full file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200 cursor-pointer">
+                                </div>
+                                @endfor
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-3 italic flex items-center gap-1">
+                                <i class="fas fa-info-circle"></i> Format JPG/PNG, Maks 20MB per file
+                            </p>
                         </div>
-                        <div class="flex justify-end gap-3 pt-4">
-                            <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                Batal
-                            </button>
-                            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                Simpan
-                            </button>
+
+                        <div class="flex items-center gap-2 bg-gray-50 p-4 rounded-2xl">
+                            <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-5 h-5 text-orange-600 rounded-lg focus:ring-orange-500">
+                            <label for="edit-is_active" class="text-sm font-bold text-gray-700 cursor-pointer">Aktifkan di Halaman Publik</label>
+                        </div>
+
+                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                            <x-button variant="secondary" size="md" type="button" onclick="closeModal('editModal')">Batal</x-button>
+                            <x-button variant="primary" size="md" icon="check" type="submit">Simpan Perubahan</x-button>
                         </div>
                     </form>
                 </div>
@@ -247,32 +267,8 @@
         </div>
 
         <!-- Modal Delete -->
-        <div id="deleteModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-lg max-w-lg w-full">
-                <div class="p-8">
-                    <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-6">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-3">Hapus Ruangan?</h3>
-                    <p class="text-gray-700 text-center mb-2 text-lg font-semibold" id="delete-room-name"></p>
-                    <p class="text-sm text-gray-500 text-center mb-8">Tindakan ini tidak dapat dibatalkan.</p>
-                    
-                    <form id="deleteForm" method="POST" class="space-y-0">
-                        @csrf
-                        @method('DELETE')
-                        
-                        <div class="flex gap-4">
-                            <button type="button" onclick="closeModal('deleteModal')" class="flex-1 px-5 py-3 border-2 border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors text-lg">
-                                Batal
-                            </button>
-                            <button type="submit" class="flex-1 px-5 py-3 bg-red-600 text-white rounded hover:bg-red-700 font-semibold transition-colors text-lg">
-                                Hapus
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <!-- Delete Modal Component -->
+        @component('components.delete-modal', ['id' => 'deleteProfileRuanganModal', 'title' => 'Hapus Profile Ruangan?']) @endcomponent
     </div>
 </div>
 
@@ -436,17 +432,24 @@ function editProfileRuangan(id) {
         if (data.images && data.images.length > 0) {
             data.images.forEach(image => {
                 const imageDiv = document.createElement('div');
-                imageDiv.className = 'relative border border-gray-200 rounded overflow-hidden bg-gray-100';
+                imageDiv.className = 'relative group rounded-2xl overflow-hidden shadow-sm bg-white border border-gray-100 aspect-square ring-4 ring-white transition-transform hover:scale-105';
                 imageDiv.innerHTML = `
-                    <img src="/storage/${image.image_path}" alt="Room image" class="w-full h-24 object-cover">
-                    <button type="button" onclick="deleteImageFromEdit(${image.id}, this)" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded text-xs hover:bg-red-600 transition-colors" title="Hapus gambar">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <img src="/storage/${image.image_path}" alt="Room image" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button type="button" onclick="deleteImageFromEdit(${image.id}, this)" class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg" title="Hapus gambar">
+                            <i class="fas fa-trash text-xs"></i>
+                        </button>
+                    </div>
                 `;
                 previewContainer.appendChild(imageDiv);
             });
         } else {
-            previewContainer.innerHTML = '<p class="col-span-3 text-gray-500 text-sm">Belum ada gambar</p>';
+            previewContainer.innerHTML = `
+                <div class="col-span-3 flex flex-col items-center justify-center py-4">
+                    <i class="fas fa-images text-gray-200 text-3xl mb-2"></i>
+                    <p class="text-gray-400 text-xs italic">Belum ada foto terunggah</p>
+                </div>
+            `;
         }
         
         modal.classList.remove('hidden');
@@ -505,13 +508,7 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-function deleteProfileRuangan(id, roomName) {
-    const modal = document.getElementById('deleteModal');
-    const form = document.getElementById('deleteForm');
-    document.getElementById('delete-room-name').textContent = `Yakin ingin menghapus "${roomName}"?`;
-    form.action = `/admin/profile-ruangan/${id}`;
-    modal.classList.remove('hidden');
-}
+
 
 // Close modals when clicking outside
 document.getElementById('createModal')?.addEventListener('click', function(e) {
@@ -522,8 +519,11 @@ document.getElementById('editModal')?.addEventListener('click', function(e) {
     if (e.target === this) closeModal('editModal');
 });
 
-document.getElementById('deleteModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('deleteModal');
-});
+// Setup Click-Outside Handler for Delete Modal
+setupDeleteModalClickOutside('deleteProfileRuanganModal');
+</script>
+
+<script>
+    setupDeleteModalClickOutside('deleteProfileRuanganModal');
 </script>
 @endsection

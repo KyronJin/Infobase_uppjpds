@@ -3,7 +3,7 @@
 @section('content')
 
 <section class="py-20 bg-white">
-  <div class="container mx-auto px-6 max-w-6xl">
+  <div class="container mx-auto px-6">
     <div class="text-center mb-12">
       <span class="inline-block px-4 py-2 bg-[#00425A] bg-opacity-10 text-[#00425A] text-sm font-semibold rounded-full border border-[#00425A] border-opacity-20">
         Tentang Kami
@@ -12,12 +12,12 @@
       <p class="text-lg text-gray-800 max-w-2xl mx-auto">Pusat pembelajaran, dokumentasi, dan layanan informasi untuk warga Jakarta.</p>
     </div>
 
-    <div class="grid lg:grid-cols-2 gap-12 items-start mb-16">
-      <div>
+    <div class="grid lg:grid-cols-3 gap-12 items-start mb-16 max-w-6xl mx-auto">
+      <div class="lg:col-span-2">
         <h2 class="text-3xl font-bold mb-6 text-[#00425A]">Tentang Kami</h2>
-        <p class="text-gray-700 mb-6 text-lg leading-relaxed">
-          Perpustakaan Jakarta (UPPJPDS) adalah institusi publik yang berkomitmen untuk menyediakan akses informasi berkualitas tinggi kepada seluruh masyarakat Jakarta. Kami berfungsi sebagai pusat pembelajaran, dokumentasi, dan pemeliharaan memori kolektif masyarakat.
-        </p>
+          <p class="text-gray-700 mb-6 text-lg leading-relaxed">
+            Perpustakaan Jakarta (UPPJPDS) adalah institusi publik yang berkomitmen untuk menyediakan akses informasi berkualitas tinggi kepada seluruh masyarakat Jakarta. Kami berfungsi sebagai pusat pembelajaran, dokumentasi, dan pemeliharaan memori kolektif masyarakat.
+          </p>
         <p class="text-gray-700 mb-8 text-lg leading-relaxed">
           Dengan koleksi lengkap, fasilitas modern, dan staf yang profesional, kami menawarkan lebih dari sekadar tempat meminjam buku. Kami adalah ruang untuk belajar, berkolaborasi, berinovasi, dan terhubung dengan komunitas pengetahuan.
         </p>
@@ -66,7 +66,7 @@
         </ul>
       </div>
 
-      <div>
+      <div class="lg:col-span-1">
         <div class="sticky top-24">
           <!-- Gallery Carousel dalam Tentang Kami -->
           <h3 class="text-2xl font-bold mb-4 text-[#00425A]">Galeri Perpustakaan</h3>

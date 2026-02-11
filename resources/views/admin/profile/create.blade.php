@@ -1,19 +1,28 @@
 @extends('layouts.app')
 
+@push('styles')
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+    .font-cairo { font-family: 'Cairo', sans-serif; }
+    .quill-editor { min-height: 250px; }
+    .image-slot { aspect-ratio: 16/9; overflow: hidden; }
+</style>
+@endpush
+
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28">
-    <div class="max-w-6xl mx-auto px-6">
-        <!-- Header dengan Navigation -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('admin.profile.index') }}" class="inline-flex items-center justify-center w-10 h-10 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors" title="Kembali">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                    </a>
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Buat Profil Ruangan Baru</h1>
-                        <p class="text-sm text-gray-600 mt-1">Tambahkan informasi dan gambar ruangan</p>
-                    </div>
+<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
+    <div class="max-w-4xl mx-auto px-6">
+        
+        <!-- Standardized Header -->
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.profile.index') }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="h2 text-gray-800">Buat Profile Ruangan</h1>
+                    <p class="text-sm text-gray-500">Tambahkan informasi dan fasilitas ruangan baru.</p>
                 </div>
             </div>
         </div>
@@ -121,13 +130,8 @@
 
                 <!-- Action Buttons -->
                 <div class="flex gap-3 pt-6 border-t border-gray-200">
-                    <a href="{{ route('admin.profile.index') }}" class="flex-1 px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors text-center">
-                        Batal
-                    </a>
-                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Buat Ruangan
-                    </button>
+                    <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.profile.index') }}">Batal</x-button>
+                    <x-button variant="primary" size="lg" type="submit" icon="check">Buat Ruangan</x-button>
                 </div>
             </form>
         </div>

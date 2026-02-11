@@ -68,7 +68,7 @@ class StaffOfMonthController extends Controller
                 'month' => 'nullable|integer|min:1|max:12',
                 'year' => 'nullable|integer|min:2026',
                 'bio' => 'nullable|string',
-                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
                 'photo_link' => 'nullable|url',
             ], [
                 'name.required' => 'Nama staff harus diisi.',
@@ -85,7 +85,7 @@ class StaffOfMonthController extends Controller
                 'bio.string' => 'Biodata harus berupa teks.',
                 'photo.image' => 'File harus berupa gambar.',
                 'photo.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-                'photo.max' => 'Ukuran gambar maksimal 2MB.',
+                'photo.max' => 'Ukuran gambar maksimal 20MB.',
                 'photo_link.url' => 'Link foto harus berupa URL yang valid.',
             ]);
 
@@ -139,7 +139,7 @@ class StaffOfMonthController extends Controller
                 'month' => 'nullable|integer|min:1|max:12',
                 'year' => 'nullable|integer|min:2026',
                 'bio' => 'nullable|string',
-                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
                 'photo_link' => 'nullable|url',
                 'delete_photo' => 'nullable|in:0,1',
             ], [
@@ -157,7 +157,7 @@ class StaffOfMonthController extends Controller
                 'bio.string' => 'Biodata harus berupa teks.',
                 'photo.image' => 'File harus berupa gambar.',
                 'photo.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-                'photo.max' => 'Ukuran gambar maksimal 2MB.',
+                'photo.max' => 'Ukuran gambar maksimal 20MB.',
                 'photo_link.url' => 'Link foto harus berupa URL yang valid.',
             ]);
 

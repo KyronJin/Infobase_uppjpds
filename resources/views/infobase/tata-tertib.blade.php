@@ -57,31 +57,6 @@
     }
 </style>
 
-{{-- START: BAGIAN TESTING --}}
-{{-- Hapus blok @php ini jika data dari database kamu sudah muncul --}}
-@php
-    if($jenis->isEmpty()) {
-        $jenis = collect([
-            (object)[
-                'id' => 1,
-                'name' => 'Tata Tertib Umum',
-                'tataTertibs' => collect([
-                    (object)['content' => 'Pengunjung wajib berpakaian rapi dan sopan.'],
-                    (object)['content' => 'Dilarang membawa makanan dan minuman ke dalam perpustakaan.'],
-                ])
-            ],
-            (object)[
-                'id' => 2,
-                'name' => 'Aturan Peminjaman',
-                'tataTertibs' => collect([
-                    (object)['content' => 'Maksimal peminjaman adalah 3 buku.'],
-                    (object)['content' => 'Jangka waktu peminjaman selama 7 hari.'],
-                ])
-            ]
-        ]);
-    }
-@endphp
-{{-- END: BAGIAN TESTING --}}
 
 <div class="page-header">
     <div class="header-content">
@@ -95,14 +70,6 @@
         </a>
     </div>
 </div>
-
-{{-- Search Form --}}
-@include('partials.search-form', [
-    'action' => route('infobase.tata-tertib'),
-    'placeholder' => 'Cari tata tertib berdasarkan jenis atau isi...',
-    'search' => $search ?? '',
-    'resultCount' => $jenis->sum(function($j) { return $j->tataTertibs->count(); })
-])
 
 <div class="container">
     <div class="content-wrapper">

@@ -1,0 +1,113 @@
+<?php $__env->startSection('content'); ?>
+<style>
+    /* Tata Tertib specific styles */
+
+    .rule-item {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .rule-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .rule-dot {
+        width: 10px;
+        height: 10px;
+        background: linear-gradient(135deg, #0052CC 0%, #0044A3 100%);
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 0.3rem;
+    }
+
+    .rule-text {
+        color: #374151;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 1.5rem;
+        background: #F8FAFC;
+        border-radius: 8px;
+        border: 2px dashed #E2E8F0;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #CBD5E1;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #1f2937;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .empty-state p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-top: 0.4rem;
+    }
+</style>
+
+
+<div class="page-header">
+    <div class="header-content">
+        <div class="header-left">
+            <span><i class="fas fa-book mr-2"></i>Tata Tertib</span>
+            <h1><i class="fas fa-scroll mr-3 text-white"></i><?php echo e($title ?? 'Tata Tertib & Peraturan'); ?></h1>
+            <p><?php echo e($content ?? 'Berisi Tata Tertib dan Peraturan di Perpustakaan'); ?></p>
+        </div>
+        <a href="<?php echo e(route('home')); ?>" class="back-link">
+            <i class="fas fa-arrow-left"></i>Kembali
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content-wrapper">
+        <?php $__empty_1 = true; $__currentLoopData = $jenis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="accordion-item" id="accordion-<?php echo e($j->id); ?>">
+                <button class="accordion-header" onclick="toggleAccordion('<?php echo e($j->id); ?>')">
+                    <h2 class="accordion-title"><?php echo e($j->name); ?></h2>
+                    <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                
+                <div class="accordion-content">
+                    <?php $__empty_2 = true; $__currentLoopData = $j->tataTertibs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_2 = false; ?>
+                        <div class="rule-item">
+                            <div class="rule-dot"></div>
+                            <p class="rule-text"><?php echo e($t->content); ?></p>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_2): ?>
+                        <p style="color: #9ca3af; font-style: italic;">Belum ada butir aturan untuk kategori ini.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Data Tidak Ditemukan</h3>
+                <p>Pastikan database sudah terisi dan Controller mengirimkan data dengan benar.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const item = document.getElementById('accordion-' + id);
+        if (item) {
+            item.classList.toggle('active');
+        }
+    }
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Pemustaka\Desktop\Infobase_uppjpds\resources\views/infobase/tata-tertib.blade.php ENDPATH**/ ?>

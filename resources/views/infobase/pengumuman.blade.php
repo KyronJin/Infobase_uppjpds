@@ -2,8 +2,7 @@
 
 @section('content')
 <style>
-    /* Pengumuman specific styles */
-
+    /* Pengumuman Card Styles */
     .pengumuman-card {
         background: white;
         padding: 1.5rem;
@@ -52,12 +51,6 @@
         margin-top: 0.2rem;
     }
 
-    .pengumuman-date-year {
-        font-size: 0.65rem;
-        opacity: 0.75;
-        margin-top: 0.15rem;
-    }
-
     .pengumuman-content {
         flex: 1;
     }
@@ -87,6 +80,10 @@
         line-height: 1.6;
         margin-bottom: 1rem;
         font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .pengumuman-footer {
@@ -95,6 +92,7 @@
         align-items: center;
         padding-top: 1rem;
         border-top: 1px solid #e5e7eb;
+        gap: 1rem;
     }
 
     .pengumuman-date-valid {
@@ -103,6 +101,7 @@
         gap: 0.4rem;
         color: #6b7280;
         font-size: 0.8rem;
+        white-space: nowrap;
     }
 
     .pengumuman-date-valid::before {
@@ -111,27 +110,36 @@
         height: 6px;
         background: #10b981;
         border-radius: 50%;
+        flex-shrink: 0;
     }
 
     .pengumuman-read-more {
-        color: #0052CC;
+        color: #ffffff;
+        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
         text-decoration: none;
-        font-weight: 700;
+        font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
-        transition: all 0.3s;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
         border: none;
-        background: none;
         cursor: pointer;
-        padding: 0;
-        font-family: inherit;
-        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 82, 204, 0.2);
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .pengumuman-read-more:hover {
-        gap: 0.75rem;
-        color: #003A99;
+        background: linear-gradient(135deg, #003A99 0%, #00297a 100%);
+        box-shadow: 0 4px 12px rgba(0, 82, 204, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .pengumuman-read-more:active {
+        transform: translateY(0);
     }
 
     .empty-state {
@@ -160,6 +168,22 @@
         color: #6b7280;
         font-size: 1rem;
         margin-top: 0.5rem;
+    }
+
+    /* Modal enhancements */
+    .modal-read-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #0052CC;
+        font-weight: 500;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+
+    .modal-read-time svg {
+        width: 16px;
+        height: 16px;
     }
 </style>
 
@@ -207,7 +231,6 @@
                         <div class="pengumuman-date">
                             <div class="pengumuman-date-day">{{ $item->published_at?->format('d') ?? '00' }}</div>
                             <div class="pengumuman-date-month">{{ $item->published_at?->format('M') ?? 'Jan' }}</div>
-                            <div class="pengumuman-date-year">{{ $item->published_at?->format('Y') ?? '2024' }}</div>
                         </div>
                         <div class="pengumuman-content">
                             @if($item->image_path)
@@ -219,7 +242,7 @@
                                 <div class="pengumuman-date-valid">
                                     Berlaku: {{ $item->valid_from?->format('d/m/Y') ?? '-' }} - {{ $item->valid_until?->format('d/m/Y') ?? '-' }}
                                 </div>
-                                <button class="pengumuman-read-more" onclick="openModal({{ $item->id }}, @json($item->title), @json($item->description), '{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}')">
+                                <button type="button" class="pengumuman-read-more" data-pengumuman-id="{{ $item->id }}" data-title="{{ $item->title }}" data-description="{{ $item->description }}" data-image="{{ $item->image_path ? asset('storage/' . $item->image_path) : '' }}">
                                     Baca Selengkapnya <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
@@ -249,57 +272,88 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="detailModal">
-    <div class="modal-content">
+<!-- Modal: gunakan dari consistent-layout.css -->
+<div class="modal-overlay" id="pengumumanDetailModal">
+    <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-header">
-            <h2 id="modalTitle"></h2>
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div>
+                <h2 id="pengumumanTitle"></h2>
+                <div class="modal-read-time" id="pengumumanReadTime"></div>
+            </div>
+            <button type="button" class="modal-close" onclick="closePengumumanModal()">&times;</button>
         </div>
         <div class="modal-body">
-            <div id="modalImage"></div>
-            <div id="modalDescription"></div>
+            <div id="pengumumanImage"></div>
+            <div id="pengumumanDescription"></div>
         </div>
         <div class="modal-footer">
-            <p id="modalFooter"></p>
+            <p id="pengumumanFooter"></p>
         </div>
     </div>
 </div>
 
 <script>
-    function openModal(id, title, description, image) {
-        document.getElementById('modalTitle').textContent = title;
-        document.getElementById('modalDescription').innerHTML = description;
-        
-        if (image) {
-            document.getElementById('modalImage').innerHTML = '<img src="' + image + '" alt="' + title + '">';
-        } else {
-            document.getElementById('modalImage').innerHTML = '';
-        }
-        
-        const now = new Date();
-        document.getElementById('modalFooter').textContent = 'Diakses pada ' + now.toLocaleString('id-ID');
-        
-        document.getElementById('detailModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+    function calculateReadingTime(text) {
+        const plain = text.replace(/<[^>]*>/g, '');
+        const words = plain.trim().split(/\s+/).length;
+        return Math.max(1, Math.ceil(words / 200));
     }
 
-    function closeModal() {
-        document.getElementById('detailModal').classList.remove('active');
+    document.querySelectorAll('.pengumuman-read-more').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const title = this.getAttribute('data-title');
+            const description = this.getAttribute('data-description');
+            const image = this.getAttribute('data-image');
+            
+            // Set konten
+            document.getElementById('pengumumanTitle').textContent = title;
+            document.getElementById('pengumumanDescription').innerHTML = description;
+            
+            // Hitung reading time
+            const readTime = calculateReadingTime(description);
+            document.getElementById('pengumumanReadTime').innerHTML = 
+                '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' +
+                '<span>Waktu baca: <strong>' + readTime + ' menit</strong></span>';
+            
+            // Set image
+            if (image && image.trim() !== '') {
+                document.getElementById('pengumumanImage').innerHTML = 
+                    '<img src="' + image + '" alt="' + title + '" style="cursor: pointer; width: 100%; border-radius: 8px; margin-bottom: 1rem;" onclick="window.open(this.src, \'_blank\')">';
+            } else {
+                document.getElementById('pengumumanImage').innerHTML = '';
+            }
+            
+            // Set footer
+            const now = new Date();
+            document.getElementById('pengumumanFooter').textContent = 
+                'Diakses pada ' + now.toLocaleString('id-ID');
+            
+            // Buka modal
+            const modal = document.getElementById('pengumumanDetailModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    function closePengumumanModal() {
+        const modal = document.getElementById('pengumumanDetailModal');
+        modal.classList.remove('active');
         document.body.style.overflow = 'auto';
     }
 
-    // Close modal when clicking outside
-    document.getElementById('detailModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeModal();
+    // Close dengan Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePengumumanModal();
         }
     });
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal();
+    // Close dengan click outside
+    document.getElementById('pengumumanDetailModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePengumumanModal();
         }
     });
 </script>

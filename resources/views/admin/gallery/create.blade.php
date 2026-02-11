@@ -27,32 +27,6 @@
         <form action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
-            <!-- Judul -->
-            <div>
-                <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Judul Foto <span class="text-red-600">*</span></label>
-                <input 
-                    type="text" 
-                    name="title" 
-                    id="title" 
-                    value="{{ old('title') }}"
-                    required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                    placeholder="Judul foto galeri"
-                >
-            </div>
-
-            <!-- Deskripsi -->
-            <div>
-                <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-                <textarea 
-                    name="description" 
-                    id="description" 
-                    rows="4"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                    placeholder="Deskripsi foto"
-                >{{ old('description') }}</textarea>
-            </div>
-
             <!-- Kategori -->
             <div>
                 <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Kategori <span class="text-red-600">*</span></label>
@@ -80,12 +54,54 @@
                     id="location"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                    onchange="toggleFormFields()"
                 >
                     <option value="">-- Pilih Lokasi --</option>
                     <option value="home" {{ old('location') === 'home' ? 'selected' : '' }}>Halaman Beranda</option>
                     <option value="about" {{ old('location') === 'about' ? 'selected' : '' }}>Halaman Tentang</option>
+                    <option value="hero" {{ old('location') === 'hero' ? 'selected' : '' }}>Hero Banner Beranda</option>
                     <option value="both" {{ old('location') === 'both' ? 'selected' : '' }}>Kedua Halaman</option>
                 </select>
+            </div>
+
+            <!-- Rekomendasi Rasio Foto -->
+            <div id="resolutionInfo" class="p-4 bg-blue-50 border border-blue-200 rounded-lg hidden">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-info-circle text-blue-600 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <h4 class="font-semibold text-blue-900 mb-2">Rekomendasi Ukuran Foto</h4>
+                        <p id="resolutionText" class="text-sm text-blue-800"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Fields (hidden for hero banner) -->
+            <div id="textFields">
+                <!-- Judul -->
+                <div>
+                    <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Judul Foto <span class="text-red-600">*</span></label>
+                    <input 
+                        type="text" 
+                        name="title" 
+                        id="title" 
+                        value="{{ old('title') }}"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                        placeholder="Judul foto galeri"
+                    >
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="mt-6">
+                    <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
+                    <textarea 
+                        name="description" 
+                        id="description" 
+                        rows="4"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                        placeholder="Deskripsi foto"
+                    >{{ old('description') }}</textarea>
+                </div>
             </div>
 
             <!-- Upload Foto -->
@@ -109,7 +125,7 @@
                     <div id="placeholder">
                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2 block"></i>
                         <p class="text-gray-500">Klik atau drag-drop foto di sini</p>
-                        <p class="text-sm text-gray-400 mt-1">Format: JPG, PNG, GIF, WebP (Max 5MB)</p>
+                        <p class="text-sm text-gray-400 mt-1">Format: JPG, PNG, GIF, WebP (Max 20MB)</p>
                     </div>
                 </div>
             </div>
@@ -125,7 +141,16 @@
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
                     placeholder="0"
                     min="0"
+                    onchange="checkOrderExists()"
+                    onkeyup="checkOrderExists()"
                 >
+                <!-- Warning jika urutan sudah ada -->
+                <div id="orderWarning" class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg hidden">
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 mt-1"></i>
+                        <p class="text-sm text-yellow-800"><strong>Perhatian!</strong> Ada foto lain pada urutan ini. Foto akan ditambahkan dan urutan lain akan bergeser otomatis.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Status Aktif -->
@@ -141,20 +166,36 @@
                 </label>
             </div>
 
+            <!-- Button Text & Link (hidden for hero banner) -->
+            <div id="buttonFields" style="display: none;">
+                <div class="mb-4">
+                    <label for="button_text" class="block text-sm font-semibold text-gray-700 mb-2">Teks Tombol</label>
+                    <input 
+                        type="text" 
+                        name="button_text" 
+                        id="button_text" 
+                        value="{{ old('button_text') }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                        placeholder="Contoh: Jelajahi, Lihat Detail, dll"
+                    >
+                </div>
+                <div>
+                    <label for="button_link" class="block text-sm font-semibold text-gray-700 mb-2">Link Tombol</label>
+                    <input 
+                        type="text" 
+                        name="button_link" 
+                        id="button_link" 
+                        value="{{ old('button_link') }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                        placeholder="Contoh: #announcements, /about, dll"
+                    >
+                </div>
+            </div>
+
             <!-- Tombol -->
             <div class="flex gap-4 pt-6 border-t">
-                <button 
-                    type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300"
-                >
-                    <i class="fas fa-save mr-2"></i>Simpan Foto
-                </button>
-                <a 
-                    href="{{ route('admin.gallery.index') }}"
-                    class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-3 px-8 rounded-lg transition duration-300"
-                >
-                    <i class="fas fa-times mr-2"></i>Batal
-                </a>
+                <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.gallery.index') }}">Batal</x-button>
+                <x-button variant="primary" size="lg" type="submit" icon="save">Simpan Foto</x-button>
             </div>
         </form>
     </div>
@@ -210,5 +251,109 @@ function handleDrop(e) {
     document.getElementById('image').files = files;
     handleImageChange({ target: { files: files } });
 }
+
+// Show/hide fields based on location selection
+function toggleFormFields() {
+    const locationSelect = document.getElementById('location');
+    const textFields = document.getElementById('textFields');
+    const buttonFields = document.getElementById('buttonFields');
+    const isHero = locationSelect.value === 'hero';
+    
+    // Sembunyikan text fields jika hero banner
+    textFields.style.display = isHero ? 'none' : 'block';
+    
+    // Tampilkan button fields jika hero banner
+    buttonFields.style.display = isHero ? 'block' : 'none';
+    
+    // Update required attribute pada title untuk hero banner
+    const titleInput = document.getElementById('title');
+    titleInput.required = !isHero;
+}
+
+// Event listener untuk location change
+document.getElementById('location').addEventListener('change', toggleFormFields);
+
+// Check if order already exists for selected location
+function checkOrderExists() {
+    const location = document.getElementById('location').value;
+    const order = document.getElementById('order').value;
+    const orderWarning = document.getElementById('orderWarning');
+    
+    if (!location || !order) {
+        orderWarning.classList.add('hidden');
+        return;
+    }
+    
+    // For now, show warning if order is filled
+    // TODO: Add AJAX to check against database
+    orderWarning.classList.remove('hidden');
+}
+
+// Function untuk update rekomendasi rasio berdasarkan lokasi
+function updateResolutionInfo() {
+    const locationSelect = document.getElementById('location');
+    const resolutionInfo = document.getElementById('resolutionInfo');
+    const resolutionText = document.getElementById('resolutionText');
+    const selectedLocation = locationSelect.value;
+
+    const resolutionData = {
+        'hero': {
+            title: '🖼️ Hero Banner Beranda',
+            recommendations: [
+                '<strong>Rasio Ideal: 16:9 (landscape panjang)</strong>',
+                'Ukuran: Minimum 1920x1080px (1920x1440px lebih baik)',
+                'Foto akan full-screen dan background bisa diganti otomatis',
+                'Teks tetap di tengah, jadi pastikan subjek foto tidak terlalu detail'
+            ]
+        },
+        'home': {
+            title: '🏠 Halaman Beranda (Gallery)',
+            recommendations: [
+                '<strong>Rasio Ideal: 3:2 atau 4:3</strong>',
+                'Ukuran: Minimum 1200x800px',
+                'Foto akan ditampilkan dalam grid card',
+                'Pastikan ada focal point yang menarik di tengah'
+            ]
+        },
+        'about': {
+            title: 'ℹ️ Halaman Tentang (Gallery)',
+            recommendations: [
+                '<strong>Rasio Ideal: 3:2 atau 4:3</strong>',
+                'Ukuran: Minimum 1200x800px',
+                'Foto akan ditampilkan dalam grid card di halaman about',
+                'Gunakan foto yang menunjukkan karakteristik perpustakaan'
+            ]
+        },
+        'both': {
+            title: '📸 Kedua Halaman',
+            recommendations: [
+                '<strong>Rasio Ideal: 16:9 atau 4:3 (square-ish lebih aman)</strong>',
+                'Ukuran: Minimum 1920x1080px',
+                'Akan tampil di halaman beranda maupun halaman tentang',
+                'Pastikan foto bagus di berbagai ukuran layar'
+            ]
+        }
+    };
+
+    if (selectedLocation && resolutionData[selectedLocation]) {
+        const data = resolutionData[selectedLocation];
+        resolutionInfo.classList.remove('hidden');
+        
+        let html = '<strong class="text-blue-900">' + data.title + '</strong><br/>';
+        data.recommendations.forEach(rec => {
+            html += '• ' + rec + '<br/>';
+        });
+        
+        resolutionText.innerHTML = html;
+    } else {
+        resolutionInfo.classList.add('hidden');
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    toggleFormFields();
+    updateResolutionInfo();
+});
 </script>
 @endsection

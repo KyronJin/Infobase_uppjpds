@@ -10,6 +10,7 @@ use Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 
 class GalleryPhotoController extends Controller
 {
@@ -39,22 +40,32 @@ class GalleryPhotoController extends Controller
      */
     public function store(Request $request)
     {
+        // Jika lokasi hero, title tidak wajib
+        $isTitleRequired = $request->input('location') !== 'hero' ? 'required' : 'nullable';
+        
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => "{$isTitleRequired}|string|max:255",
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'category' => 'required|string|max:50',
-            'location' => 'required|string|in:home,about,both',
+            'location' => 'required|string|in:home,about,both,hero',
             'order' => 'nullable|integer',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|string|max:255',
         ]);
 
         // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('gallery', 'public');
-            $validated['image_path'] = 'storage/' . $imagePath;
+            $validated['image_path'] = Storage::url($imagePath);
         }
 
         $validated['is_active'] = $request->has('is_active');
+
+        // Generate default title for hero banner if not provided
+        if ($request->input('location') === 'hero' && empty($validated['title'])) {
+            $validated['title'] = 'Hero Banner - ' . ucfirst($validated['category']) . ' ' . date('Y-m-d H:i');
+        }
 
         // Create table if not exists
         if (!Schema::hasTable('gallery_photos')) {
@@ -64,11 +75,26 @@ class GalleryPhotoController extends Controller
                 $table->text('description')->nullable();
                 $table->string('image_path');
                 $table->string('category')->nullable();
-                $table->enum('location', ['home', 'about', 'both'])->default('both');
+                $table->enum('location', ['home', 'about', 'both', 'hero'])->default('both');
                 $table->boolean('is_active')->default(true);
                 $table->integer('order')->default(0);
                 $table->timestamps();
             });
+        } else {
+            // Check if location enum needs update
+            $columns = Schema::getColumnListing('gallery_photos');
+            if (in_array('location', $columns)) {
+                // Alter enum to include 'hero'
+                DB::statement("ALTER TABLE gallery_photos MODIFY COLUMN location ENUM('home', 'about', 'both', 'hero') DEFAULT 'both'");
+            }
+        }
+
+        // Remove button fields if columns don't exist
+        if (!Schema::hasColumn('gallery_photos', 'button_text')) {
+            unset($validated['button_text']);
+        }
+        if (!Schema::hasColumn('gallery_photos', 'button_link')) {
+            unset($validated['button_link']);
         }
 
         GalleryPhoto::create($validated);
@@ -80,8 +106,11 @@ class GalleryPhotoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(GalleryPhoto $gallery): View
+    public function edit(GalleryPhoto $gallery)
     {
+        if (request()->wantsJson()) {
+            return response()->json($gallery);
+        }
         return view('admin.gallery.edit', compact('gallery'));
     }
 
@@ -90,13 +119,18 @@ class GalleryPhotoController extends Controller
      */
     public function update(Request $request, GalleryPhoto $gallery)
     {
+        // Jika lokasi hero, title tidak wajib
+        $isTitleRequired = $request->input('location') !== 'hero' ? 'required' : 'nullable';
+        
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => "{$isTitleRequired}|string|max:255",
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'category' => 'required|string|max:50',
-            'location' => 'required|string|in:home,about,both',
+            'location' => 'required|string|in:home,about,both,hero',
             'order' => 'nullable|integer',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|string|max:255',
         ]);
 
         // Handle image upload
@@ -111,6 +145,19 @@ class GalleryPhotoController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+
+        // Generate default title for hero banner if not provided or empty
+        if ($request->input('location') === 'hero' && empty($validated['title'])) {
+            $validated['title'] = $gallery->title ?? 'Hero Banner - ' . ucfirst($validated['category']) . ' ' . date('Y-m-d H:i');
+        }
+
+        // Remove button fields if columns don't exist
+        if (!Schema::hasColumn('gallery_photos', 'button_text')) {
+            unset($validated['button_text']);
+        }
+        if (!Schema::hasColumn('gallery_photos', 'button_link')) {
+            unset($validated['button_link']);
+        }
 
         $gallery->update($validated);
 

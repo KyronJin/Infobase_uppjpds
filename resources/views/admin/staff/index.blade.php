@@ -116,138 +116,127 @@
     }
 </style>
 
-<div class="py-24 bg-white pt-28">
+<div class="py-24 bg-white pt-28 font-cairo">
   <div class="max-w-6xl mx-auto px-6">
     <div class="admin-section">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="h2">Staff Of Month</h1>
-            <div class="flex gap-3">
-                <button id="manage-jabatan-btn" class="admin-button bg-green-600 hover:bg-green-700">
-                    <i class="fas fa-briefcase mr-2"></i> Kelola Posisi
-                </button>
-                <a href="{{ route('admin.staff-of-month.create') }}" class="admin-button">
-                    <i class="fas fa-plus mr-2"></i> Create
-                </a>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Staff Of Month</h1>
+                <p class="text-gray-500 text-sm mt-1">Kelola data penghargaan staff terbaik setiap bulan.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <x-button variant="secondary" size="md" id="manage-jabatan-btn" icon="briefcase" class="rounded-2xl font-bold shadow-sm">Posisi</x-button>
+                <x-button variant="primary" size="md" onclick="document.getElementById('create-staff-modal').classList.remove('hidden')" icon="plus" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Tambah Staff</x-button>
             </div>
         </div>
 
         <!-- Daftar Staff -->
-        <div class="space-y-8 w-full">
-            <h2 class="h3 text-teal-700">Data Staff</h2>
-
-            <div class="text-gray-600">Jumlah staff: <span class="font-semibold text-gray-900">{{ $items->count() }}</span></div>
-
-            @if($items->isEmpty())
-                <div class="bg-gray-50 p-8 rounded-lg text-center text-gray-600">
-                    Belum ada data staff saat ini
-                </div>
-            @else
-                @foreach($items as $item)
-                <div class="border-l-4 border-teal-500 pl-6 bg-gray-50 p-8 rounded space-y-6">
-                    <div>
-                        <h3 class="h1 mb-4">{{ $item->name }}</h3>
-                        
-                        <!-- Informasi Staff -->
-                        <div class="grid grid-cols-2 gap-8 mb-6 text-sm">
-                            <div>
-                                <p class="text-gray-500 font-semibold mb-1">Posisi</p>
-                                <p class="text-gray-800 text-lg">
-                                    {{ $item->position }}
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 font-semibold mb-1">Bulan/Tahun</p>
-                                <p class="text-gray-800 text-lg">
-                                    @if($item->month && $item->year)
-                                        {{ $item->month }}/{{ $item->year }}
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
+                        <tr>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Profil</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Nama</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest font-cairo">Jabatan</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Periode</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-center">Status</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        @forelse($items as $item)
+                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
+                            <td class="px-8 py-4">
+                                <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 ring-4 ring-white shadow-sm transition-transform hover:scale-110">
+                                    @if($item->photo_path)
+                                        <img src="{{ asset('storage/' . $item->photo_path) }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
+                                    @elseif($item->photo_link)
+                                        <img src="{{ $item->photo_link }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
                                     @else
-                                        —
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-100 text-teal-600 text-xs font-black uppercase">
+                                            {{ strtoupper(substr($item->name, 0, 1)) }}
+                                        </div>
                                     @endif
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Status Aktif -->
-                        <div class="mb-6">
-                            <p class="text-gray-500 font-semibold mb-1">Status</p>
-                            <p class="text-gray-800">
+                                </div>
+                            </td>
+                            <td class="px-8 py-4 font-bold text-gray-900 leading-tight">
+                                {{ $item->name }}
+                            </td>
+                            <td class="px-8 py-4 font-bold text-teal-600 italic">
+                                {{ $item->position }}
+                            </td>
+                            <td class="px-8 py-4 text-gray-600 font-medium">
+                                <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                                    {{ $item->month ? $item->month . '/' : '-' }}{{ $item->year ?? '-' }}
+                                </span>
+                            </td>
+                            <td class="px-8 py-4 text-center">
                                 @if($item->is_active)
-                                    <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded text-sm font-semibold">Aktif</span>
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
                                 @else
-                                    <span class="inline-block px-3 py-1 bg-gray-100 text-gray-800 rounded text-sm font-semibold">Tidak Aktif</span>
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">OFF</span>
                                 @endif
-                            </p>
-                        </div>
-
-                        <!-- Biodata -->
-                        @if($item->bio)
-                        <div class="mt-6">
-                            <p class="text-gray-500 font-semibold text-sm mb-3">Biodata</p>
-                            <div class="text-gray-700 prose prose-lg max-w-none bg-white p-6 rounded border border-gray-200 leading-relaxed">
-                                {!! nl2br(e($item->bio)) !!}
-                            </div>
-                        </div>
-                        @endif
-
-                        <!-- Photo -->
-                        @if($item->photo_path)
-                        <div class="mt-6">
-                            <p class="text-gray-500 font-semibold text-sm mb-3">Foto</p>
-                            <div class="bg-white p-4 rounded border border-gray-200">
-                                <img src="{{ asset('storage/' . $item->photo_path) }}" alt="{{ $item->name }}" class="max-w-sm rounded" style="max-height: 300px; object-fit: cover;">
-                            </div>
-                        </div>
-                        @endif
-
-                        <!-- Photo Link -->
-                        @if($item->photo_link)
-                        <div class="mt-6">
-                            <p class="text-gray-500 font-semibold text-sm mb-3">Link Foto</p>
-                            <div class="bg-white p-4 rounded border border-gray-200">
-                                <a href="{{ $item->photo_link }}" target="_blank" class="text-teal-600 hover:underline break-all">
-                                    {{ $item->photo_link }}
-                                </a>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-
-                    <!-- Tombol Aksi -->
-                    <div class="flex justify-end gap-3 pt-6 border-t border-gray-300">
-                        <button onclick="editStaff({{ $item->id }})" class="px-5 py-2 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded font-semibold transition-colors flex items-center gap-2">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button onclick="deleteStaff({{ $item->id }}, '{{ $item->name }}')" class="px-5 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded font-semibold transition-colors flex items-center gap-2">
-                            <i class="fas fa-trash"></i> Hapus
-                        </button>
-                    </div>
+                            </td>
+                            <td class="px-8 py-4 whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <x-button variant="ghost" size="sm" icon="edit" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" onclick="editStaff({{ $item->id }})">Edit</x-button>
+                                    <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteStaffModal', '{{ $item->name }}', '/admin/staff-of-month/{{ $item->id }}')">Hapus</x-button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-8 py-20 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-user-tie text-gray-100 text-6xl mb-4"></i>
+                                    <p class="text-gray-400 italic font-medium">Belum ada data staff of month.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            @if($items->hasPages())
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    {{ $items->links() }}
                 </div>
-                @endforeach
             @endif
         </div>
 
-        <!-- Modal untuk form create -->
-        <div id="create-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Tambah Staff Of Month</h3>
-                            <button id="close-create-modal-btn" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
-                        </div>
-                        <form id="create-form" method="POST" class="space-y-4" enctype="multipart/form-data">
-                            @csrf
 
+        <!-- Modal Create -->
+        <div id="create-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-teal-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-plus text-teal-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Tambah Staff</h3>
+                            <p class="text-xs text-gray-500">Input data penghargaan baru</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('create-staff-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 max-h-[75vh] overflow-y-auto font-cairo">
+                    <form id="create-form" method="POST" action="{{ route('admin.staff-of-month.store') }}" class="space-y-6" enctype="multipart/form-data">
+                        @csrf
+                        <div class="space-y-5">
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Nama</label>
-                                <input type="text" id="create-name" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <input type="text" id="create-name" name="name" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Nama Lengkap Staff">
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Posisi</label>
-                                <select id="create-position" name="position" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Posisi / Jabatan <span class="text-red-500">*</span></label>
+                                <select id="create-position" name="position" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');">
                                     <option value="">-- Pilih Posisi --</option>
                                     @foreach($jabatans as $jabatan)
                                     <option value="{{ $jabatan->name }}">{{ $jabatan->name }}</option>
@@ -257,82 +246,79 @@
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Bulan</label>
-                                    <input type="number" id="create-month" name="month" min="1" max="12" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Bulan</label>
+                                    <input type="number" id="create-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="1-12">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Tahun</label>
-                                    <input type="number" id="create-year" name="year" min="2000" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun</label>
+                                    <input type="number" id="create-year" name="year" min="2026" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="2026">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Biodata</label>
-                                <textarea id="create-bio" name="bio" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Biodata / Kutipan</label>
+                                <textarea id="create-bio" name="bio" rows="3" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Kata-kata mutiara atau biodata singkat..."></textarea>
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
-                                    <input type="file" id="create-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'create-photo-preview', 'create-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
-                                    
-                                    <div id="create-photo-preview" class="mb-3" style="display: none;"></div>
-                                    
-                                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
-                                        <button type="button" id="create-crop-btn" onclick="openImageCropper(document.getElementById('create-photo'), document.getElementById('create-photo-preview'))" class="crop-button-standard" style="display: none;">
-                                            ✂️ Edit & Crop Foto
-                                    </button>
+                            <div class="bg-gray-50/80 p-6 rounded-3xl border-2 border-dashed border-gray-100 transition-all hover:border-teal-400 group">
+                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 group-hover:text-teal-600 transition-colors">🖼️ Foto Staff</label>
+                                <input type="file" id="create-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'create-photo-preview', 'create-crop-btn')" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-teal-100 file:text-teal-700 hover:file:bg-teal-200 cursor-pointer mb-4">
+                                
+                                <div id="create-photo-preview" class="mb-4 rounded-2xl overflow-hidden shadow-md" style="display: none;"></div>
+                                
+                                <div class="flex justify-center">
+                                    <x-button variant="secondary" size="sm" type="button" id="create-crop-btn" onclick="openImageCropper(document.getElementById('create-photo'), document.getElementById('create-photo-preview'))" class="hidden rounded-xl font-bold bg-white border-2 border-teal-100 text-teal-600 hover:bg-teal-50">
+                                        ✂️ Crop / Edit Foto
+                                    </x-button>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop</p>
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Link Foto (Optional)</label>
-                                <input type="url" id="create-photo_link" name="photo_link" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
+                                <input type="checkbox" id="create-is_active" name="is_active" value="1" checked class="w-5 h-5 text-teal-600 rounded-lg focus:ring-teal-500 cursor-pointer border-gray-300">
+                                <label for="create-is_active" class="text-sm font-bold text-gray-700 cursor-pointer select-none tracking-tight">Aktifkan Profile di Halaman Utama</label>
                             </div>
+                        </div>
 
-                            <div class="flex items-center">
-                                <input type="checkbox" id="create-is_active" name="is_active" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                                <label for="create-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
-                            </div>
-
-                            <div class="flex justify-end gap-3 pt-4">
-                                <button type="button" onclick="document.getElementById('create-staff-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                    Batal
-                                </button>
-                                <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                            <x-button variant="secondary" size="md" type="button" onclick="document.getElementById('create-staff-modal').classList.add('hidden')" class="rounded-xl font-bold">Batal</x-button>
+                            <x-button variant="primary" size="md" icon="check" type="submit" class="rounded-xl font-bold shadow-lg shadow-teal-100">Simpan Staff</x-button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Modal untuk form edit -->
-        <div id="edit-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Edit Staff Of Month</h3>
-                            <button id="close-edit-modal-btn" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
+        <!-- Modal Edit -->
+        <div id="edit-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-orange-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-edit text-orange-600"></i>
                         </div>
-                        <form id="edit-form" method="POST" class="space-y-4" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Perbarui Staff</h3>
+                            <p class="text-xs text-gray-500">Edit data penghargaan staff</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('edit-staff-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 max-h-[75vh] overflow-y-auto font-cairo">
+                    <form id="edit-form" method="POST" class="space-y-6" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="space-y-5">
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Nama</label>
-                                <input type="text" id="edit-name" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <input type="text" id="edit-name" name="name" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Posisi</label>
-                                <select id="edit-position" name="position" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Posisi / Jabatan <span class="text-red-500">*</span></label>
+                                <select id="edit-position" name="position" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');">
                                     <option value="">-- Pilih Posisi --</option>
                                     @foreach($jabatans as $jabatan)
                                     <option value="{{ $jabatan->name }}">{{ $jabatan->name }}</option>
@@ -342,190 +328,128 @@
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Bulan</label>
-                                    <input type="number" id="edit-month" name="month" min="1" max="12" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Bulan</label>
+                                    <input type="number" id="edit-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Tahun</label>
-                                    <input type="number" id="edit-year" name="year" min="2000" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun</label>
+                                    <input type="number" id="edit-year" name="year" min="2026" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Biodata</label>
-                                <textarea id="edit-bio" name="bio" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Biodata / Kutipan</label>
+                                <textarea id="edit-bio" name="bio" rows="3" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium"></textarea>
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
+                            <div class="bg-gray-50/80 p-6 rounded-3xl border-2 border-dashed border-gray-100 transition-all hover:border-orange-400 group">
+                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 group-hover:text-orange-600 transition-colors">🖼️ Foto Staff</label>
                                 
                                 <!-- Foto Existing -->
-                                <div id="edit-existing-photo-container" class="mb-4" style="display: none;">
-                                    <p class="text-sm text-gray-600 mb-2">Foto Sekarang:</p>
-                                    <div class="bg-white p-3 rounded border border-gray-200 mb-3">
-                                        <img id="edit-existing-photo-img" src="" alt="Foto Staff" class="max-w-xs rounded" style="max-height: 200px; object-fit: cover;">
+                                <div id="edit-existing-photo-container" class="mb-6 flex flex-col items-center" style="display: none;">
+                                    <div class="relative group/photo rounded-2xl overflow-hidden shadow-lg border-4 ring-4 ring-white border-white mb-4">
+                                        <img id="edit-existing-photo-img" src="" alt="Foto Staff" class="w-32 h-40 object-cover">
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button type="button" onclick="deleteExistingPhoto()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 transition-all shadow-lg hover:scale-110" title="Hapus foto sekarang">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button type="button" id="edit-delete-photo-btn" onclick="deleteExistingPhoto()" class="w-full px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded font-semibold transition-colors mb-3">
-                                        <i class="fas fa-trash mr-2"></i> Hapus Foto Ini
-                                    </button>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter italic">Foto Tersimpan</p>
                                 </div>
                                 
-                                <!-- Upload Foto Baru -->
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
-                                    <input type="file" id="edit-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'edit-photo-preview', 'edit-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
-                                    
-                                    <div id="edit-photo-preview" class="mb-3" style="display: none;"></div>
-                                    
-                                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
-                                        <button type="button" id="edit-crop-btn" onclick="openImageCropper(document.getElementById('edit-photo'), document.getElementById('edit-photo-preview'))" class="crop-button-standard" style="display: none;">
-                                            ✂️ Edit & Crop Foto
-                                        </button>
-                                    </div>
-                                    <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop - Kosongkan jika tidak ingin mengubah</p>
+                                <input type="file" id="edit-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'edit-photo-preview', 'edit-crop-btn')" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200 cursor-pointer mb-4">
+                                
+                                <div id="edit-photo-preview" class="mb-4 rounded-2xl overflow-hidden shadow-md flex justify-center" style="display: none;"></div>
+                                
+                                <div class="flex justify-center">
+                                    <x-button variant="secondary" size="sm" type="button" id="edit-crop-btn" onclick="openImageCropper(document.getElementById('edit-photo'), document.getElementById('edit-photo-preview'))" class="hidden rounded-xl font-bold bg-white border-2 border-orange-100 text-orange-600 hover:bg-orange-50">
+                                        ✂️ Crop / Edit Foto
+                                    </x-button>
                                 </div>
+                            </div>
                             
                             <!-- Hidden input untuk mark photo as deleted -->
                             <input type="hidden" id="edit-delete-photo-flag" name="delete_photo" value="0">
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Link Foto (Optional)</label>
-                                <input type="url" id="edit-photo_link" name="photo_link" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
+                                <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-5 h-5 text-orange-600 rounded-lg focus:ring-orange-500 cursor-pointer border-gray-300">
+                                <label for="edit-is_active" class="text-sm font-bold text-gray-700 cursor-pointer select-none tracking-tight">Aktifkan Profile di Halaman Utama</label>
                             </div>
+                        </div>
 
-                            <div class="flex items-center">
-                                <input type="checkbox" id="edit-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                                <label for="edit-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
-                            </div>
-
-                            <div class="flex justify-end gap-3 pt-4">
-                                <button type="button" onclick="document.getElementById('edit-staff-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                    Batal
-                                </button>
-                                <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
+                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                            <x-button variant="secondary" size="md" type="button" onclick="document.getElementById('edit-staff-modal').classList.add('hidden')" class="rounded-xl font-bold">Batal</x-button>
+                            <x-button variant="primary" size="md" icon="check" type="submit" class="rounded-xl font-bold shadow-lg shadow-orange-100 bg-orange-600 hover:bg-orange-700">Simpan Perubahan</x-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal untuk manage jabatan -->
-        <div id="manage-jabatan-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Kelola Posisi/Jabatan</h3>
-                            <button id="close-jabatan-modal-btn" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
+        <!-- Modal Manage Jabatan -->
+        <div id="manage-jabatan-modal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-indigo-600"></i>
                         </div>
-
-                        <!-- Form Tambah Jabatan -->
-                        <div class="mb-6 pb-6 border-b border-gray-200">
-                            <h4 class="text-lg font-semibold mb-4 text-gray-800">Tambah Posisi Baru</h4>
-                            <form id="add-jabatan-form" action="{{ route('admin.staff-of-month.store-jabatan') }}" method="POST" class="space-y-4">
-                                @csrf
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Nama Posisi</label>
-                                    <input type="text" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Contoh: Pustakawan, Satpam, dll">
-                                </div>
-                                <button type="submit" class="w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                    Tambah Posisi
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Daftar Jabatan -->
                         <div>
-                            <h4 class="text-lg font-semibold mb-4 text-gray-800">Posisi yang Tersedia</h4>
-                            @if($jabatans->isEmpty())
-                                <p class="text-gray-500 text-center py-4">Belum ada posisi</p>
-                            @else
-                                <div class="space-y-2">
-                                    @foreach($jabatans as $jab)
-                                    <div class="flex items-center justify-between bg-gray-50 p-4 rounded border border-gray-200">
-                                        <span class="text-gray-800 font-medium">{{ $jab->name }}</span>
-                                        <button onclick="deleteJabatan({{ $jab->id }}, '{{ $jab->name }}')" class="px-3 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded text-sm font-semibold transition-colors">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </div>
-                                    @endforeach
+                            <h3 class="text-xl font-bold text-gray-900">Kelola Posisi</h3>
+                            <p class="text-xs text-gray-500">Atur daftar jabatan staff</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('manage-jabatan-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-8 max-h-[75vh] overflow-y-auto font-cairo">
+                    <!-- Form Tambah Jabatan -->
+                    <div class="mb-8 p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i> Tambah Posisi Baru
+                        </h4>
+                        <form id="add-jabatan-form" action="{{ route('admin.staff-of-month.store-jabatan') }}" method="POST" class="flex gap-2">
+                            @csrf
+                            <input type="text" name="name" required class="flex-1 border-2 border-white rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all font-medium placeholder:text-gray-300 shadow-sm" placeholder="Contoh: Pustakawan">
+                            <x-button variant="primary" size="md" type="submit" class="rounded-2xl font-bold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100">Tambah</x-button>
+                        </form>
+                    </div>
+
+                    <!-- Daftar Jabatan -->
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-4 px-2 font-bold italic">Posisi Terdaftar</h4>
+                        @if($jabatans->isEmpty())
+                            <div class="text-center py-10 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100">
+                                <i class="fas fa-folder-open text-gray-200 text-3xl mb-2"></i>
+                                <p class="text-gray-400 text-xs italic">Belum ada posisi terdaftar</p>
+                            </div>
+                        @else
+                            <div class="grid grid-cols-1 gap-3">
+                                @foreach($jabatans as $jab)
+                                <div class="group flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all duration-300">
+                                    <span class="text-gray-700 font-bold px-2">{{ $jab->name }}</span>
+                                    <x-button variant="ghost-danger" size="sm" icon="trash" onclick="openDeleteModal('deleteJabatanModal', '{{ $jab->name }}', '/admin/staff-of-month/jabatan/{{ $jab->id }}')" class="opacity-0 group-hover:opacity-100 transition-opacity rounded-xl font-bold">Hapus</x-button>
                                 </div>
-                            @endif
-                        </div>
-
-                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-300 mt-6">
-                            <button type="button" onclick="document.getElementById('manage-jabatan-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                Tutup
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal untuk konfirmasi hapus jabatan -->
-        <div id="delete-jabatan-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full">
-                    <div class="p-8">
-                        <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-6">
-                            <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-900 text-center mb-3">Hapus Posisi?</h3>
-                        <p class="text-gray-700 text-center mb-2 text-lg font-semibold" id="delete-jabatan-name"></p>
-                        <p class="text-sm text-gray-500 text-center mb-8">Posisi yang dihapus tidak bisa dikembalikan.</p>
-                        
-                        <form id="delete-jabatan-form" method="POST" class="space-y-0">
-                            @csrf
-                            @method('DELETE')
-                            
-                            <div class="flex gap-4">
-                                <button type="button" onclick="document.getElementById('delete-jabatan-modal').classList.add('hidden')" class="flex-1 px-5 py-3 border-2 border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors text-lg">
-                                    Batal
-                                </button>
-                                <button type="submit" class="flex-1 px-5 py-3 bg-red-600 text-white rounded hover:bg-red-700 font-semibold transition-colors text-lg">
-                                    Hapus
-                                </button>
+                                @endforeach
                             </div>
-                        </form>
+                        @endif
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Modal untuk konfirmasi hapus staff -->
-        <div id="delete-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full">
-                    <div class="p-8">
-                        <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-6">
-                            <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-900 text-center mb-3">Hapus Staff?</h3>
-                        <p class="text-gray-700 text-center mb-2 text-lg font-semibold" id="delete-name-confirm"></p>
-                        <p class="text-sm text-gray-500 text-center mb-8">Tindakan ini tidak dapat dibatalkan.</p>
-                        
-                        <form id="delete-form" method="POST" class="space-y-0">
-                            @csrf
-                            @method('DELETE')
-                            
-                            <div class="flex gap-4">
-                                <button type="button" onclick="document.getElementById('delete-staff-modal').classList.add('hidden')" class="flex-1 px-5 py-3 border-2 border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors text-lg">
-                                    Batal
-                                </button>
-                                <button type="submit" class="flex-1 px-5 py-3 bg-red-600 text-white rounded hover:bg-red-700 font-semibold transition-colors text-lg">
-                                    Hapus
-                                </button>
-                            </div>
-                        </form>
+                    <div class="flex justify-end pt-8">
+                        <x-button variant="secondary" size="md" type="button" onclick="document.getElementById('manage-jabatan-modal').classList.add('hidden')" class="rounded-xl font-bold">Tutup</x-button>
                     </div>
                 </div>
             </div>
-        </div>
+
+
+
 
         <a href="{{ route('home') }}" class="inline-block mt-8 text-teal-600 hover:underline">
             ← Kembali
@@ -533,6 +457,10 @@
     </div>
   </div>
 </div>
+
+<!-- Delete Modal Components -->
+@component('components.delete-modal', ['id' => 'deleteStaffModal', 'title' => 'Hapus Staff?']) @endcomponent
+@component('components.delete-modal', ['id' => 'deleteJabatanModal', 'title' => 'Hapus Posisi?']) @endcomponent
 
 <!-- Toast Container -->
 <div class="toast-container" id="toast-container"></div>
@@ -690,25 +618,7 @@ function deleteExistingPhoto() {
     }
 }
 
-function deleteStaff(id, name) {
-    const deleteModal = document.getElementById('delete-staff-modal');
-    const deleteForm = document.getElementById('delete-form');
-    
-    document.getElementById('delete-name-confirm').textContent = `Yakin ingin menghapus "${name}"?`;
-    deleteForm.action = `/admin/staff-of-month/${id}`;
-    
-    deleteModal.classList.remove('hidden');
-}
 
-function deleteJabatan(id, name) {
-    const deleteJabatanModal = document.getElementById('delete-jabatan-modal');
-    const deleteJabatanForm = document.getElementById('delete-jabatan-form');
-    
-    document.getElementById('delete-jabatan-name').textContent = `Yakin ingin menghapus posisi "${name}"?`;
-    deleteJabatanForm.action = `/admin/staff-of-month/jabatan/${id}`;
-    
-    deleteJabatanModal.classList.remove('hidden');
-}
 
 // Form Submission Handlers with Toast Notifications
 document.addEventListener('DOMContentLoaded', function() {
@@ -802,4 +712,9 @@ window.addEventListener('load', function() {
 
 {{-- Include Image Cropper JS --}}
 <script src="{{ asset('js/image-cropper.js') }}"></script>
+<script>
+    // Setup Click-Outside Handlers for Delete Modals
+    setupDeleteModalClickOutside('deleteStaffModal');
+    setupDeleteModalClickOutside('deleteJabatanModal');
+</script>
 @endsection

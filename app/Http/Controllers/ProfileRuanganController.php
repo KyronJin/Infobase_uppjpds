@@ -9,12 +9,47 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileRuanganController extends Controller
 {
+    private function rules()
+    {
+        return [
+            'room_name'   => 'required|string|max:255',
+            'floor'       => 'nullable|integer|min:1|max:7',
+            'capacity'    => 'nullable|integer',
+            'description' => 'nullable|string',
+            'slot_1_image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'slot_2_image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'slot_3_image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'is_active'   => 'nullable|in:0,1,on,true,false',
+        ];
+    }
+
+    private function saveImages(Request $request, ProfileRuangan $profileRuangan, $replace = false)
+    {
+        for ($i = 1; $i <= 3; $i++) {
+            $slotName = "slot_{$i}_image";
+            if ($request->hasFile($slotName)) {
+                if ($replace) {
+                    $oldImage = $profileRuangan->images()->where('slot', $i)->first();
+                    if ($oldImage) {
+                        Storage::disk('public')->delete($oldImage->image_path);
+                        $oldImage->delete();
+                    }
+                }
+                $path = $request->file($slotName)->store('profile_ruangan_images', 'public');
+                ProfileRuanganImage::create([
+                    'profile_ruangan_id' => $profileRuangan->id,
+                    'slot'               => $i,
+                    'image_path'         => $path,
+                ]);
+            }
+        }
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
-        
         $query = ProfileRuangan::with('images');
-        
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('room_name', 'like', "%{$search}%")
@@ -22,8 +57,15 @@ class ProfileRuanganController extends Controller
                   ->orWhere('floor', 'like', "%{$search}%");
             });
         }
-        
-        $items = $query->orderBy('created_at', 'desc')->paginate(12);
+
+        $items = $query->latest()->paginate(12);
+
+        // Bersihkan description sebelum dikirim ke view
+        $items->getCollection()->transform(function ($item) {
+            $item->description = strip_tags($item->description);
+            return $item;
+        });
+
         return view('admin.profile.index', compact('items', 'search'));
     }
 
@@ -34,166 +76,71 @@ class ProfileRuanganController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'room_name' => 'required|string|max:255',
-            'floor' => 'nullable|integer|min:1|max:7',
-            'capacity' => 'nullable|integer',
-            'description' => 'nullable|string',
-            'slot_1_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'slot_2_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'slot_3_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'nullable|in:0,1,on,true,false',
-        ], [
-            'room_name.required' => 'Nama ruangan harus diisi.',
-            'room_name.string' => 'Nama ruangan harus berupa teks.',
-            'room_name.max' => 'Nama ruangan maksimal 255 karakter.',
-            'floor.integer' => 'Lantai harus berupa angka.',
-            'floor.min' => 'Lantai minimal 1.',
-            'floor.max' => 'Lantai maksimal 7.',
-            'capacity.integer' => 'Kapasitas harus berupa angka.',
-            'description.string' => 'Deskripsi harus berupa teks.',
-            'slot_1_image.image' => 'File gambar 1 harus berupa gambar.',
-            'slot_1_image.mimes' => 'Format gambar 1 harus JPEG, PNG, JPG, atau GIF.',
-            'slot_1_image.max' => 'Ukuran gambar 1 maksimal 2MB.',
-            'slot_2_image.image' => 'File gambar 2 harus berupa gambar.',
-            'slot_2_image.mimes' => 'Format gambar 2 harus JPEG, PNG, JPG, atau GIF.',
-            'slot_2_image.max' => 'Ukuran gambar 2 maksimal 2MB.',
-            'slot_3_image.image' => 'File gambar 3 harus berupa gambar.',
-            'slot_3_image.mimes' => 'Format gambar 3 harus JPEG, PNG, JPG, atau GIF.',
-            'slot_3_image.max' => 'Ukuran gambar 3 maksimal 2MB.',
-        ]);
-
-        $data['is_active'] = $request->has('is_active') ? true : false;
+        $data = $request->validate($this->rules());
+        $data['is_active'] = $request->has('is_active');
+        $data['description'] = strip_tags($data['description'] ?? '');
 
         $profileRuangan = ProfileRuangan::create($data);
-
-        // Handle slot image uploads (maksimal 3)
-        for ($i = 1; $i <= 3; $i++) {
-            $slotName = "slot_{$i}_image";
-            if ($request->hasFile($slotName)) {
-                $image = $request->file($slotName);
-                $path = $image->store('profile_ruangan_images', 'public');
-                ProfileRuanganImage::create([
-                    'profile_ruangan_id' => $profileRuangan->id,
-                    'image_path' => $path,
-                ]);
-            }
-        }
+        $this->saveImages($request, $profileRuangan);
 
         return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil ditambahkan!');
     }
 
-    public function edit(ProfileRuangan $profile_ruangan)
+    public function edit(ProfileRuangan $profileRuangan)
     {
-        // If JSON is requested, return JSON
+        $profileRuangan->load('images');
+        $profileRuangan->description = strip_tags($profileRuangan->description);
+
         if (request()->wantsJson()) {
-            return response()->json($profile_ruangan);
+            return response()->json($profileRuangan);
         }
-        
-        $profile_ruangan->load('images');
-        return view('admin.profile.edit', compact('profile_ruangan'));
+        return view('admin.profile.edit', compact('profileRuangan'));
     }
 
-    public function editModal(ProfileRuangan $profile_ruangan)
+    public function update(Request $request, ProfileRuangan $profileRuangan)
     {
-        $profile_ruangan->load('images');
-        return response()->json($profile_ruangan);
+        $data = $request->validate($this->rules());
+        $data['is_active'] = $request->has('is_active');
+        $data['description'] = strip_tags($data['description'] ?? '');
+
+        $profileRuangan->update($data);
+        $this->saveImages($request, $profileRuangan, true);
+
+        return redirect()->route('admin.profile.edit', $profileRuangan->id)->with('success', '✓ Profile ruangan berhasil diperbarui!');
     }
 
-    public function update(Request $request, ProfileRuangan $profile_ruangan)
+    public function destroy(ProfileRuangan $profileRuangan)
     {
-        $data = $request->validate([
-            'room_name' => 'required|string|max:255',
-            'floor' => 'nullable|integer|min:1|max:7',
-            'capacity' => 'nullable|integer',
-            'description' => 'nullable|string',
-            'slot_1_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'slot_2_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'slot_3_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'nullable|in:0,1,on,true,false',
-        ], [
-            'room_name.required' => 'Nama ruangan harus diisi.',
-            'room_name.string' => 'Nama ruangan harus berupa teks.',
-            'room_name.max' => 'Nama ruangan maksimal 255 karakter.',
-            'floor.integer' => 'Lantai harus berupa angka.',
-            'floor.min' => 'Lantai minimal 1.',
-            'floor.max' => 'Lantai maksimal 7.',
-            'capacity.integer' => 'Kapasitas harus berupa angka.',
-            'description.string' => 'Deskripsi harus berupa teks.',
-            'slot_1_image.image' => 'File gambar 1 harus berupa gambar.',
-            'slot_1_image.mimes' => 'Format gambar 1 harus JPEG, PNG, JPG, atau GIF.',
-            'slot_1_image.max' => 'Ukuran gambar 1 maksimal 2MB.',
-            'slot_2_image.image' => 'File gambar 2 harus berupa gambar.',
-            'slot_2_image.mimes' => 'Format gambar 2 harus JPEG, PNG, JPG, atau GIF.',
-            'slot_2_image.max' => 'Ukuran gambar 2 maksimal 2MB.',
-            'slot_3_image.image' => 'File gambar 3 harus berupa gambar.',
-            'slot_3_image.mimes' => 'Format gambar 3 harus JPEG, PNG, JPG, atau GIF.',
-            'slot_3_image.max' => 'Ukuran gambar 3 maksimal 2MB.',
-        ]);
-
-        $data['is_active'] = $request->has('is_active') ? true : false;
-
-        $profile_ruangan->update($data);
-
-        // Handle slot image uploads (maksimal 3)
-        for ($i = 1; $i <= 3; $i++) {
-            $slotName = "slot_{$i}_image";
-            if ($request->hasFile($slotName)) {
-                // Delete old image in this slot if exists
-                $oldImage = $profile_ruangan->images()->skip($i - 1)->first();
-                if ($oldImage) {
-                    Storage::disk('public')->delete($oldImage->image_path);
-                    $oldImage->delete();
-                }
-                
-                // Save new image
-                $image = $request->file($slotName);
-                $path = $image->store('profile_ruangan_images', 'public');
-                ProfileRuanganImage::create([
-                    'profile_ruangan_id' => $profile_ruangan->id,
-                    'image_path' => $path,
-                ]);
-            }
-        }
-
-        return redirect()->route('admin.profile.edit', $profile_ruangan->id)->with('success', '✓ Profile ruangan berhasil diperbarui!');
-    }
-
-    public function destroy(ProfileRuangan $profile_ruangan)
-    {
-        // Hapus images dari storage
-        foreach ($profile_ruangan->images as $image) {
+        foreach ($profileRuangan->images as $image) {
             Storage::disk('public')->delete($image->image_path);
             $image->delete();
         }
-        $profile_ruangan->delete();
+        $profileRuangan->delete();
         return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil dihapus!');
     }
 
     public function publicIndex()
     {
-        $items = ProfileRuangan::with('images')->where('is_active', true)->orderBy('created_at', 'desc')->get();
+        $items = ProfileRuangan::with('images')->where('is_active', true)->latest()->get();
+
+        // Bersihkan description sebelum dikirim ke view
+        $items->transform(function ($item) {
+            $item->description = strip_tags($item->description);
+            return $item;
+        });
+
         return view('infobase.profile-ruangan', compact('items'));
     }
 
     public function deleteImage(ProfileRuanganImage $image)
     {
         $profileRuanganId = $image->profile_ruangan_id;
-        
-        // Hapus file dari storage
         Storage::disk('public')->delete($image->image_path);
-        
-        // Hapus record dari database
         $image->delete();
-        
-        // If AJAX request, return JSON
+
         if (request()->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Gambar berhasil dihapus'
-            ]);
+            return response()->json(['success' => true, 'message' => 'Gambar berhasil dihapus']);
         }
-        
         return redirect()->route('admin.profile.edit', $profileRuanganId)->with('success', '✓ Gambar berhasil dihapus!');
     }
 }

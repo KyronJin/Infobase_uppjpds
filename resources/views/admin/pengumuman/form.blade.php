@@ -45,12 +45,8 @@
     </div>
 
     <div class="flex justify-end space-x-3">
-        <button type="button" id="cancel-btn" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">
-            Batal
-        </button>
-        <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700">
-            Buat Pengumuman
-        </button>
+        <x-button variant="secondary" size="md" type="button" id="cancel-btn">Batal</x-button>
+        <x-button variant="primary" size="md" icon="check" type="submit">Buat Pengumuman</x-button>
     </div>
 </form>
 

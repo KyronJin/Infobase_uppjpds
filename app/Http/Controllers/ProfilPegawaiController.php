@@ -60,7 +60,7 @@ class ProfilPegawaiController extends Controller
             'nama'       => 'required|string|max:255',
             'jabatan_id' => 'required|exists:jabatans,id',
             'deskripsi'  => 'required|string',
-            'foto'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
         ], [
             'nama.required' => 'Nama pegawai harus diisi.',
             'nama.string' => 'Nama pegawai harus berupa teks.',
@@ -71,7 +71,7 @@ class ProfilPegawaiController extends Controller
             'deskripsi.string' => 'Deskripsi pegawai harus berupa teks.',
             'foto.image' => 'File harus berupa gambar.',
             'foto.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-            'foto.max' => 'Ukuran gambar maksimal 2MB.',
+            'foto.max' => 'Ukuran gambar maksimal 20MB.',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -111,7 +111,7 @@ class ProfilPegawaiController extends Controller
                 'nama'       => 'required|string|max:255',
                 'jabatan_id' => 'required|exists:jabatans,id',
                 'deskripsi'  => 'required|string',
-                'foto'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'foto'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
             ], [
                 'nama.required' => 'Nama pegawai harus diisi.',
                 'nama.string' => 'Nama pegawai harus berupa teks.',
@@ -122,7 +122,7 @@ class ProfilPegawaiController extends Controller
                 'deskripsi.string' => 'Deskripsi pegawai harus berupa teks.',
                 'foto.image' => 'File harus berupa gambar.',
                 'foto.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-                'foto.max' => 'Ukuran gambar maksimal 2MB.',
+                'foto.max' => 'Ukuran gambar maksimal 20MB.',
             ]);
 
             if ($request->hasFile('foto')) {

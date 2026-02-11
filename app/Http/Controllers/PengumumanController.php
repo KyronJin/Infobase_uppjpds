@@ -50,8 +50,9 @@ class PengumumanController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
             'published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'status' => 'required|in:active,inactive',
         ], [
             'title.required' => 'Judul pengumuman harus diisi.',
             'title.string' => 'Judul pengumuman harus berupa teks.',
@@ -60,8 +61,10 @@ class PengumumanController extends Controller
             'description.string' => 'Deskripsi pengumuman harus berupa teks.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
-            'image.max' => 'Ukuran gambar maksimal 2 MB.',
+            'image.max' => 'Ukuran gambar maksimal 20 MB.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
+            'status.required' => 'Status harus dipilih.',
+            'status.in' => 'Status harus berupa "active" atau "inactive".',
         ]);
 
         // Handle image upload
@@ -82,19 +85,12 @@ class PengumumanController extends Controller
             });
         }
 
-        // Set default status to active
-        $validated['status'] = 'active';
-
         // Remove image key if it wasn't processed
         unset($validated['image']);
 
         $pengumuman = Pengumuman::create($validated);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', [
-            'title' => '✓ Pengumuman Dibuat',
-            'message' => '"' . $pengumuman->title . '" telah berhasil ditambahkan ke sistem.',
-            'type' => 'success',
-        ]);
+        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman "' . $pengumuman->title . '" telah berhasil ditambahkan ke sistem.');
     }
 
     public function edit(Pengumuman $pengumuman)
@@ -119,7 +115,7 @@ class PengumumanController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
             'published_at' => 'nullable|date_format:Y-m-d\TH:i',
             'status' => 'required|in:active,inactive',
         ], [
@@ -130,7 +126,7 @@ class PengumumanController extends Controller
             'description.string' => 'Deskripsi pengumuman harus berupa teks.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
-            'image.max' => 'Ukuran gambar maksimal 2 MB.',
+            'image.max' => 'Ukuran gambar maksimal 20 MB.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
             'status.required' => 'Status harus dipilih.',
             'status.in' => 'Status harus berupa "active" atau "inactive".',
@@ -156,11 +152,7 @@ class PengumumanController extends Controller
 
         $pengumuman->update($validated);
 
-        return redirect()->route('admin.pengumuman.index')->with('success', [
-            'title' => '✓ Pengumuman Diperbarui',
-            'message' => '"' . $pengumuman->title . '" telah berhasil diperbarui di sistem.',
-            'type' => 'success',
-        ]);
+        return redirect()->route('admin.pengumuman.index')->with('success', '✓ Pengumuman "' . $pengumuman->title . '" telah berhasil diperbarui di sistem.');
     }
 
     public function destroy(Pengumuman $pengumuman)

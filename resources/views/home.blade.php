@@ -2,33 +2,35 @@
 
 @section('content')<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-    .hero-swiper .swiper-button-prev,
-    .hero-swiper .swiper-button-next {
-        color: white;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 8px;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(4px);
-        transition: all 0.3s ease;
+    * {
+        box-sizing: border-box;
     }
 
-    .hero-swiper .swiper-button-prev:hover,
-    .hero-swiper .swiper-button-next:hover {
-        background: rgba(255, 255, 255, 0.4);
-        transform: scale(1.1);
+    /* Hero Section Styles */
+    .hero-section {
+        height: 100vh;
+        overflow: hidden;
     }
 
-    .hero-swiper .swiper-button-prev::after,
-    .hero-swiper .swiper-button-next::after {
-        content: '';
-        display: none;
+    .hero-swiper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 10;
     }
 
     .hero-swiper .swiper-pagination {
@@ -36,6 +38,7 @@
         display: flex;
         gap: 8px;
         justify-content: center;
+        z-index: 30;
     }
 
     .hero-swiper .swiper-pagination-bullet {
@@ -77,28 +80,23 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Swiper untuk background carousel saja - tanpa update text
         const swiper = new Swiper('.hero-swiper', {
             loop: true,
             autoplay: {
-                delay: 6000,
+                delay: 3000, // Geser otomatis tiap 3 detik
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
             },
             effect: 'fade',
             fadeEffect: { crossFade: true },
-            speed: 1200,
+            speed: 1000,
             slidesPerView: 1,
             centeredSlides: true,
             
-            // Navigation
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-
             // Pagination
             pagination: {
-                el: '.swiper-pagination',
+                el: '.hero-swiper .swiper-pagination',
                 clickable: true,
                 dynamicBullets: false,
             },
@@ -108,67 +106,41 @@
                 enabled: true,
             },
 
+            // Touch control (swipe)
+            touchEventsTarget: 'container',
+            simulateTouch: true,
+            grabCursor: true,
+
             // Add accessibility
             a11y: {
                 enabled: true,
-            },
+            }
         });
     });
 </script>
 
-    <!-- Hero Section -->
-    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <!-- Hero Section - Swiper carousel only (no text) -->
+    <section class="hero-section">
+        <!-- Swiper untuk background images -->
         <div class="hero-swiper swiper w-full h-full">
             <div class="swiper-wrapper">
-                <!-- Slide 1 -->
-                <div class="swiper-slide relative">
-                    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&h=1080&fit=crop" alt="Library Interior" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-center text-white animate-fadeInUp">
-                            <h1 class="text-6xl lg:text-7xl font-extrabold mb-6">Selamat Datang</h1>
-                            <p class="text-xl lg:text-2xl mb-8 max-w-4xl mx-auto">di Perpustakaan Taman Ismail Marzuki</p>
-                            <a href="#announcements" class="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg">
-                                <i class="fas fa-arrow-down mr-2"></i>Jelajahi
-                            </a>
+                @if(isset($heroImages) && $heroImages->count())
+                    {{-- Display hero images from database --}}
+                    @foreach($heroImages as $hero)
+                        <div class="swiper-slide relative" style="background-image: url('{{ asset($hero->image_path) }}');">
+                            <div class="hero-overlay"></div>
                         </div>
-                    </div>
-                </div>
-                <!-- Slide 2 -->
-                <div class="swiper-slide relative">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop" alt="Reading Space" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-center text-white animate-fadeInUp">
-                            <h1 class="text-6xl lg:text-7xl font-extrabold mb-6">Temukan Pengetahuan</h1>
-                            <p class="text-xl lg:text-2xl mb-8 max-w-4xl mx-auto">Koleksi lengkap buku dan sumber daya untuk semua kebutuhan Anda</p>
-                            <a href="{{ route('infobase.pengumuman') }}" class="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg">
-                                <i class="fas fa-book mr-2"></i>Lihat Pengumuman
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Slide 3 -->
-                <div class="swiper-slide relative">
-                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1920&h=1080&fit=crop" alt="Community Space" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-center text-white animate-fadeInUp">
-                            <h1 class="text-6xl lg:text-7xl font-extrabold mb-6">Bergabunglah</h1>
-                            <p class="text-xl lg:text-2xl mb-8 max-w-4xl mx-auto">Dengan komunitas pembaca dan penikmat budaya di Jakarta</p>
-                            <a href="{{ route('about') }}" class="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg">
-                                <i class="fas fa-users mr-2"></i>Tentang Kami
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                    @endforeach
+                @else
+                    {{-- Default slides if no hero images from database --}}
+                    <div class="swiper-slide relative" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&h=1080&fit=crop');"></div>
+                    <div class="swiper-slide relative" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop');"></div>
+                    <div class="swiper-slide relative" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1920&h=1080&fit=crop');"></div>
+                    <div class="swiper-slide relative" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1920&h=1080&fit=crop');"></div>
+                @endif
             </div>
-            
-            <!-- Navigation -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-            
-            <!-- Pagination -->
+
+            <!-- Pagination - hanya dots, tidak ada tombol next/prev -->
             <div class="swiper-pagination"></div>
         </div>
     </section>

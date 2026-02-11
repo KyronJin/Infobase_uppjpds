@@ -34,15 +34,20 @@ class InfobaseController extends Controller
         ->get();
 
         // Get gallery photos for home page
-        $homePhotos = GalleryPhoto::active()
-            ->whereIn('location', ['home', 'both'])
+        $homePhotos = GalleryPhoto::home()
             ->orderBy('order')
             ->limit(6)
+            ->get();
+
+        // Get hero banner images
+        $heroImages = GalleryPhoto::hero()
+            ->orderBy('order')
             ->get();
 
         return view('home', [
             'latestAnnouncements' => $latestAnnouncements,
             'homePhotos' => $homePhotos,
+            'heroImages' => $heroImages,
             'content' => [],
         ]);
     }

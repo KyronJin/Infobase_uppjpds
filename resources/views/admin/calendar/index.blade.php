@@ -1,37 +1,97 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-24 bg-white pt-28">
+<div class="py-24 bg-white pt-28 font-cairo">
   <div class="max-w-6xl mx-auto px-6">
     <div class="admin-section">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="h2">Daftar Calendar Events</h1>
-            <button onclick="openCreateModal()" class="admin-button">Buat Event</button>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Calendar Events</h1>
+                <p class="text-gray-500 text-sm mt-1">Kelola agenda kegiatan dan jadwal event perpustakaan.</p>
+            </div>
+            <x-button variant="primary" size="md" icon="plus" onclick="openCreateModal()" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Buat Event</x-button>
         </div>
 
         @if(session('success'))
-            <div class="content-box mb-4">{{ session('success') }}</div>
+            <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-xl mb-6 flex items-center gap-3">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <span class="font-bold">{{ session('success') }}</span>
+            </div>
         @endif
 
-        <div class="grid gap-4">
-            @foreach($items as $item)
-                    <div class="p-4 bg-white rounded-lg shadow-sm">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="h3">{{ $item->title }}</h3>
-                            <p class="text-sm text-gray-600">{{ $item->start_at?->format('d M Y H:i') ?? '-' }} @if($item->location) • {{ $item->location }} @endif</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="editCalendarEvent({{ $item->id }})" class="inline-block px-3 py-1 border rounded hover:bg-gray-50">Edit</button>
-                            <button onclick="deleteCalendarEvent({{ $item->id }}, '{{ $item->title }}')" class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Hapus</button>
-                        </div>
-                    </div>
-                    <div class="mt-3 text-gray-700">{!! nl2br(e($item->description)) !!}</div>
+        <!-- Daftar Calendar Events -->
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
+                        <tr>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Event</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Jadwal</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Lokasi</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-center">Peserta</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-center">Status</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 text-gray-600">
+                        @forelse($items as $item)
+                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
+                            <td class="px-8 py-4">
+                                <div class="font-black text-gray-900 text-base leading-tight">{{ $item->title }}</div>
+                                <div class="text-[10px] text-gray-400 font-medium italic truncate max-w-[200px]">{{ $item->description }}</div>
+                            </td>
+                            <td class="px-8 py-4">
+                                <div class="flex flex-col">
+                                    <span class="text-[11px] font-black uppercase text-teal-600">{{ $item->start_at?->translatedFormat('d F Y') ?? '-' }}</span>
+                                    <span class="text-[10px] font-bold text-gray-400 tracking-tighter">{{ $item->start_at?->format('H:i') ?? '-' }} WIB</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-4">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt text-[10px] text-teal-400"></i>
+                                    <span class="font-bold text-xs">{{ $item->location ?? '-' }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-4 text-center whitespace-nowrap">
+                                <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-black text-gray-600 border border-gray-200">
+                                    {{ $item->participants ?? 0 }} / {{ $item->capacity ?? '∞' }}
+                                </span>
+                            </td>
+                            <td class="px-8 py-4 text-center">
+                                @if($item->is_active)
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
+                                @else
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">OFF</span>
+                                @endif
+                            </td>
+                            <td class="px-8 py-4 whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <x-button variant="ghost" size="sm" icon="edit" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" onclick="editCalendarEvent({{ $item->id }})">Edit</x-button>
+                                    <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteCalendarModal', '{{ $item->title }}', '/admin/calendar/{{ $item->id }}')">Hapus</x-button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-8 py-20 text-center">
+                                <div class="flex flex-col items-center text-gray-200">
+                                    <i class="fas fa-calendar-alt text-6xl mb-4"></i>
+                                    <p class="text-gray-400 italic font-medium">Belum ada calendar events.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            @if($items->hasPages())
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    {{ $items->links() }}
                 </div>
-            @endforeach
+            @endif
         </div>
 
-        <div class="mt-6">{{ $items->links() }}</div>
 
         <!-- Modal Create Event -->
         <div id="createCalendarModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
@@ -81,12 +141,8 @@
                                 </label>
                             </div>
                             <div class="col-span-2 flex justify-end gap-3 pt-4">
-                                <button type="button" onclick="closeModal('createCalendarModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                    Batal
-                                </button>
-                                <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                    Simpan
-                                </button>
+                                <x-button variant="secondary" size="md" type="button" onclick="closeModal('createCalendarModal')">Batal</x-button>
+                                <x-button variant="primary" size="md" type="submit">Simpan</x-button>
                             </div>
                         </form>
                     </div>
@@ -143,12 +199,8 @@
                                 </label>
                             </div>
                             <div class="col-span-2 flex justify-end gap-3 pt-4">
-                                <button type="button" onclick="closeModal('editCalendarModal')" class="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors">
-                                    Batal
-                                </button>
-                                <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-semibold transition-colors">
-                                    Simpan
-                                </button>
+                                <x-button variant="secondary" size="md" type="button" onclick="closeModal('editCalendarModal')">Batal</x-button>
+                                <x-button variant="primary" size="md" type="submit">Simpan</x-button>
                             </div>
                         </form>
                     </div>
@@ -156,35 +208,8 @@
             </div>
         </div>
 
-        <!-- Modal Delete Event -->
-        <div id="deleteCalendarModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full">
-                    <div class="p-8">
-                        <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-6">
-                            <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-900 text-center mb-3">Hapus Event?</h3>
-                        <p class="text-gray-700 text-center mb-2 text-lg font-semibold" id="delete-event-title"></p>
-                        <p class="text-sm text-gray-500 text-center mb-8">Tindakan ini tidak dapat dibatalkan.</p>
-                        
-                        <form id="deleteCalendarForm" method="POST" class="space-y-0">
-                            @csrf
-                            @method('DELETE')
-                            
-                            <div class="flex gap-4">
-                                <button type="button" onclick="closeModal('deleteCalendarModal')" class="flex-1 px-5 py-3 border-2 border-gray-300 rounded text-gray-700 hover:bg-gray-50 font-semibold transition-colors text-lg">
-                                    Batal
-                                </button>
-                                <button type="submit" class="flex-1 px-5 py-3 bg-red-600 text-white rounded hover:bg-red-700 font-semibold transition-colors text-lg">
-                                    Hapus
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Delete Modal Component -->
+        @component('components.delete-modal', ['id' => 'deleteCalendarModal', 'title' => 'Hapus Calendar Event?']) @endcomponent
     </div>
 </div>
 
@@ -222,13 +247,7 @@ function editCalendarEvent(id) {
     .catch(error => console.error('Error:', error));
 }
 
-function deleteCalendarEvent(id, title) {
-    const modal = document.getElementById('deleteCalendarModal');
-    const form = document.getElementById('deleteCalendarForm');
-    document.getElementById('delete-event-title').textContent = `Yakin ingin menghapus "${title}"?`;
-    form.action = `/admin/calendar/${id}`;
-    modal.classList.remove('hidden');
-}
+
 
 // Close modals when clicking outside
 document.getElementById('createCalendarModal')?.addEventListener('click', function(e) {
@@ -239,9 +258,12 @@ document.getElementById('editCalendarModal')?.addEventListener('click', function
     if (e.target === this) closeModal('editCalendarModal');
 });
 
-document.getElementById('deleteCalendarModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('deleteCalendarModal');
-});
+// Setup Click-Outside Handler for Delete Modal
+setupDeleteModalClickOutside('deleteCalendarModal');
+</script>
+
+<script>
+    setupDeleteModalClickOutside('deleteCalendarModal');
 </script>
 @endsection
 
