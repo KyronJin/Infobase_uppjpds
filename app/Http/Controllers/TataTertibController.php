@@ -33,14 +33,10 @@ class TataTertibController extends Controller
 
     public function storeJenis(Request $request)
     {
-        $request->validate(['name' => 'required|string|max:255'], [
-            'name.required' => 'Nama jenis tata tertib harus diisi.',
-            'name.string' => 'Nama jenis tata tertib harus berupa teks.',
-            'name.max' => 'Nama jenis tata tertib maksimal 255 karakter.',
-        ]);
+        $request->validate(['name' => 'required|string|max:255']);
 
         JenisTataTertib::create($request->only('name'));
-        return redirect()->back()->with('success', ' Jenis Tata Tertib berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Jenis Tata Tertib berhasil ditambahkan!');
     }
 
     public function store(Request $request)
@@ -50,20 +46,12 @@ class TataTertibController extends Controller
                 'jenis_tata_tertib_id' => 'required|exists:jenis_tata_tertibs,id',
                 'content' => 'required|string',
                 'is_active' => 'required|in:0,1',
-            ], [
-                'jenis_tata_tertib_id.required' => 'Jenis tata tertib harus dipilih.',
-                'jenis_tata_tertib_id.exists' => 'Jenis tata tertib yang dipilih tidak valid.',
-                'content.required' => 'Konten tata tertib harus diisi.',
-                'content.string' => 'Konten tata tertib harus berupa teks.',
-                'is_active.required' => 'Status harus dipilih.',
-                'is_active.in' => 'Status harus berupa aktif atau tidak aktif.',
             ]);
 
-            // Store as single entry with HTML content (dari WYSIWYG editor)
             TataTertib::create($validated);
 
             return redirect()->route('admin.tata_tertib.index')
-                ->with('success', ' Tata Tertib berhasil ditambahkan!');
+                ->with('success', 'Tata Tertib berhasil ditambahkan!');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Gagal menambahkan tata tertib: ' . $e->getMessage())
@@ -71,8 +59,10 @@ class TataTertibController extends Controller
         }
     }
 
-    public function edit(TataTertib $tata_tertib)
+    public function edit($id)
     {
+        $tata_tertib = TataTertib::findOrFail($id);
+        
         if (request()->wantsJson()) {
             return response()->json($tata_tertib);
         }
@@ -81,26 +71,21 @@ class TataTertibController extends Controller
         return view('admin.tata_tertib.edit', compact('tata_tertib', 'jenis'));
     }
 
-    public function update(Request $request, TataTertib $tata_tertib)
+    public function update(Request $request, $id)
     {
         try {
+            $tata_tertib = TataTertib::findOrFail($id);
+            
             $validated = $request->validate([
                 'jenis_tata_tertib_id' => 'required|exists:jenis_tata_tertibs,id',
                 'content' => 'required|string',
                 'is_active' => 'required|in:0,1',
-            ], [
-                'jenis_tata_tertib_id.required' => 'Jenis tata tertib harus dipilih.',
-                'jenis_tata_tertib_id.exists' => 'Jenis tata tertib yang dipilih tidak valid.',
-                'content.required' => 'Konten tata tertib harus diisi.',
-                'content.string' => 'Konten tata tertib harus berupa teks.',
-                'is_active.required' => 'Status harus dipilih.',
-                'is_active.in' => 'Status harus berupa aktif atau tidak aktif.',
             ]);
 
             $tata_tertib->update($validated);
 
             return redirect()->route('admin.tata_tertib.index')
-                ->with('success', ' Tata Tertib berhasil diperbarui!');
+                ->with('success', 'Tata Tertib berhasil diperbarui!');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Gagal memperbarui tata tertib: ' . $e->getMessage())
@@ -108,17 +93,29 @@ class TataTertibController extends Controller
         }
     }
 
-    public function destroy(TataTertib $tata_tertib)
-    {
-        $tata_tertib->delete();
-        return redirect()->route('admin.tata_tertib.index')
-            ->with('success', ' Tata Tertib berhasil dihapus!');
-    }
-
-    public function destroyJenis(JenisTataTertib $jenis)
+    public function destroy($id)
     {
         try {
-            // Check if jenis has any tata tertib
+            $tata_tertib = TataTertib::findOrFail($id);
+            $tata_tertib->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Tata Tertib berhasil dihapus!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus tata tertib: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroyJenis($id)
+    {
+        try {
+            $jenis = JenisTataTertib::findOrFail($id);
+            
             if ($jenis->tataTertibs()->count() > 0) {
                 return response()->json([
                     'success' => false,
@@ -129,7 +126,7 @@ class TataTertibController extends Controller
             $jenis->delete();
             return response()->json([
                 'success' => true,
-                'message' => 'Jenis tata tertib berhasil dihapus!'
+                'message' => 'Jenis tata tertib berhasil dihapus!'   
             ]);
         } catch (\Exception $e) {
             return response()->json([

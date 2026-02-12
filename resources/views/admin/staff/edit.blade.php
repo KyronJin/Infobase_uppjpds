@@ -10,7 +10,7 @@
             <div class="form-group"><label class="form-label">Name</label><input name="name" class="form-control" value="{{ old('name', $staff_of_month->name) }}" required></div>
             <div class="form-group"><label class="form-label">Position</label><input name="position" class="form-control" value="{{ old('position', $staff_of_month->position) }}"></div>
             <div class="form-group"><label class="form-label">Month</label><input name="month" type="number" min="1" max="12" class="form-control" value="{{ old('month', $staff_of_month->month) }}"></div>
-            <div class="form-group"><label class="form-label">Year</label><input name="year" type="number" class="form-control" value="{{ old('year', $staff_of_month->year) }}"></div>
+            <div class="form-group"><label class="form-label">Year *</label><input name="year" type="number" required class="form-control" value="{{ old('year', $staff_of_month->year) }}"></div>
             <div class="form-group"><label class="form-label">Bio</label>
             <div id="editor-bio" class="border border-gray-300 rounded-lg shadow-sm" style="border-radius: 0.5rem; overflow: hidden; min-height: 300px;"></div>
             <textarea name="bio" id="bio" class="editor hidden">{{ old('bio', $staff_of_month->bio) }}</textarea></div>

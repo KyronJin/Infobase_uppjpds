@@ -1,19 +1,22 @@
 <?php $__env->startSection('content'); ?>
-<div class="py-24 bg-white pt-28">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="admin-section">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="h2">Daftar Calendar Events</h1>
+<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
+    <div class="max-w-6xl mx-auto px-6">
+        
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div>
+                <h1 class="h2 text-gray-800"> kalender Event</h1>
+                <p class="text-sm text-gray-500">Kelola agenda kegiatan dan jadwal event perpustakaan.</p>
+            </div>
             <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'lg','icon' => 'plus','onclick' => 'openCreateModal()']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','icon' => 'plus','onclick' => 'openCreateModal()','class' => 'rounded-2xl font-bold shadow-teal-100 shadow-lg']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','size' => 'lg','icon' => 'plus','onclick' => 'openCreateModal()']); ?>Buat Event <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'primary','size' => 'md','icon' => 'plus','onclick' => 'openCreateModal()','class' => 'rounded-2xl font-bold shadow-teal-100 shadow-lg']); ?>Buat Event <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -26,58 +29,70 @@
         </div>
 
         <?php if(session('success')): ?>
-            <div class="content-box mb-4"><?php echo e(session('success')); ?></div>
+            <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-xl mb-6 flex items-center gap-3">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <span class="font-bold"><?php echo e(session('success')); ?></span>
+            </div>
         <?php endif; ?>
 
         <!-- Daftar Calendar Events -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm mb-8">
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 border-b border-gray-100 font-bold">
+                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
                         <tr>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Judul</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Jadwal</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Lokasi</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Kapasitas</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">Status</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 text-right">Aksi</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Event</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Jadwal</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Lokasi</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-center">Peserta</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-center">Status</th>
+                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-gray-50 text-gray-600">
                         <?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <tr class="hover:bg-gray-50/50 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="font-medium text-gray-900"><?php echo e($item->title); ?></div>
-                                <div class="text-xs text-gray-500 line-clamp-1 truncate max-w-[200px]"><?php echo e($item->description); ?></div>
+                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
+                            <td class="px-8 py-4">
+                                <div class="font-black text-gray-900 text-base leading-tight"><?php echo e($item->title); ?></div>
+                                <div class="text-[10px] text-gray-400 font-medium italic truncate max-w-[200px]"><?php echo e($item->description); ?></div>
                             </td>
-                            <td class="px-6 py-4 text-gray-600 whitespace-nowrap">
-                                <?php echo e($item->start_at?->format('d M Y, H:i') ?? '-'); ?>
+                            <td class="px-8 py-4">
+                                <div class="flex flex-col">
+                                    <span class="text-[11px] font-black uppercase text-teal-600"><?php echo e($item->start_at?->translatedFormat('d F Y') ?? '-'); ?></span>
+                                    <span class="text-[10px] font-bold text-gray-400 tracking-tighter"><?php echo e($item->start_at?->format('H:i') ?? '-'); ?> WIB</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-4">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt text-[10px] text-teal-400"></i>
+                                    <span class="font-bold text-xs"><?php echo e($item->location ?? '-'); ?></span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-4 text-center whitespace-nowrap">
+                                <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-black text-gray-600 border border-gray-200">
+                                    <?php echo e($item->participants ?? 0); ?> / <?php echo e($item->capacity ?? '∞'); ?>
 
+                                </span>
                             </td>
-                            <td class="px-6 py-4 text-gray-500"><?php echo e($item->location ?? '-'); ?></td>
-                            <td class="px-6 py-4 text-gray-500">
-                                <?php echo e($item->participants ?? 0); ?> / <?php echo e($item->capacity ?? '∞'); ?>
-
-                            </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-8 py-4 text-center">
                                 <?php if($item->is_active): ?>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">AKTIF</span>
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">NON-AKTIF</span>
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">OFF</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-8 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
                                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editCalendarEvent('.e($item->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','class' => 'rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold','onclick' => 'editCalendarEvent('.e($item->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editCalendarEvent('.e($item->id).')']); ?>Edit <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','class' => 'rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold','onclick' => 'editCalendarEvent('.e($item->id).')']); ?>Edit <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -89,14 +104,14 @@
 <?php endif; ?>
                                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteCalendarModal\', \''.e($item->title).'\', \'/admin/calendar/'.e($item->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','class' => 'rounded-xl font-bold','onclick' => 'openDeleteModal(\'deleteCalendarModal\', \''.e($item->title).'\', \'/admin/calendar/'.e($item->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteCalendarModal\', \''.e($item->title).'\', \'/admin/calendar/'.e($item->id).'\')']); ?>Hapus <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','class' => 'rounded-xl font-bold','onclick' => 'openDeleteModal(\'deleteCalendarModal\', \''.e($item->title).'\', \'/admin/calendar/'.e($item->id).'\')']); ?>Hapus <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -111,7 +126,12 @@
                         </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-400 italic">Belum ada calendar events.</td>
+                            <td colspan="6" class="px-8 py-20 text-center">
+                                <div class="flex flex-col items-center text-gray-200">
+                                    <i class="fas fa-calendar-alt text-6xl mb-4"></i>
+                                    <p class="text-gray-400 italic font-medium">Belum ada calendar events.</p>
+                                </div>
+                            </td>
                         </tr>
                         <?php endif; ?>
                     </tbody>

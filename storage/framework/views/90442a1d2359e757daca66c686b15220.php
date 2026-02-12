@@ -1,0 +1,2 @@
+<?php $__env->startSection('content'); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Pemustaka\Desktop\Infobase_uppjpds\resources\views/contact.blade.php ENDPATH**/ ?>

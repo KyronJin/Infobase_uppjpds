@@ -270,3 +270,23 @@
     /* ... admin dashboard, tables, contact form, dll ... */
     /* Copy dari kode asli kamu bagian bawah kalau masih dipakai */
 }
+
+/* ==================== NAVBAR SCROLL EFFECT OVERRIDE ==================== */
+/* Override Tailwind utilities to force transparent initial state */
+header {
+    background-color: transparent !important;
+    background: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+/* White background when scrolled */
+header.navbar-scrolled {
+    background-color: white !important;
+    background: white !important;
+    background-image: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}

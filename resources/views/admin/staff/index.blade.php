@@ -116,17 +116,17 @@
     }
 </style>
 
-<div class="py-24 bg-white pt-28 font-cairo">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="admin-section">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
+    <div class="max-w-6xl mx-auto px-6">
+        
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
-                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Staff Of Month</h1>
-                <p class="text-gray-500 text-sm mt-1">Kelola data penghargaan staff terbaik setiap bulan.</p>
+                <h1 class="h2 text-gray-800"> Staff Of The Month</h1>
+                <p class="text-sm text-gray-500">Kelola Staff Terbaik perpustakaan di sini.</p>
             </div>
             <div class="flex items-center gap-3">
                 <x-button variant="secondary" size="md" id="manage-jabatan-btn" icon="briefcase" class="rounded-2xl font-bold shadow-sm">Posisi</x-button>
-                <x-button variant="primary" size="md" onclick="document.getElementById('create-staff-modal').classList.remove('hidden')" icon="plus" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Tambah Staff</x-button>
+                <x-button variant="primary" size="md" onclick="openCreateModal()" icon="plus" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Tambah Staff</x-button>
             </div>
         </div>
 
@@ -136,18 +136,18 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
                         <tr>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Profil</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Nama</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest font-cairo">Jabatan</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Periode</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-center">Status</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-right">Aksi</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Profil</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Nama</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest font-cairo">Jabatan</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Periode</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-center">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($items as $item)
                         <tr class="hover:bg-teal-50/30 transition-all duration-300">
-                            <td class="px-8 py-4">
+                            <td class="px-6 py-4">
                                 <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 ring-4 ring-white shadow-sm transition-transform hover:scale-110">
                                     @if($item->photo_path)
                                         <img src="{{ asset('storage/' . $item->photo_path) }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
@@ -160,25 +160,25 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-8 py-4 font-bold text-gray-900 leading-tight">
+                            <td class="px-6 py-4 font-bold text-gray-900 leading-tight">
                                 {{ $item->name }}
                             </td>
-                            <td class="px-8 py-4 font-bold text-teal-600 italic">
+                            <td class="px-6 py-4 font-bold text-teal-600 italic">
                                 {{ $item->position }}
                             </td>
-                            <td class="px-8 py-4 text-gray-600 font-medium">
+                            <td class="px-6 py-4 text-gray-600 font-medium">
                                 <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-black uppercase">
                                     {{ $item->month ? $item->month . '/' : '-' }}{{ $item->year ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-8 py-4 text-center">
+                            <td class="px-6 py-4 text-center">
                                 @if($item->is_active)
                                     <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
                                 @else
                                     <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">OFF</span>
                                 @endif
                             </td>
-                            <td class="px-8 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
                                     <x-button variant="ghost" size="sm" icon="edit" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" onclick="editStaff({{ $item->id }})">Edit</x-button>
                                     <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteStaffModal', '{{ $item->name }}', '/admin/staff-of-month/{{ $item->id }}')">Hapus</x-button>
@@ -187,7 +187,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-8 py-20 text-center">
+                            <td colspan="6" class="px-6 py-20 text-center">
                                 <div class="flex flex-col items-center">
                                     <i class="fas fa-user-tie text-gray-100 text-6xl mb-4"></i>
                                     <p class="text-gray-400 italic font-medium">Belum ada data staff of month.</p>
@@ -236,7 +236,7 @@
 
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Posisi / Jabatan <span class="text-red-500">*</span></label>
-                                <select id="create-position" name="position" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');">
+                                <select id="create-position" name="position" required class="w-full rounded-2xl px-4 py-3 focus:outline-none transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="border: 2px solid #063A76; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23063A76%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); color: #063A76;" onFocus="this.style.borderColor='#063A76'; this.style.boxShadow='0 0 0 3px rgba(6, 58, 118, 0.1)';" onBlur="this.style.boxShadow='none';">
                                     <option value="">-- Pilih Posisi --</option>
                                     @foreach($jabatans as $jabatan)
                                     <option value="{{ $jabatan->name }}">{{ $jabatan->name }}</option>
@@ -250,8 +250,8 @@
                                     <input type="number" id="create-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="1-12">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun</label>
-                                    <input type="number" id="create-year" name="year" min="2026" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="2026">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label>
+                                    <input type="number" id="create-year" name="year" min="2026" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="2026">
                                 </div>
                             </div>
 
@@ -318,7 +318,7 @@
 
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Posisi / Jabatan <span class="text-red-500">*</span></label>
-                                <select id="edit-position" name="position" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');">
+                                <select id="edit-position" name="position" required class="w-full rounded-2xl px-4 py-3 focus:outline-none transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="border: 2px solid #063A76; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23063A76%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); color: #063A76;" onFocus="this.style.borderColor='#063A76'; this.style.boxShadow='0 0 0 3px rgba(6, 58, 118, 0.1)';" onBlur="this.style.boxShadow='none';">
                                     <option value="">-- Pilih Posisi --</option>
                                     @foreach($jabatans as $jabatan)
                                     <option value="{{ $jabatan->name }}">{{ $jabatan->name }}</option>
@@ -332,8 +332,8 @@
                                     <input type="number" id="edit-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun</label>
-                                    <input type="number" id="edit-year" name="year" min="2026" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label>
+                                    <input type="number" id="edit-year" name="year" min="2026" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                             </div>
 
@@ -499,6 +499,15 @@ function showToast(message, type = 'success', duration = 3000) {
         }, 300);
     }, duration);
 }
+
+function openCreateModal() {
+    const createModal = document.getElementById('create-staff-modal');
+    const createForm = document.getElementById('create-form');
+    createForm.reset();
+    document.getElementById('create-year').value = new Date().getFullYear();
+    createModal.classList.remove('hidden');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const createModal = document.getElementById('create-staff-modal');
     const editModal = document.getElementById('edit-staff-modal');
@@ -515,6 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         document.getElementById('create-form').action = "{{ route('admin.staff-of-month.store') }}";
         document.getElementById('create-form').reset();
+        document.getElementById('create-year').value = new Date().getFullYear();
         createModal.classList.remove('hidden');
     });
 

@@ -49,6 +49,15 @@
                         <img src="{{ asset('storage/' . $pengumuman->image_path) }}" alt="{{ $pengumuman->title }}" class="w-full h-64 object-cover rounded-lg mb-6">
                     @endif
 
+                    <style>
+                        .prose img {
+                            max-width: 100%;
+                            max-height: 400px;
+                            height: auto;
+                            object-fit: contain;
+                            border-radius: 8px;
+                        }
+                    </style>
                     <div class="prose prose-slate max-w-none text-slate-700 text-lg leading-relaxed">
                         {!! $pengumuman->description !!}
                     </div>

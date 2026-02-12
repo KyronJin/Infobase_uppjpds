@@ -21,6 +21,11 @@
       <link rel="stylesheet" href="{{ asset('css/consistent-layout.css') }}">
     @endif
 
+    <!-- jQuery & jQuery UI for Sortable -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
     <!-- Quill Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -250,9 +255,6 @@
                 </a>
                 <a href="https://www.youtube.com/@perpustakaanjakarta" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
                   <i class="fab fa-youtube text-sm"></i>
-                </a>
-                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
-                  <i class="fab fa-twitter text-sm"></i>
                 </a>
               </div>
             </div>

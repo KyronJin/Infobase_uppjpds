@@ -114,22 +114,25 @@
     }
 </style>
 
-<div class="py-24 bg-white pt-28">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="admin-section">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="h2">Staff Of Month</h1>
-            <div class="flex gap-3">
+<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
+    <div class="max-w-6xl mx-auto px-6">
+        
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div>
+                <h1 class="h2 text-gray-800"> Staff Of The Month</h1>
+                <p class="text-sm text-gray-500">Kelola Staff Terbaik perpustakaan di sini.</p>
+            </div>
+            <div class="flex items-center gap-3">
                 <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'lg','id' => 'manage-jabatan-btn','icon' => 'briefcase']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','id' => 'manage-jabatan-btn','icon' => 'briefcase','class' => 'rounded-2xl font-bold shadow-sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','size' => 'lg','id' => 'manage-jabatan-btn','icon' => 'briefcase']); ?>Kelola Posisi <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','id' => 'manage-jabatan-btn','icon' => 'briefcase','class' => 'rounded-2xl font-bold shadow-sm']); ?>Posisi <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -141,14 +144,14 @@
 <?php endif; ?>
                 <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'lg','type' => 'link','href' => ''.e(route('admin.staff-of-month.create')).'','icon' => 'plus']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','onclick' => 'openCreateModal()','icon' => 'plus','class' => 'rounded-2xl font-bold shadow-teal-100 shadow-lg']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','size' => 'lg','type' => 'link','href' => ''.e(route('admin.staff-of-month.create')).'','icon' => 'plus']); ?>Buat Staff <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'primary','size' => 'md','onclick' => 'openCreateModal()','icon' => 'plus','class' => 'rounded-2xl font-bold shadow-teal-100 shadow-lg']); ?>Tambah Staff <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -162,61 +165,69 @@
         </div>
 
         <!-- Daftar Staff -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm mb-8">
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 border-b border-gray-100 font-bold">
+                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
                         <tr>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 border-b border-gray-100">Foto</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 border-b border-gray-100">Nama</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 border-b border-gray-100">Posisi</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 border-b border-gray-100 whitespace-nowrap">Bulan/Tahun</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 border-b border-gray-100 text-center">Status</th>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 border-b border-gray-100 text-right">Aksi</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Profil</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Nama</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest font-cairo">Jabatan</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Periode</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-center">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-gray-50">
                         <?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <tr class="hover:bg-gray-50/50 transition-colors">
+                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
                             <td class="px-6 py-4">
-                                <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100 ring-2 ring-white shadow-sm mx-auto md:mx-0">
+                                <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 ring-4 ring-white shadow-sm transition-transform hover:scale-110">
                                     <?php if($item->photo_path): ?>
                                         <img src="<?php echo e(asset('storage/' . $item->photo_path)); ?>" alt="<?php echo e($item->name); ?>" class="w-full h-full object-cover">
                                     <?php elseif($item->photo_link): ?>
                                         <img src="<?php echo e($item->photo_link); ?>" alt="<?php echo e($item->name); ?>" class="w-full h-full object-cover">
                                     <?php else: ?>
-                                        <div class="w-full h-full flex items-center justify-center bg-teal-100 text-teal-600 text-xs font-bold">
+                                        <div class="w-full h-full flex items-center justify-center bg-teal-100 text-teal-600 text-xs font-black uppercase">
                                             <?php echo e(strtoupper(substr($item->name, 0, 1))); ?>
 
                                         </div>
                                     <?php endif; ?>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900"><?php echo e($item->name); ?></td>
-                            <td class="px-6 py-4 text-gray-600"><?php echo e($item->position); ?></td>
-                            <td class="px-6 py-4 text-gray-500 whitespace-nowrap">
-                                <?php echo e($item->month ? $item->month . '/' : '-'); ?><?php echo e($item->year ?? '-'); ?>
+                            <td class="px-6 py-4 font-bold text-gray-900 leading-tight">
+                                <?php echo e($item->name); ?>
 
+                            </td>
+                            <td class="px-6 py-4 font-bold text-teal-600 italic">
+                                <?php echo e($item->position); ?>
+
+                            </td>
+                            <td class="px-6 py-4 text-gray-600 font-medium">
+                                <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                                    <?php echo e($item->month ? $item->month . '/' : '-'); ?><?php echo e($item->year ?? '-'); ?>
+
+                                </span>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <?php if($item->is_active): ?>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">AKTIF</span>
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">NON-AKTIF</span>
+                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">OFF</span>
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
                                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editStaff('.e($item->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','class' => 'rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold','onclick' => 'editStaff('.e($item->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editStaff('.e($item->id).')']); ?>Edit <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','class' => 'rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold','onclick' => 'editStaff('.e($item->id).')']); ?>Edit <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -228,14 +239,14 @@
 <?php endif; ?>
                                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteStaffModal\', \''.e($item->name).'\', \'/admin/staff-of-month/'.e($item->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','class' => 'rounded-xl font-bold','onclick' => 'openDeleteModal(\'deleteStaffModal\', \''.e($item->name).'\', \'/admin/staff-of-month/'.e($item->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteStaffModal\', \''.e($item->name).'\', \'/admin/staff-of-month/'.e($item->id).'\')']); ?>Hapus <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','class' => 'rounded-xl font-bold','onclick' => 'openDeleteModal(\'deleteStaffModal\', \''.e($item->name).'\', \'/admin/staff-of-month/'.e($item->id).'\')']); ?>Hapus <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -250,7 +261,12 @@
                         </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-400 italic">Belum ada data staff.</td>
+                            <td colspan="6" class="px-6 py-20 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-user-tie text-gray-100 text-6xl mb-4"></i>
+                                    <p class="text-gray-400 italic font-medium">Belum ada data staff of month.</p>
+                                </div>
+                            </td>
                         </tr>
                         <?php endif; ?>
                     </tbody>
@@ -266,28 +282,36 @@
         </div>
 
 
-        <!-- Modal untuk form create -->
-        <div id="create-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Tambah Staff Of Month</h3>
-                            <button id="close-create-modal-btn" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
+        <!-- Modal Create -->
+        <div id="create-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-teal-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-plus text-teal-600"></i>
                         </div>
-                        <form id="create-form" method="POST" class="space-y-4" enctype="multipart/form-data">
-                            <?php echo csrf_field(); ?>
-
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Tambah Staff</h3>
+                            <p class="text-xs text-gray-500">Input data penghargaan baru</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('create-staff-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 max-h-[75vh] overflow-y-auto font-cairo">
+                    <form id="create-form" method="POST" action="<?php echo e(route('admin.staff-of-month.store')); ?>" class="space-y-6" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+                        <div class="space-y-5">
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Nama</label>
-                                <input type="text" id="create-name" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <input type="text" id="create-name" name="name" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Nama Lengkap Staff">
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Posisi</label>
-                                <select id="create-position" name="position" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Posisi / Jabatan <span class="text-red-500">*</span></label>
+                                <select id="create-position" name="position" required class="w-full rounded-2xl px-4 py-3 focus:outline-none transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="border: 2px solid #063A76; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23063A76%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); color: #063A76;" onFocus="this.style.borderColor='#063A76'; this.style.boxShadow='0 0 0 3px rgba(6, 58, 118, 0.1)';" onBlur="this.style.boxShadow='none';">
                                     <option value="">-- Pilih Posisi --</option>
                                     <?php $__currentLoopData = $jabatans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jabatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($jabatan->name); ?>"><?php echo e($jabatan->name); ?></option>
@@ -297,56 +321,39 @@
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Bulan</label>
-                                    <input type="number" id="create-month" name="month" min="1" max="12" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Bulan</label>
+                                    <input type="number" id="create-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="1-12">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Tahun</label>
-                                    <input type="number" id="create-year" name="year" min="2000" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label>
+                                    <input type="number" id="create-year" name="year" min="2026" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="2026">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Biodata</label>
-                                <textarea id="create-bio" name="bio" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Biodata / Kutipan</label>
+                                <textarea id="create-bio" name="bio" rows="3" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Kata-kata mutiara atau biodata singkat..."></textarea>
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
-                                    <input type="file" id="create-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'create-photo-preview', 'create-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
-                                    
-                                    <div id="create-photo-preview" class="mb-3" style="display: none;"></div>
-                                    
-                                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
-                                        <button type="button" id="create-crop-btn" onclick="openImageCropper(document.getElementById('create-photo'), document.getElementById('create-photo-preview'))" class="crop-button-standard" style="display: none;">
-                                            ✂️ Edit & Crop Foto
-                                    </button>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop</p>
-                            </div>
-
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Link Foto (Optional)</label>
-                                <input type="url" id="create-photo_link" name="photo_link" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-
-                            <div class="flex items-center">
-                                <input type="checkbox" id="create-is_active" name="is_active" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                                <label for="create-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
-                            </div>
-
-                            <div class="flex justify-end gap-3 pt-4">
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+                            <div class="bg-gray-50/80 p-6 rounded-3xl border-2 border-dashed border-gray-100 transition-all hover:border-teal-400 group">
+                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 group-hover:text-teal-600 transition-colors">🖼️ Foto Staff</label>
+                                <input type="file" id="create-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'create-photo-preview', 'create-crop-btn')" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-teal-100 file:text-teal-700 hover:file:bg-teal-200 cursor-pointer mb-4">
+                                
+                                <div id="create-photo-preview" class="mb-4 rounded-2xl overflow-hidden shadow-md" style="display: none;"></div>
+                                
+                                <div class="flex justify-center">
+                                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'create-staff-modal\').classList.add(\'hidden\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'sm','type' => 'button','id' => 'create-crop-btn','onclick' => 'openImageCropper(document.getElementById(\'create-photo\'), document.getElementById(\'create-photo-preview\'))','class' => 'hidden rounded-xl font-bold bg-white border-2 border-teal-100 text-teal-600 hover:bg-teal-50']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'create-staff-modal\').classList.add(\'hidden\')']); ?>Batal <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'sm','type' => 'button','id' => 'create-crop-btn','onclick' => 'openImageCropper(document.getElementById(\'create-photo\'), document.getElementById(\'create-photo-preview\'))','class' => 'hidden rounded-xl font-bold bg-white border-2 border-teal-100 text-teal-600 hover:bg-teal-50']); ?>
+                                        ✂️ Crop / Edit Foto
+                                     <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -356,16 +363,26 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
+                                <input type="checkbox" id="create-is_active" name="is_active" value="1" checked class="w-5 h-5 text-teal-600 rounded-lg focus:ring-teal-500 cursor-pointer border-gray-300">
+                                <label for="create-is_active" class="text-sm font-bold text-gray-700 cursor-pointer select-none tracking-tight">Aktifkan Profile di Halaman Utama</label>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                            <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'create-staff-modal\').classList.add(\'hidden\')','class' => 'rounded-xl font-bold']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit']); ?>Simpan <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'create-staff-modal\').classList.add(\'hidden\')','class' => 'rounded-xl font-bold']); ?>Batal <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -375,36 +392,62 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                            </div>
-                        </form>
-                    </div>
+                            <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit','class' => 'rounded-xl font-bold shadow-lg shadow-teal-100']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit','class' => 'rounded-xl font-bold shadow-lg shadow-teal-100']); ?>Simpan Staff <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Modal untuk form edit -->
-        <div id="edit-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Edit Staff Of Month</h3>
-                            <button id="close-edit-modal-btn" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
+        <!-- Modal Edit -->
+        <div id="edit-staff-modal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-orange-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-edit text-orange-600"></i>
                         </div>
-                        <form id="edit-form" method="POST" class="space-y-4" enctype="multipart/form-data">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('PUT'); ?>
-
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Perbarui Staff</h3>
+                            <p class="text-xs text-gray-500">Edit data penghargaan staff</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('edit-staff-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 max-h-[75vh] overflow-y-auto font-cairo">
+                    <form id="edit-form" method="POST" class="space-y-6" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
+                        <div class="space-y-5">
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Nama</label>
-                                <input type="text" id="edit-name" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <input type="text" id="edit-name" name="name" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Posisi</label>
-                                <select id="edit-position" name="position" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Posisi / Jabatan <span class="text-red-500">*</span></label>
+                                <select id="edit-position" name="position" required class="w-full rounded-2xl px-4 py-3 focus:outline-none transition-all font-medium appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" style="border: 2px solid #063A76; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23063A76%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); color: #063A76;" onFocus="this.style.borderColor='#063A76'; this.style.boxShadow='0 0 0 3px rgba(6, 58, 118, 0.1)';" onBlur="this.style.boxShadow='none';">
                                     <option value="">-- Pilih Posisi --</option>
                                     <?php $__currentLoopData = $jabatans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jabatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($jabatan->name); ?>"><?php echo e($jabatan->name); ?></option>
@@ -414,196 +457,104 @@
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Bulan</label>
-                                    <input type="number" id="edit-month" name="month" min="1" max="12" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Bulan</label>
+                                    <input type="number" id="edit-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Tahun</label>
-                                    <input type="number" id="edit-year" name="year" min="2000" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label>
+                                    <input type="number" id="edit-year" name="year" min="2026" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Biodata</label>
-                                <textarea id="edit-bio" name="bio" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Biodata / Kutipan</label>
+                                <textarea id="edit-bio" name="bio" rows="3" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium"></textarea>
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">🖼️ Foto</label>
+                            <div class="bg-gray-50/80 p-6 rounded-3xl border-2 border-dashed border-gray-100 transition-all hover:border-orange-400 group">
+                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 group-hover:text-orange-600 transition-colors">🖼️ Foto Staff</label>
                                 
                                 <!-- Foto Existing -->
-                                <div id="edit-existing-photo-container" class="mb-4" style="display: none;">
-                                    <p class="text-sm text-gray-600 mb-2">Foto Sekarang:</p>
-                                    <div class="bg-white p-3 rounded border border-gray-200 mb-3">
-                                        <img id="edit-existing-photo-img" src="" alt="Foto Staff" class="max-w-xs rounded" style="max-height: 200px; object-fit: cover;">
+                                <div id="edit-existing-photo-container" class="mb-6 flex flex-col items-center" style="display: none;">
+                                    <div class="relative group/photo rounded-2xl overflow-hidden shadow-lg border-4 ring-4 ring-white border-white mb-4">
+                                        <img id="edit-existing-photo-img" src="" alt="Foto Staff" class="w-32 h-40 object-cover">
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button type="button" onclick="deleteExistingPhoto()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 transition-all shadow-lg hover:scale-110" title="Hapus foto sekarang">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button type="button" id="edit-delete-photo-btn" onclick="deleteExistingPhoto()" class="w-full px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded font-semibold transition-colors mb-3">
-                                        <i class="fas fa-trash mr-2"></i> Hapus Foto Ini
-                                    </button>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter italic">Foto Tersimpan</p>
                                 </div>
                                 
-                                <!-- Upload Foto Baru -->
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-teal-400 transition-colors">
-                                    <input type="file" id="edit-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'edit-photo-preview', 'edit-crop-btn')" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 mb-3">
-                                    
-                                    <div id="edit-photo-preview" class="mb-3" style="display: none;"></div>
-                                    
-                                    <div class="text-center mt-4" style="position: relative; z-index: 10;">
-                                        <button type="button" id="edit-crop-btn" onclick="openImageCropper(document.getElementById('edit-photo'), document.getElementById('edit-photo-preview'))" class="crop-button-standard" style="display: none;">
-                                            ✂️ Edit & Crop Foto
-                                        </button>
-                                    </div>
-                                    <p class="text-xs text-gray-500 mt-1">📄 JPG, PNG • 📏 Maks: 10MB • ✂️ Bisa di-crop - Kosongkan jika tidak ingin mengubah</p>
+                                <input type="file" id="edit-photo" name="photo" accept="image/*" onchange="previewImageWithCropper(event, 'edit-photo-preview', 'edit-crop-btn')" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200 cursor-pointer mb-4">
+                                
+                                <div id="edit-photo-preview" class="mb-4 rounded-2xl overflow-hidden shadow-md flex justify-center" style="display: none;"></div>
+                                
+                                <div class="flex justify-center">
+                                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'sm','type' => 'button','id' => 'edit-crop-btn','onclick' => 'openImageCropper(document.getElementById(\'edit-photo\'), document.getElementById(\'edit-photo-preview\'))','class' => 'hidden rounded-xl font-bold bg-white border-2 border-orange-100 text-orange-600 hover:bg-orange-50']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'sm','type' => 'button','id' => 'edit-crop-btn','onclick' => 'openImageCropper(document.getElementById(\'edit-photo\'), document.getElementById(\'edit-photo-preview\'))','class' => 'hidden rounded-xl font-bold bg-white border-2 border-orange-100 text-orange-600 hover:bg-orange-50']); ?>
+                                        ✂️ Crop / Edit Foto
+                                     <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
                                 </div>
+                            </div>
                             
                             <!-- Hidden input untuk mark photo as deleted -->
                             <input type="hidden" id="edit-delete-photo-flag" name="delete_photo" value="0">
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Link Foto (Optional)</label>
-                                <input type="url" id="edit-photo_link" name="photo_link" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
+                                <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-5 h-5 text-orange-600 rounded-lg focus:ring-orange-500 cursor-pointer border-gray-300">
+                                <label for="edit-is_active" class="text-sm font-bold text-gray-700 cursor-pointer select-none tracking-tight">Aktifkan Profile di Halaman Utama</label>
                             </div>
-
-                            <div class="flex items-center">
-                                <input type="checkbox" id="edit-is_active" name="is_active" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500">
-                                <label for="edit-is_active" class="ml-2 text-gray-700 font-semibold">Aktif</label>
-                            </div>
-
-                            <div class="flex justify-end gap-3 pt-4">
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'edit-staff-modal\').classList.add(\'hidden\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'edit-staff-modal\').classList.add(\'hidden\')']); ?>Batal <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit']); ?>Simpan <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal untuk manage jabatan -->
-        <div id="manage-jabatan-modal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Kelola Posisi/Jabatan</h3>
-                            <button id="close-jabatan-modal-btn" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
                         </div>
 
-                        <!-- Form Tambah Jabatan -->
-                        <div class="mb-6 pb-6 border-b border-gray-200">
-                            <h4 class="text-lg font-semibold mb-4 text-gray-800">Tambah Posisi Baru</h4>
-                            <form id="add-jabatan-form" action="<?php echo e(route('admin.staff-of-month.store-jabatan')); ?>" method="POST" class="space-y-4">
-                                <?php echo csrf_field(); ?>
-                                <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">Nama Posisi</label>
-                                    <input type="text" name="name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Contoh: Pustakawan, Satpam, dll">
-                                </div>
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','type' => 'submit','class' => 'w-full justify-center']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','size' => 'md','type' => 'submit','class' => 'w-full justify-center']); ?>Tambah Posisi <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-                            </form>
-                        </div>
-
-                        <!-- Daftar Jabatan -->
-                        <div>
-                            <h4 class="text-lg font-semibold mb-4 text-gray-800">Posisi yang Tersedia</h4>
-                            <?php if($jabatans->isEmpty()): ?>
-                                <p class="text-gray-500 text-center py-4">Belum ada posisi</p>
-                            <?php else: ?>
-                                <div class="space-y-2">
-                                    <?php $__currentLoopData = $jabatans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jab): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <div class="flex items-center justify-between bg-gray-50 p-4 rounded border border-gray-200">
-                                        <span class="text-gray-800 font-medium"><?php echo e($jab->name); ?></span>
-                                        <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteJabatanModal\', \''.e($jab->name).'\', \'/admin/staff-of-month/jabatan/'.e($jab->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteJabatanModal\', \''.e($jab->name).'\', \'/admin/staff-of-month/jabatan/'.e($jab->id).'\')']); ?>Hapus <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-                                    </div>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-300 mt-6">
+                        <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
                             <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'manage-jabatan-modal\').classList.add(\'hidden\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'edit-staff-modal\').classList.add(\'hidden\')','class' => 'rounded-xl font-bold']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'manage-jabatan-modal\').classList.add(\'hidden\')']); ?>Tutup <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'edit-staff-modal\').classList.add(\'hidden\')','class' => 'rounded-xl font-bold']); ?>Batal <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+                            <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit','class' => 'rounded-xl font-bold shadow-lg shadow-orange-100 bg-orange-600 hover:bg-orange-700']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'primary','size' => 'md','icon' => 'check','type' => 'submit','class' => 'rounded-xl font-bold shadow-lg shadow-orange-100 bg-orange-600 hover:bg-orange-700']); ?>Simpan Perubahan <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -614,11 +565,125 @@
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Modal Manage Jabatan -->
+        <div id="manage-jabatan-modal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-indigo-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Kelola Posisi</h3>
+                            <p class="text-xs text-gray-500">Atur daftar jabatan staff</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('manage-jabatan-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-8 max-h-[75vh] overflow-y-auto font-cairo">
+                    <!-- Form Tambah Jabatan -->
+                    <div class="mb-8 p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i> Tambah Posisi Baru
+                        </h4>
+                        <form id="add-jabatan-form" action="<?php echo e(route('admin.staff-of-month.store-jabatan')); ?>" method="POST" class="flex gap-2">
+                            <?php echo csrf_field(); ?>
+                            <input type="text" name="name" required class="flex-1 border-2 border-white rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-500 transition-all font-medium placeholder:text-gray-300 shadow-sm" placeholder="Contoh: Pustakawan">
+                            <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','type' => 'submit','class' => 'rounded-2xl font-bold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'primary','size' => 'md','type' => 'submit','class' => 'rounded-2xl font-bold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100']); ?>Tambah <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+                        </form>
+                    </div>
+
+                    <!-- Daftar Jabatan -->
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-4 px-2 font-bold italic">Posisi Terdaftar</h4>
+                        <?php if($jabatans->isEmpty()): ?>
+                            <div class="text-center py-10 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100">
+                                <i class="fas fa-folder-open text-gray-200 text-3xl mb-2"></i>
+                                <p class="text-gray-400 text-xs italic">Belum ada posisi terdaftar</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="grid grid-cols-1 gap-3">
+                                <?php $__currentLoopData = $jabatans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jab): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div class="group flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all duration-300">
+                                    <span class="text-gray-700 font-bold px-2"><?php echo e($jab->name); ?></span>
+                                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteJabatanModal\', \''.e($jab->name).'\', \'/admin/staff-of-month/jabatan/'.e($jab->id).'\')','class' => 'opacity-0 group-hover:opacity-100 transition-opacity rounded-xl font-bold']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteJabatanModal\', \''.e($jab->name).'\', \'/admin/staff-of-month/jabatan/'.e($jab->id).'\')','class' => 'opacity-0 group-hover:opacity-100 transition-opacity rounded-xl font-bold']); ?>Hapus <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+                                </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="flex justify-end pt-8">
+                        <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'manage-jabatan-modal\').classList.add(\'hidden\')','class' => 'rounded-xl font-bold']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','type' => 'button','onclick' => 'document.getElementById(\'manage-jabatan-modal\').classList.add(\'hidden\')','class' => 'rounded-xl font-bold']); ?>Tutup <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+                    </div>
+                </div>
+            </div>
 
 
 
@@ -671,6 +736,15 @@ function showToast(message, type = 'success', duration = 3000) {
         }, 300);
     }, duration);
 }
+
+function openCreateModal() {
+    const createModal = document.getElementById('create-staff-modal');
+    const createForm = document.getElementById('create-form');
+    createForm.reset();
+    document.getElementById('create-year').value = new Date().getFullYear();
+    createModal.classList.remove('hidden');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const createModal = document.getElementById('create-staff-modal');
     const editModal = document.getElementById('edit-staff-modal');
@@ -687,6 +761,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         document.getElementById('create-form').action = "<?php echo e(route('admin.staff-of-month.store')); ?>";
         document.getElementById('create-form').reset();
+        document.getElementById('create-year').value = new Date().getFullYear();
         createModal.classList.remove('hidden');
     });
 

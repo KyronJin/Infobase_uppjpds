@@ -17,7 +17,7 @@
     .rule-dot {
         width: 10px;
         height: 10px;
-        background: linear-gradient(135deg, #0052CC 0%, #0044A3 100%);
+        background: linear-gradient(135deg, #00425A 0%, #002a3d 100%);
         border-radius: 50%;
         flex-shrink: 0;
         margin-top: 0.3rem;
@@ -27,6 +27,16 @@
         color: #374151;
         line-height: 1.6;
         font-size: 0.9rem;
+    }
+
+    .rule-text img {
+        max-width: 100%;
+        max-height: 300px;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        border-radius: 4px;
+        margin: 0.5rem 0;
     }
 
     .empty-state {
@@ -55,15 +65,34 @@
         font-size: 0.9rem;
         margin-top: 0.4rem;
     }
+
+    /* Simple Header Style */
+    .simple-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .simple-header .header-left h1 {
+        color: #000000;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: none;
+    }
+
+    .simple-header .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
 
-<div class="page-header">
+<div class="page-header simple-header">
     <div class="header-content">
         <div class="header-left">
-            <span><i class="fas fa-book mr-2"></i>Tata Tertib</span>
-            <h1><i class="fas fa-scroll mr-3 text-white"></i>{{ $title ?? 'Tata Tertib & Peraturan' }}</h1>
-            <p>{{ $content ?? 'Berisi Tata Tertib dan Peraturan di Perpustakaan' }}</p>
+            <h1>TATA TERTIB</h1>
         </div>
         <a href="{{ route('home') }}" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali
@@ -86,7 +115,7 @@
                     @forelse($j->tataTertibs as $t)
                         <div class="rule-item">
                             <div class="rule-dot"></div>
-                            <p class="rule-text">{{ $t->content }}</p>
+                            <p class="rule-text">{!! $t->content !!}</p>
                         </div>
                     @empty
                         <p style="color: #9ca3af; font-style: italic;">Belum ada butir aturan untuk kategori ini.</p>

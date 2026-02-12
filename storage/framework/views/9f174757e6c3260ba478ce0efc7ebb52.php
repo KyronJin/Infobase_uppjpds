@@ -82,14 +82,33 @@
         opacity: 0.5;
         cursor: not-allowed;
     }
+
+    /* Simple Header Style */
+    .simple-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .simple-header .header-left h1 {
+        color: #000000;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: none;
+    }
+
+    .simple-header .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
-<div class="page-header">
+<div class="page-header simple-header">
     <div class="header-content">
         <div class="header-left">
-            <span><i class="fas fa-calendar mr-2"></i>Aktivitas</span>
-            <h1><i class="fas fa-calendar-alt mr-3 text-white"></i>Calendar Aktifitas</h1>
-            <p>Jadwal lengkap event, workshop, dan kegiatan perpustakaan.</p>
+            <h1>CALENDAR AKTIFITAS</h1>
         </div>
         <a href="<?php echo e(route('home')); ?>" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali
@@ -525,68 +544,50 @@ function toLocal24Hour(utcString) {
 
         const eventsList = document.getElementById('eventsList');
         eventsList.innerHTML = paginatedEvents.map(event => `
-            <div class="event-card rounded-xl p-6 border-l-4 border-blue-500 hover:border-[#0052CC]">
-                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                    <div class="flex-1">
-                        <h3 class="text-lg font-bold text-[#0052CC]">${escapeHtml(event.title)}</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm">
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <i class="fas fa-calendar-alt w-4 text-orange-500"></i>
-                                <span>${formatDate(event.date)}</span>
-                            </div>
-                            
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <i class="fas fa-clock w-4 text-orange-500"></i>
-                                <span>
-                                  ${toLocal24Hour(event.startTime)} - 
-                                  ${event.endTime ? toLocal24Hour(event.endTime) : 'Selesai'}
-                                </span>
-                            </div>
+            <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 group">
+                <!-- Header dengan Tanggal Badge -->
+                <div class="relative h-10 bg-gradient-to-r from-slate-100 to-slate-50 flex items-center px-6 border-b border-gray-100">
+                    <span class="inline-block px-3 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded">
+                        <i class="fas fa-calendar-alt mr-1"></i>${formatDate(event.startTime)}
+                    </span>
+                </div>
 
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <i class="fas fa-door-open w-4 text-orange-500"></i>
-                                <div>
-                                    <span class="room-badge" style="background-color: ${event.room.color}22; color: ${event.room.color}; border: 1px solid ${event.room.color};">
-                                        ${escapeHtml(event.room.name)}
-                                    </span>
-                                    ${event.room.capacity ? `<span class="text-xs text-gray-500 ml-2">(Kapasitas: ${event.room.capacity})</span>` : ''}
-                                </div>
-                            </div>
+                <div class="p-8">
+                    <!-- Judul -->
+                    <h3 class="text-xl font-extrabold text-gray-900 mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors duration-300">
+                        ${escapeHtml(event.title)}
+                    </h3>
 
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <i class="fas fa-users w-4 text-orange-500"></i>
-                                <span>${event.participants || 0} peserta</span>
-                            </div>
+                    <!-- Catatan/Deskripsi Singkat -->
+                    ${event.notes ? `
+                        <p class="text-gray-600 text-base mb-4 line-clamp-1">
+                            ${escapeHtml(event.notes)}
+                        </p>
+                    ` : ''}
 
-                            ${event.organizer && event.organizer !== '-' ? `
-                                <div class="flex items-center gap-2 text-gray-600">
-                                    <i class="fas fa-user w-4 text-orange-500"></i>
-                                    <span>${escapeHtml(event.organizer)}</span>
-                                </div>
-                            ` : ''}
-
-                            ${event.contact && event.contact !== '-' ? `
-                                <div class="flex items-center gap-2 text-gray-600">
-                                    <i class="fas fa-phone w-4 text-blue-500"></i>
-                                    <a href="tel:${event.contact}" class="hover:text-[#0052CC]">${event.contact}</a>
-                                </div>
-                            ` : ''}
+                    <!-- Waktu & Lokasi Summary -->
+                    <div class="mb-4 text-sm text-gray-500 space-y-1">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-clock w-4 text-orange-500"></i>
+                            <span>${toLocal24Hour(event.startTime)} ${event.endTime ? '- ' + toLocal24Hour(event.endTime) : ''}</span>
                         </div>
-
-                        ${event.notes ? `
-                            <div class="mt-4 p-3 bg-blue-50 rounded-lg border-l-2 border-blue-300">
-                                <p class="text-sm text-gray-700"><strong>Catatan:</strong> ${escapeHtml(event.notes)}</p>
+                        ${event.room ? `
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-door-open w-4 text-orange-500"></i>
+                                <span>${escapeHtml(event.room.name)}</span>
                             </div>
                         ` : ''}
+                    </div>
 
-                        ${event.meetingLink ? `
-                            <div class="mt-3">
-                                <a href="${event.meetingLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-[#0052CC] text-white rounded-lg hover:bg-[#003A99] transition font-semibold">
-                                    <i class="fas fa-video"></i> Buka Link Meeting
-                                </a>
-                            </div>
-                        ` : ''}`
+                    <!-- Berlaku & Button -->
+                    <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500">
+                            <i class="fas fa-tag mr-1"></i>Berlaku: ${formatDate(event.startTime)}
+                        </p>
+                        <button onclick="showEventDetails('${escapeHtml(event.title)}', '${escapeHtml(event.notes)}', '${formatDate(event.startTime)}')" class="inline-flex items-center text-teal-600 font-bold hover:text-teal-700 transition-colors">
+                            Selengkapnya
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -643,6 +644,37 @@ function toLocal24Hour(utcString) {
 
     // ===== AUTO REFRESH SETIAP 5 MENIT =====
     setInterval(fetchAgenda, 5 * 60 * 1000);
+
+    // ===== SHOW EVENT DETAILS MODAL =====
+    function showEventDetails(title, notes, date) {
+        // Create and show modal
+        const modalHtml = `
+            <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="closeEventModal(event)">
+                <div class="bg-white rounded-2xl max-w-xl w-full max-h-96 overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
+                    <div class="sticky top-0 bg-white border-b p-6 flex justify-between items-start">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">${title}</h2>
+                            <p class="text-sm text-gray-500 mt-1">Berlaku: ${date}</p>
+                        </div>
+                        <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">${notes}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    function closeEventModal(e) {
+        if (e && e.target.id !== 'eventModal') return;
+        const modal = document.getElementById('eventModal');
+        if (modal) modal.remove();
+    }
 </script>
 
 <?php $__env->stopSection(); ?>

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-24 bg-white pt-28 font-cairo">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="admin-section">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
+    <div class="max-w-6xl mx-auto px-6">
+        
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
-                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Calendar Events</h1>
-                <p class="text-gray-500 text-sm mt-1">Kelola agenda kegiatan dan jadwal event perpustakaan.</p>
+                <h1 class="h2 text-gray-800"> kalender Event</h1>
+                <p class="text-sm text-gray-500">Kelola agenda kegiatan dan jadwal event perpustakaan.</p>
             </div>
             <x-button variant="primary" size="md" icon="plus" onclick="openCreateModal()" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Buat Event</x-button>
         </div>

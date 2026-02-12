@@ -1,8 +1,9 @@
 
 
+
 <?php $__env->startSection('content'); ?>
 <div class="bg-gray-50 min-h-screen py-12 pt-28">
-    <div class="max-w-6xl mx-auto px-6">
+    <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
                 <h1 class="h2 text-gray-800">Kelola Galeri Foto</h1>
@@ -57,8 +58,8 @@
             </div>
         <?php endif; ?>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm">
-            <div class="overflow-x-auto">
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden text-sm">
+            
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-gray-50 border-b border-gray-100 font-bold">
                         <tr>
@@ -90,7 +91,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <?php if($photo->location === 'home'): ?>
-                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 text-teal-700 rounded-md text-xs">
                                         <i class="fas fa-home text-[10px]"></i> Beranda
                                     </span>
                                 <?php elseif($photo->location === 'about'): ?>
@@ -114,14 +115,14 @@
                                 <div class="flex items-center justify-end gap-2">
                                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','type' => 'link','href' => ''.e(route('admin.gallery.edit', $photo)).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editGallery('.e($photo->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','type' => 'link','href' => ''.e(route('admin.gallery.edit', $photo)).'']); ?>Edit <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editGallery('.e($photo->id).')']); ?>Edit <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -160,7 +161,6 @@
                         <?php endif; ?>
                     </tbody>
                 </table>
-            </div>
             
             <?php if($photos->hasPages()): ?>
                 <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
@@ -174,7 +174,167 @@
 <!-- Delete Modal Component -->
 <?php $__env->startComponent('components.delete-modal', ['id' => 'deleteGalleryModal', 'title' => 'Hapus Foto Galeri?']); ?> <?php echo $__env->renderComponent(); ?>
 
+<!-- Modal Edit Gallery -->
+<div id="editGalleryModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 overflow-y-auto hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 my-8">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-camera text-indigo-600 text-lg"></i>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900">Edit Foto Galeri</h3>
+                <p class="text-sm text-gray-500">Perbarui informasi foto</p>
+            </div>
+            <button type="button" onclick="closeModal('editGalleryModal')" class="ml-auto text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        
+        <form id="editGalleryForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Foto</label>
+                <input type="text" id="edit-title" name="title" placeholder="Masukkan judul foto" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
+                <textarea id="edit-description" name="description" rows="2" placeholder="Masukkan deskripsi singkat" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"></textarea>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+                    <input type="text" id="edit-category" name="category" placeholder="Contoh: Kegiatan" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Lokasi Tampil</label>
+                    <select id="edit-location" name="location" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                        <option value="home">Beranda</option>
+                        <option value="about">Tentang Kami</option>
+                        <option value="both">Keduanya</option>
+                        <option value="hero">Hero Banner</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">🖼️ Ganti Foto (Opsional)</label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-indigo-400 transition-colors cursor-pointer relative">
+                    <input type="file" name="image" accept="image/*" class="w-full opacity-0 absolute inset-0 cursor-pointer" onchange="previewGalleryImage(event)">
+                    <div class="text-center">
+                        <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
+                        <p class="text-xs text-gray-500">Klik atau drag foto ke sini</p>
+                    </div>
+                </div>
+                <div id="edit-image-preview" class="mt-3 hidden text-center">
+                    <p class="text-xs text-gray-500 mb-2 font-semibold">Preview Foto Baru:</p>
+                    <img id="new-preview-img" src="" class="max-h-32 mx-auto rounded-lg shadow-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-4 h-4 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500">
+                    <span class="text-sm font-semibold text-gray-700">Tampilkan di Website</span>
+                </label>
+            </div>
+            
+            <div class="flex gap-3 pt-4">
+                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'md','class' => 'flex-1 justify-center','type' => 'button','onclick' => 'closeModal(\'editGalleryModal\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'secondary','size' => 'md','class' => 'flex-1 justify-center','type' => 'button','onclick' => 'closeModal(\'editGalleryModal\')']); ?>Batal <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'md','icon' => 'check','class' => 'flex-1 justify-center','type' => 'submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'primary','size' => 'md','icon' => 'check','class' => 'flex-1 justify-center','type' => 'submit']); ?>Simpan Perubahan <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+
+    function editGallery(id) {
+        const modal = document.getElementById('editGalleryModal');
+        const form = document.getElementById('editGalleryForm');
+        
+        fetch(`/admin/gallery/${id}/edit`, {
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('edit-title').value = data.title || '';
+            document.getElementById('edit-description').value = data.description || '';
+            document.getElementById('edit-category').value = data.category || '';
+            document.getElementById('edit-location').value = data.location || 'both';
+            document.getElementById('edit-is_active').checked = !!data.is_active;
+            
+            // Reset image preview
+            document.getElementById('edit-image-preview').classList.add('hidden');
+            
+            form.action = `/admin/gallery/${id}`;
+            modal.classList.remove('hidden');
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function previewGalleryImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const preview = document.getElementById('new-preview-img');
+            preview.src = reader.result;
+            document.getElementById('edit-image-preview').classList.remove('hidden');
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const editGalleryModal = document.getElementById('editGalleryModal');
+        if (event.target == editGalleryModal) {
+            editGalleryModal.classList.add('hidden');
+        }
+    }
+
     setupDeleteModalClickOutside('deleteGalleryModal');
 </script>
 <?php $__env->stopSection(); ?>

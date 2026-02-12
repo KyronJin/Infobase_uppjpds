@@ -1,8 +1,9 @@
+
 @extends('layouts.app')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-12 pt-28">
-    <div class="max-w-6xl mx-auto px-6">
+    <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
                 <h1 class="h2 text-gray-800">Kelola Galeri Foto</h1>
@@ -20,8 +21,8 @@
             </div>
         @endif
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm">
-            <div class="overflow-x-auto">
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden text-sm">
+            
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-gray-50 border-b border-gray-100 font-bold">
                         <tr>
@@ -52,7 +53,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($photo->location === 'home')
-                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 text-teal-700 rounded-md text-xs">
                                         <i class="fas fa-home text-[10px]"></i> Beranda
                                     </span>
                                 @elseif($photo->location === 'about')
@@ -86,7 +87,6 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
             
             @if($photos->hasPages())
                 <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">

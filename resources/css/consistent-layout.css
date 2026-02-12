@@ -29,7 +29,7 @@ body, html {
 
 /* ===== PAGE HEADER - MINIMALIST MODERN ===== */
 .page-header {
-    background: linear-gradient(135deg, var(--primary) 0%, #0044A3 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #002a3d 100%);
     padding: 1.75rem 0;
     color: white;
     margin-top: 0;
@@ -405,13 +405,13 @@ body, html {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, #0044A3 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #002a3d 100%);
     color: white;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 82, 204, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 66, 90, 0.3);
 }
 
 .btn-secondary {

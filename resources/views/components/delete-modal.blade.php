@@ -34,7 +34,7 @@
         <!-- Buttons -->
         <div class="flex gap-2 justify-center pt-2">
             <x-button variant="secondary" onclick="closeDeleteModal()">Batal</x-button>
-            <x-button variant="danger" id="confirmDeleteBtn"><span id="deleteBtnText">Hapus</span></x-button>
+            <x-button variant="danger" id="confirmDeleteBtn-{{ $id ?? 'deleteModal' }}"><span id="deleteBtnText-{{ $id ?? 'deleteModal' }}">Hapus</span></x-button>
         </div>
     </div>
 </div>
@@ -65,10 +65,10 @@
         const itemNameEl = document.getElementById('deleteItemName');
         if (itemNameEl) itemNameEl.textContent = itemName;
         
-        const btnText = document.getElementById('deleteBtnText');
+        const btnText = document.getElementById('deleteBtnText-' + modalId);
         if (btnText) btnText.textContent = 'Hapus';
         
-        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        const confirmBtn = document.getElementById('confirmDeleteBtn-' + modalId);
         if (confirmBtn) confirmBtn.disabled = false;
         
         modal.classList.remove('hidden');
@@ -96,7 +96,8 @@
 
     // Wait for DOM to fully load
     function initDeleteConfirmButton() {
-        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        const modalId = '{{ $id ?? "deleteModal" }}';
+        const confirmBtn = document.getElementById('confirmDeleteBtn-' + modalId);
         if (!confirmBtn) return;
 
         confirmBtn.addEventListener('click', async function() {
@@ -112,6 +113,7 @@
 
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const modalId = '{{ $id ?? "deleteModal" }}';
                 
                 const response = await fetch(window.deleteData.url, {
                     method: 'DELETE',
@@ -143,10 +145,11 @@
                         setTimeout(() => window.location.reload(), 1500);
                     }
                 } else {
+                    const errorMsg = data.message || 'Kesalahan tidak diketahui';
                     if (typeof window.showErrorToast === 'function') {
-                        window.showErrorToast(`✗ Gagal menghapus: ${data.message || 'Kesalahan tidak diketahui'}`);
+                        window.showErrorToast(`✗ Gagal menghapus: ${errorMsg}`);
                     } else {
-                        alert(`Gagal menghapus: ${data.message || 'Kesalahan tidak diketahui'}`);
+                        alert(`Gagal menghapus: ${errorMsg}`);
                     }
                     btn.innerHTML = originalText;
                     btn.disabled = false;

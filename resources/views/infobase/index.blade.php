@@ -18,7 +18,7 @@
     .infobase-card-header {
         width: 100%;
         height: 140px;
-        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
+        background: linear-gradient(135deg, #00425A 0%, #002a3d 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -61,7 +61,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: #0052CC;
+        color: #00425A;
         font-weight: 700;
         transition: all 0.3s;
         font-size: 0.9rem;
@@ -76,7 +76,7 @@
         padding: 1.75rem;
         border-radius: 1.5rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 82, 204, 0.1);
+        border: 1px solid rgba(0, 66, 90, 0.1);
     }
 
     .officer-card {
@@ -88,9 +88,9 @@
         height: 120px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid #0052CC;
+        border: 3px solid #00425A;
         margin: 0 auto 1.25rem;
-        box-shadow: 0 10px 30px rgba(0, 82, 204, 0.15);
+        box-shadow: 0 10px 30px rgba(0, 66, 90, 0.15);
     }
 
     .officer-name {
@@ -101,7 +101,7 @@
     }
 
     .officer-position {
-        color: #0052CC;
+        color: #00425A;
         font-weight: 700;
         font-size: 0.9rem;
     }

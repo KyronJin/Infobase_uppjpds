@@ -52,6 +52,15 @@
                         <img src="<?php echo e(asset('storage/' . $pengumuman->image_path)); ?>" alt="<?php echo e($pengumuman->title); ?>" class="w-full h-64 object-cover rounded-lg mb-6">
                     <?php endif; ?>
 
+                    <style>
+                        .prose img {
+                            max-width: 100%;
+                            max-height: 400px;
+                            height: auto;
+                            object-fit: contain;
+                            border-radius: 8px;
+                        }
+                    </style>
                     <div class="prose prose-slate max-w-none text-slate-700 text-lg leading-relaxed">
                         <?php echo $pengumuman->description; ?>
 

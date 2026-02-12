@@ -4,12 +4,12 @@
 <div class="bg-gray-50 min-h-screen py-24 pt-28 font-cairo">
     <div class="max-w-6xl mx-auto px-6">
         
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
-                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Profile Ruangan</h1>
-                <p class="text-gray-500 mt-2 font-medium">Kelola informasi dan fasilitas ruangan di sini.</p>
+                <h1 class="h2 text-gray-800">Profile Ruangan</h1>
+                <p class="text-sm text-gray-500">Kelola informasi dan fasilitas ruangan di sini.</p>
             </div>
-            <x-button variant="primary" size="lg" icon="plus" class="rounded-2xl shadow-lg shadow-teal-200" onclick="openCreateModal()">Buat Ruangan Baru</x-button>
+            <x-button variant="primary" size="lg" type="link" href="#" onclick="openCreateModal()" icon="plus">Buat Ruangan Baru</x-button>
         </div>
 
         @if(session('success'))
@@ -20,7 +20,7 @@
         @endif
 
         <!-- Search Form -->
-        <div class="mb-6">
+        <div class="mb-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <form method="GET" action="{{ route('admin.profile.index') }}" class="flex gap-3">
                 <div class="flex-1">
                     <input 
@@ -48,69 +48,62 @@
         </div>
 
         <!-- Daftar Ruangan -->
-        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm">
+            <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 border-b border-gray-100 font-bold">
                         <tr>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Gambar</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Ruangan</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Kapasitas</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400">Deskripsi</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400 text-center">Status</th>
-                            <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-gray-400 text-right">Aksi</th>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Gambar</th>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Ruangan</th>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Kapasitas</th>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Deskripsi</th>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">Status</th>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-100">
                         @forelse($items as $item)
-                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
-                            <td class="px-8 py-4">
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="px-6 py-4">
                                 <div class="flex -space-x-4">
                                     @foreach($item->images->take(3) as $image)
-                                        <div class="w-12 h-12 rounded-xl overflow-hidden shadow-sm bg-gray-100 ring-4 ring-white transition-transform hover:z-10 hover:scale-110">
+                                        <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 ring-2 ring-white shadow-sm">
                                             <img src="{{ asset('storage/' . $image->image_path) }}" alt="Room" class="w-full h-full object-cover">
                                         </div>
                                     @endforeach
                                     @if($item->images->count() == 0)
-                                        <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-300 border-2 border-dashed border-gray-100 italic text-[10px]">No Pic</div>
+                                        <div class="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center text-gray-300 border-2 border-dashed border-gray-100 text-[8px] font-bold">—</div>
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-8 py-4 font-bold text-gray-900 leading-tight">
-                                {{ $item->room_name }}
-                                <div class="text-[10px] text-gray-400 font-medium tracking-tight uppercase">LANTAI {{ $item->floor ?? '-' }}</div>
+                            <td class="px-6 py-4">
+                                <p class="font-medium text-gray-900">{{ $item->room_name }}</p>
+                                <p class="text-xs text-gray-500">Lantai {{ $item->floor ?? '-' }}</p>
                             </td>
-                            <td class="px-8 py-4 text-gray-600 font-semibold">{{ $item->capacity ?? '—' }} Orang</td>
-                            <td class="px-8 py-4 text-gray-500 text-xs italic max-w-xs truncate">
+                            <td class="px-6 py-4 text-gray-600">{{ $item->capacity ?? '—' }} Orang</td>
+                            <td class="px-6 py-4 text-gray-500 text-xs max-w-xs truncate">
                                 {{ $item->description ?? '-' }}
                             </td>
-                            <td class="px-8 py-4 text-center">
+                            <td class="px-6 py-4 text-center">
                                 @if($item->is_active)
-                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-green-100 text-green-700 border border-green-200 uppercase">AKTIF</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>
                                 @else
-                                    <span class="inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black tracking-widest bg-gray-100 text-gray-500 border border-gray-200 uppercase">NON-AKTIF</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Non-Aktif</span>
                                 @endif
                             </td>
-                            <td class="px-8 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
-                                    <x-button variant="ghost" size="sm" icon="edit" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" onclick="editProfileRuangan({{ $item->id }})">Edit</x-button>
-                                    <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteProfileRuanganModal', '{{ $item->room_name }}', '/admin/profile-ruangan/{{ $item->id }}')">Hapus</x-button>
+                                    <x-button variant="ghost" size="sm" icon="edit" onclick="editProfileRuangan({{ $item->id }})">Edit</x-button>
+                                    <x-button variant="ghost-danger" size="sm" icon="trash" onclick="openDeleteModal('deleteProfileRuanganModal', '{{ $item->room_name }}', '/admin/profile-ruangan/{{ $item->id }}')">Hapus</x-button>
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-8 py-20 text-center">
-                                <div class="flex flex-col items-center">
-                                    <i class="fas fa-folder-open text-gray-100 text-6xl mb-4"></i>
-                                    <p class="text-gray-400 italic font-medium">Belum ada profile ruangan yang terdaftar.</p>
-                                </div>
-                            </td>
+                            <td colspan="6" class="px-6 py-10 text-center text-gray-400 italic text-sm">Belum ada profile ruangan yang terdaftar.</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
-            </div>
             
             @if($items->hasPages())
                 <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">

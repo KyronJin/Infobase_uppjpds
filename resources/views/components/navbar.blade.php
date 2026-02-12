@@ -1,6 +1,398 @@
-<header class="sticky top-0 z-50 bg-[#063A76] shadow-lg border-b-2 border-gray-200">
-  <nav class="max-w-7xl mx-auto px-6 lg:px-12 py-2">
-    <div class="flex items-center justify-between gap-4">
+<style>
+  /* ==================== NAVBAR BASE STATE (TRANSPARENT FOR HOME, DEFAULT FOR NON-HOME) ==================== */
+  
+  /* HOME PAGE - Make header fully transparent initially */
+  header.navbar-home {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    transition: all 0.4s ease !important;
+  }
+
+  /* Ensure nav inside header is also transparent - HOME */
+  header.navbar-home nav {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  /* All child elements should be transparent background initially - HOME */
+  header.navbar-home > * {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  /* DEFAULT NAVBAR - Non-home pages - has white background */
+  header.navbar-default {
+    background-color: white !important;
+    background-image: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.4s ease !important;
+  }
+
+  header.navbar-default nav {
+    background-color: white !important;
+    background-image: none !important;
+  }
+
+  /* Force WHITE text on all elements - ONLY FOR HOME PAGE */
+  header.navbar-home,
+  header.navbar-home div,
+  header.navbar-home span,
+  header.navbar-home a,
+  header.navbar-home button,
+  header.navbar-home li,
+  header.navbar-home ul,
+  header.navbar-home button > i {
+    color: white !important;
+  }
+
+  /* Override any Tailwind color classes to white - ONLY FOR HOME PAGE */
+  header.navbar-home .text-gray-700,
+  header.navbar-home .text-gray-800,
+  header.navbar-home .text-black,
+  header.navbar-home .text-slate-900,
+  header.navbar-home .text-gray-900,
+  header.navbar-home .text-white,
+  header.navbar-home.text-gray-700,
+  header.navbar-home.text-gray-800,
+  header.navbar-home.text-black {
+    color: white !important;
+  }
+
+  /* Default navbar - DARK TEXT */
+  header.navbar-default,
+  header.navbar-default div,
+  header.navbar-default span,
+  header.navbar-default a,
+  header.navbar-default button,
+  header.navbar-default li,
+  header.navbar-default ul,
+  header.navbar-default i,
+  header.navbar-default * {
+    color: #111827 !important;
+  }
+
+  /* Force override all Tailwind text colors for non-home */
+  header.navbar-default .text-white,
+  header.navbar-default .text-gray-700,
+  header.navbar-default .text-gray-800,
+  header.navbar-default .text-black,
+  header.navbar-default .text-slate-900,
+  header.navbar-default .text-gray-900 {
+    color: #111827 !important;
+  }
+
+  /* Orange text becomes lighter orange on transparent bg - HOME ONLY */
+  header.navbar-home .text-orange-300 {
+    color: #fcd34d !important;
+  }
+
+  header.navbar-home .text-orange-400,
+  header.navbar-home .text-orange-500 {
+    color: #fbbf24 !important;
+  }
+
+  /* Brand logo styling - initial state - HOME */
+  header.navbar-home .brand-logo-text {
+    color: white !important;
+  }
+
+  header.navbar-home .brand-logo-text span {
+    color: #fbbf24 !important;
+  }
+
+  header.navbar-home .brand-logo-subtitle {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  header.navbar-home .brand-logo-icon {
+    background-color: #f97316 !important;
+    color: white !important;
+  }
+
+  /* Navigation buttons - UPPERCASE WHITE - HOME ONLY */
+  header.navbar-home .nav-links a {
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.95rem !important;
+    color: white !important;
+    background: none !important;
+  }
+
+  /* HOME NAVBAR HOVER - ONLY ORANGE UNDERLINE, NO BACKGROUND */
+  header.navbar-home .nav-links a:hover {
+    color: #fcd34d !important;
+    background: transparent !important;
+  }
+
+  header.navbar-home #data-info-btn,
+  header.navbar-home #lang-btn,
+  header.navbar-home #admin-btn {
+    color: white !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    background: none !important;
+  }
+
+  /* HOME BUTTONS HOVER - ONLY ORANGE TEXT, NO BACKGROUND */
+  header.navbar-home #data-info-btn:hover,
+  header.navbar-home #lang-btn:hover {
+    color: #fcd34d !important;
+    background: transparent !important;
+  }
+
+  header.navbar-home .fa-bars,
+  header.navbar-home .fa-times,
+  header.navbar-home i {
+    color: white !important;
+  }
+
+  /* DEFAULT NAVBAR - NON-HOME - DARK TEXT */
+  header.navbar-default .brand-logo-text {
+    color: #f97316 !important;
+  }
+
+  header.navbar-default .brand-logo-text span {
+    color: #f97316 !important;
+  }
+
+  header.navbar-default .brand-logo-subtitle {
+    color: #6b7280 !important;
+  }
+
+  header.navbar-default .nav-links a {
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.95rem !important;
+    color: #111827 !important;
+  }
+
+  header.navbar-default .nav-links a:hover {
+    color: #f97316 !important;
+  }
+
+  header.navbar-default #data-info-btn,
+  header.navbar-default #lang-btn,
+  header.navbar-default #admin-btn {
+    color: #111827 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  header.navbar-default .fa-bars,
+  header.navbar-default .fa-times,
+  header.navbar-default i {
+    color: #111827 !important;
+  }
+
+  header.navbar-default .fa-bars:hover,
+  header.navbar-default .fa-times:hover {
+    color: #f97316 !important;
+  }
+  header.navbar-default #lang-btn:hover {
+    color: #f97316 !important;
+  }
+
+  header.navbar-default #admin-btn {
+    background-color: #f85e38 !important;
+  }
+
+  header.navbar-default #admin-btn:hover {
+    background-color: #d94e2e !important;
+    color: white !important;
+  }
+
+  /* ==================== NAVBAR SCROLLED STATE - HOME ONLY ==================== */
+
+  header.navbar-home.navbar-scrolled {
+    background-color: white !important;
+    background: white !important;
+    background-image: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Keep children transparent in scrolled state */
+  header.navbar-home.navbar-scrolled nav,
+  header.navbar-home.navbar-scrolled > div {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  /* All text becomes DARK when scrolled */
+  header.navbar-home.navbar-scrolled,
+  header.navbar-home.navbar-scrolled div,
+  header.navbar-home.navbar-scrolled span,
+  header.navbar-home.navbar-scrolled a,
+  header.navbar-home.navbar-scrolled button,
+  header.navbar-home.navbar-scrolled li,
+  header.navbar-home.navbar-scrolled ul,
+  header.navbar-home.navbar-scrolled i {
+    color: #111827 !important;
+  }
+
+  /* Override Tailwind colors when scrolled */
+  header.navbar-home.navbar-scrolled .text-white,
+  header.navbar-home.navbar-scrolled .text-gray-700,
+  header.navbar-home.navbar-scrolled .text-gray-800,
+  header.navbar-home.navbar-scrolled .text-orange-300,
+  header.navbar-home.navbar-scrolled .text-orange-400,
+  header.navbar-home.navbar-scrolled .text-orange-500 {
+    color: #111827 !important;
+  }
+
+  /* Brand styling when scrolled */
+  header.navbar-home.navbar-scrolled .brand-logo-text {
+    color: #111827 !important;
+  }
+
+  header.navbar-home.navbar-scrolled .brand-logo-text span {
+    color: #f97316 !important;
+  }
+
+  header.navbar-home.navbar-scrolled .brand-logo-subtitle {
+    color: #111827 !important;
+  }
+
+  header.navbar-home.navbar-scrolled .brand-logo-icon {
+    background-color: #f97316 !important;
+    color: white !important;
+  }
+
+  /* Navigation links styling when scrolled */
+  header.navbar-home.navbar-scrolled .nav-links a {
+    color: #111827 !important;
+    text-transform: uppercase !important;
+  }
+
+  header.navbar-home.navbar-scrolled .nav-links a:hover {
+    color: #f97316 !important;
+  }
+
+  /* Buttons styling when scrolled */
+  header.navbar-home.navbar-scrolled #data-info-btn,
+  header.navbar-home.navbar-scrolled #lang-btn {
+    color: #111827 !important;
+  }
+
+  header.navbar-home.navbar-scrolled #data-info-btn:hover,
+  header.navbar-home.navbar-scrolled #lang-btn:hover {
+    color: #f97316 !important;
+  }
+
+  header.navbar-home.navbar-scrolled #admin-btn {
+    background-color: #f97316 !important;
+    color: white !important;
+  }
+
+  header.navbar-home.navbar-scrolled #admin-btn:hover {
+    background-color: #ea580c !important;
+  }
+
+  /* Icons when scrolled */
+  header.navbar-home.navbar-scrolled .fa-bars,
+  header.navbar-home.navbar-scrolled .fa-times {
+    color: #111827 !important;
+  }
+
+  header.navbar-home.navbar-scrolled .fa-bars:hover,
+  header.navbar-home.navbar-scrolled .fa-times:hover {
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
+  }
+
+  /* Mobile menu when scrolled */
+  header.navbar-home.navbar-scrolled #mobile-menu {
+    background-color: white !important;
+    border-top: 1px solid #e5e7eb !important;
+  }
+
+  header.navbar-home.navbar-scrolled #mobile-menu a {
+    color: #111827 !important;
+  }
+
+  /* ==================== DROPDOWN PROTECTION - Always consistent style ==================== */
+  /* Ensure dropdowns are never affected by scroll state */
+  #data-info-menu,
+  #lang-menu,
+  #admin-menu,
+  #mobile-data-info-menu,
+  #mobile-admin-menu,
+  header #data-info-menu,
+  header #lang-menu,
+  header #admin-menu {
+    background-color: white !important;
+    color: #111827 !important;
+  }
+
+  #data-info-menu a,
+  #lang-menu a,
+  #admin-menu a,
+  #mobile-data-info-menu a,
+  #mobile-admin-menu a,
+  header #data-info-menu a,
+  header #lang-menu a,
+  header #admin-menu a {
+    color: #111827 !important;
+  }
+
+  /* Ensure text inside dropdown links is visible */
+  #data-info-menu a p,
+  #lang-menu a p,
+  #admin-menu a p,
+  #mobile-data-info-menu a p,
+  #mobile-admin-menu a p,
+  header #data-info-menu a p,
+  header #lang-menu a p,
+  header #admin-menu a p {
+    color: #111827 !important;
+  }
+
+  #data-info-menu a:hover,
+  #lang-menu a:hover,
+  #admin-menu a:hover,
+  #mobile-data-info-menu a:hover,
+  #mobile-admin-menu a:hover,
+  header #data-info-menu a:hover,
+  header #lang-menu a:hover,
+  header #admin-menu a:hover {
+    color: #f97316 !important;
+    background-color: #f3f4f6 !important;
+  }
+
+  /* Smooth transitions for all elements */
+  header,
+  header *,
+  header > * {
+    transition: all 0.4s ease !important;
+  }
+
+  /* Enhanced Brand Logo Sizing */
+  .brand-logo-icon {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .brand-logo-text {
+    font-size: 1.125rem !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+  }
+
+  .brand-logo-subtitle {
+    font-size: 0.75rem !important;
+    margin-top: 0.25rem !important;
+  }
+</style>
+
+<header class="@if(Route::currentRouteName() === 'home') fixed navbar-home @else sticky navbar-default @endif top-0 left-0 right-0 z-50 w-full">
+  <nav class="w-full px-4 md:px-6 lg:px-8 py-4">
+    <div class="flex items-center justify-between gap-6 lg:gap-8">
       <!-- Logo - Left -->
       <a href="{{ route('home') }}" class="brand-logo group flex-shrink-0">
         <div class="brand-logo-icon bg-orange-500 text-white">
@@ -13,75 +405,45 @@
       </a>
 
       <!-- Desktop Navigation Links - Center -->
-      <ul id="nav-links" class="hidden lg:flex items-center gap-8 flex-1 justify-center">
+      <ul id="nav-links" class="hidden lg:flex items-center gap-12 flex-1 justify-center nav-links">
         <li>
-          <a href="{{ route('home') }}" class="text-white font-medium hover:text-orange-300 transition duration-300 relative group/link whitespace-nowrap">
+          <a href="{{ route('home') }}" class="text-white font-semibold hover:text-orange-300 transition duration-300 relative group/link whitespace-nowrap text-base">
             {{ __('messages.home') }}
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-300 group-hover/link:w-full transition-all duration-300"></span>
           </a>
         </li>
         <li>
-          <a href="{{ route('about') }}" class="text-white font-medium hover:text-orange-300 transition duration-300 relative group/link whitespace-nowrap">
+          <a href="{{ route('about') }}" class="text-white font-semibold hover:text-orange-300 transition duration-300 relative group/link whitespace-nowrap text-base">
             {{ __('messages.about_us') }}
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-300 group-hover/link:w-full transition-all duration-300"></span>
           </a>
         </li>
         <li class="relative">
-          <button id="data-info-btn" class="flex items-center gap-2 text-white font-medium hover:text-orange-300 transition duration-300 relative group/link cursor-pointer whitespace-nowrap">
+          <button id="data-info-btn" class="flex items-center gap-2 text-white font-semibold hover:text-orange-300 transition duration-300 relative group/link cursor-pointer whitespace-nowrap text-base">
             {{ __('messages.infobase') }}
             <i id="data-info-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-300 group-hover/link:w-full transition-all duration-300"></span>
           </button>
 
           <!-- Dropdown Menu -->
-          <div id="data-info-menu" class="absolute top-full left-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50">
-            <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              <i class="fas fa-bullhorn text-[#00425A] text-lg"></i>
-              <div>
-                <p class="font-semibold text-sm">{{ __('messages.announcements') }}</p>
-                <p class="text-xs text-gray-500">{{ __('messages.view_announcements') }}</p>
-              </div>
-              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+          <div id="data-info-menu" class="absolute top-full left-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50">
+            <a href="{{ route('infobase.pengumuman') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 transition duration-200 text-sm font-medium">
+              {{ __('messages.announcements') }}
             </a>
-            <a href="{{ route('infobase.calendar-aktifitas') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-              <i class="fas fa-calendar-alt text-[#f85e38] text-lg"></i>
-              <div>
-                <p class="font-semibold text-sm">{{ __('messages.calendar') }}</p>
-                <p class="text-xs text-gray-500">{{ __('messages.view_activities') }}</p>
-              </div>
-              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            <a href="{{ route('infobase.calendar-aktifitas') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-b border-gray-100 transition duration-200 text-sm font-medium">
+              {{ __('messages.calendar') }}
             </a>
-            <a href="{{ route('infobase.profile-ruangan') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-              <i class="fas fa-door-open text-[#00425A] text-lg"></i>
-              <div>
-                <p class="font-semibold text-sm">{{ __('messages.room_profiles') }}</p>
-                <p class="text-xs text-gray-500">{{ __('messages.view_room_facilities') }}</p>
-              </div>
-              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            <a href="{{ route('infobase.profile-ruangan') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-b border-gray-100 transition duration-200 text-sm font-medium">
+              {{ __('messages.room_profiles') }}
             </a>
-            <a href="{{ route('infobase.tata-tertib') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-              <i class="fas fa-book text-[#f85e38] text-lg"></i>
-              <div>
-                <p class="font-semibold text-sm">{{ __('messages.rules') }}</p>
-                <p class="text-xs text-gray-500">{{ __('messages.view_regulations') }}</p>
-              </div>
-              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            <a href="{{ route('infobase.tata-tertib') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-b border-gray-100 transition duration-200 text-sm font-medium">
+              {{ __('messages.rules') }}
             </a>
-            <a href="{{ route('infobase.staff-of-month') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-              <i class="fas fa-star text-[#00425A] text-lg"></i>
-              <div>
-                <p class="font-semibold text-sm">{{ __('messages.staff_of_month') }}</p>
-                <p class="text-xs text-gray-500">{{ __('messages.view_featured_staff') }}</p>
-              </div>
-              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            <a href="{{ route('infobase.staff-of-month') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-b border-gray-100 transition duration-200 text-sm font-medium">
+              {{ __('messages.staff_of_month') }}
             </a>
-            <a href="{{ route('infobase.profil-pegawai') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] transition duration-200 relative group/item">
-              <i class="fas fa-users text-[#f85e38] text-lg"></i>
-              <div>
-                <p class="font-semibold text-sm">{{ __('messages.staff_profiles') }}</p>
-                <p class="text-xs text-gray-500">{{ __('messages.view_staff_data') }}</p>
-              </div>
-              <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+            <a href="{{ route('infobase.profil-pegawai') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 transition duration-200 text-sm font-medium">
+              {{ __('messages.staff_profiles') }}
             </a>
           </div>
         </li>
@@ -115,97 +477,60 @@
       <div class="hidden lg:flex items-center gap-4 flex-shrink-0">
         @auth
           <div class="relative">
-            <button id="admin-btn" class="flex items-center gap-2 px-5 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 shadow-md hover:shadow-lg whitespace-nowrap">
+            <button id="admin-btn" class="flex items-center gap-2 px-5 py-2 bg-[#f85e38] text-white font-semibold rounded-lg hover:bg-[#d94e2e] transition duration-300 shadow-md hover:shadow-lg whitespace-nowrap">
               <i class="fas fa-user-shield"></i>
               Admin
               <i id="admin-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="admin-menu" class="absolute top-full right-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50">
+            <div id="admin-menu" class="absolute top-full right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50">
               @if(Route::has('admin.pengumuman.index'))
-              <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-bullhorn text-[#00425A] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">{{ __('messages.announcements') }}</p>
-                  <p class="text-xs text-gray-500">{{ __('messages.manage_announcements') }}</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.pengumuman.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 transition duration-200 text-sm font-medium">
+                {{ __('messages.announcements') }}
               </a>
               @endif
 
               @if(Route::has('admin.calendar.index'))
-              <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-calendar-alt text-[#f85e38] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">{{ __('messages.calendar') }}</p>
-                  <p class="text-xs text-gray-500">{{ __('messages.manage_calendar') }}</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.calendar.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
+                {{ __('messages.calendar') }}
               </a>
               @endif
 
               @if(Route::has('admin.profile.index'))
-              <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-door-open text-[#00425A] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">Profile Ruangan</p>
-                  <p class="text-xs text-gray-500">Kelola ruang fasilitas</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.profile.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
+                Profile Ruangan
               </a>
               @endif
 
               @if(Route::has('admin.tata_tertib.index'))
-              <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-book text-[#f85e38] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">Tata Tertib</p>
-                  <p class="text-xs text-gray-500">Kelola peraturan</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.tata_tertib.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
+                Tata Tertib
               </a>
               @endif
 
               @if(Route::has('admin.staff-of-month.index'))
-              <a href="{{ route('admin.staff-of-month.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-star text-[#00425A] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">Staff of Month</p>
-                  <p class="text-xs text-gray-500">Kelola staff terpilih</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.staff-of-month.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
+                Staff of Month
               </a>
               @endif
 
               @if(Route::has('admin.profil_pegawai.index'))
-              <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-users text-[#f85e38] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">Profil Pegawai</p>
-                  <p class="text-xs text-gray-500">Kelola data pegawai</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.profil_pegawai.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
+                Profil Pegawai
               </a>
               @endif
 
               @if(Route::has('admin.gallery.index'))
-              <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#00425A] border-b border-gray-100 transition duration-200 relative group/item">
-                <i class="fas fa-images text-[#00425A] text-lg"></i>
-                <div>
-                  <p class="font-semibold text-sm">Galeri</p>
-                  <p class="text-xs text-gray-500">Kelola foto perpustakaan</p>
-                </div>
-                <span class="absolute left-0 top-1/2 w-1 h-0 bg-[#f85e38] group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
+              <a href="{{ route('admin.gallery.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
+                Galeri
               </a>
               @endif
 
-              <form action="{{ route('admin.logout') }}" method="POST" class="mt-2">
+              <form action="{{ route('admin.logout') }}" method="POST" class="mt-1">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50 transition duration-200 font-semibold text-sm relative group/item">
-                  <i class="fas fa-sign-out-alt"></i>
+                <button type="submit" class="w-full text-left px-5 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-200 font-medium text-sm border-t border-gray-100">
                   Keluar
-                  <span class="absolute left-0 top-1/2 w-1 h-0 bg-red-500 group-hover/item:h-1/2 transition-all duration-300 -translate-y-1/2"></span>
                 </button>
               </form>
             </div>
@@ -301,74 +626,50 @@
 
             <div id="mobile-admin-menu" class="hidden mt-2 space-y-1 pl-4 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
               @if(Route::has('admin.pengumuman.index'))
-              <a href="{{ route('admin.pengumuman.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
-                  <i class="fas fa-bullhorn"></i>
-                </div>
+              <a href="{{ route('admin.pengumuman.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300">
                 <span class="text-sm font-semibold">{{ __('messages.announcements') }}</span>
               </a>
               @endif
 
               @if(Route::has('admin.calendar.index'))
-              <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
-                  <i class="fas fa-calendar-alt"></i>
-                </div>
+              <a href="{{ route('admin.calendar.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
                 <span class="text-sm font-semibold">{{ __('messages.calendar') }}</span>
               </a>
               @endif
 
               @if(Route::has('admin.profile.index'))
-              <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
-                  <i class="fas fa-door-open"></i>
-                </div>
+              <a href="{{ route('admin.profile.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
                 <span class="text-sm font-semibold">Profile Ruangan</span>
               </a>
               @endif
 
               @if(Route::has('admin.tata_tertib.index'))
-              <a href="{{ route('admin.tata_tertib.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
-                  <i class="fas fa-book"></i>
-                </div>
+              <a href="{{ route('admin.tata_tertib.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
                 <span class="text-sm font-semibold">Tata Tertib</span>
               </a>
               @endif
 
               @if(Route::has('admin.staff-of-month.index'))
-              <a href="{{ route('admin.staff-of-month.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
-                  <i class="fas fa-star"></i>
-                </div>
+              <a href="{{ route('admin.staff-of-month.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
                 <span class="text-sm font-semibold">Staff of Month</span>
               </a>
               @endif
 
               @if(Route::has('admin.profil_pegawai.index'))
-              <a href="{{ route('admin.profil_pegawai.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#f85e38] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#f85e38]/10 flex items-center justify-center text-[#f85e38]">
-                  <i class="fas fa-users"></i>
-                </div>
+              <a href="{{ route('admin.profil_pegawai.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
                 <span class="text-sm font-semibold">Profil Pegawai</span>
               </a>
               @endif
 
               @if(Route::has('admin.gallery.index'))
-              <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
-                <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
-                  <i class="fas fa-images"></i>
-                </div>
+              <a href="{{ route('admin.gallery.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
                 <span class="text-sm font-semibold">Galeri</span>
               </a>
               @endif
 
               <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-gray-200">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition duration-300 font-semibold text-sm">
-                  <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-                    <i class="fas fa-sign-out-alt"></i>
-                  </div>
+                <button type="submit" class="w-full text-left px-4 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-300 font-semibold text-sm">
                   Keluar
                 </button>
               </form>
@@ -658,5 +959,49 @@
         }
       }
     });
+
+    // ==================== NAVBAR SCROLL EFFECT - HOME ONLY ==================== 
+    const header = document.querySelector('header');
+    const scrollThreshold = 50;
+    const isHomePage = header.classList.contains('navbar-home');
+
+    // Debug: Check initial state
+    console.log('Navbar initialized. Is home page?', isHomePage);
+    console.log('Scroll threshold:', scrollThreshold);
+    console.log('Initial scroll position:', window.scrollY);
+    
+    // Only apply scroll effect to home page
+    if (isHomePage) {
+      console.log('Scroll effect enabled for home page');
+      
+      window.addEventListener('scroll', function() {
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        const hasScrolledClass = header.classList.contains('navbar-scrolled');
+        
+        if (scrollPosition > scrollThreshold) {
+          if (!hasScrolledClass) {
+            header.classList.add('navbar-scrolled');
+            console.log('✓ Added navbar-scrolled class at scroll position:', scrollPosition);
+          }
+        } else {
+          if (hasScrolledClass) {
+            header.classList.remove('navbar-scrolled');
+            console.log('✓ Removed navbar-scrolled class at scroll position:', scrollPosition);
+          }
+        }
+      });
+
+      // Initialize navbar state on page load
+      const initialScrollPosition = window.scrollY || document.documentElement.scrollTop;
+      if (initialScrollPosition > scrollThreshold) {
+        header.classList.add('navbar-scrolled');
+        console.log('✓ Added navbar-scrolled class on page load');
+      } else {
+        header.classList.remove('navbar-scrolled');
+        console.log('✓ Ensured navbar-scrolled class NOT present on page load');
+      }
+    } else {
+      console.log('Scroll effect DISABLED - not home page');
+    }
   });
 </script>

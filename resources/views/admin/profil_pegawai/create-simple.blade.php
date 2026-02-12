@@ -35,7 +35,7 @@
                         type="text" 
                         name="nama" 
                         value="{{ old('nama') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 @error('nama') border-red-500 @enderror" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 @error('nama') border-red-500 @enderror" 
                         placeholder="Contoh: Budi Santoso"
                         required>
                     @error('nama')
@@ -48,7 +48,7 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Jabatan *</label>
                     <select 
                         name="jabatan_id" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 @error('jabatan_id') border-red-500 @enderror"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 @error('jabatan_id') border-red-500 @enderror"
                         required>
                         <option value="">-- Pilih Jabatan --</option>
                         @foreach($jabatans as $jabatan)
@@ -68,7 +68,7 @@
                     <textarea 
                         name="deskripsi" 
                         rows="6"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 @error('deskripsi') border-red-500 @enderror font-mono text-sm"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 @error('deskripsi') border-red-500 @enderror font-mono text-sm"
                         placeholder="Contoh: Seorang pustakawan profesional dengan pengalaman lebih dari 10 tahun di bidang pengelolaan perpustakaan."
                         required>{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')
@@ -83,7 +83,7 @@
                     </a>
                     <button 
                         type="submit" 
-                        class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                        class="flex-1 px-6 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors">
                         Tambah Pegawai
                     </button>
                 </div>

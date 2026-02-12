@@ -54,6 +54,7 @@ Route::prefix('infobase')->name('infobase.')->group(function () {
 
 Route::post('admin/tata_tertib/store-jenis', [TataTertibController::class, 'storeJenis'])->name('admin.tata_tertib.store-jenis')->middleware('auth');
 Route::delete('admin/tata-tertib/jenis/{jenis}', [TataTertibController::class, 'destroyJenis'])->name('admin.tata_tertib.destroy-jenis')->middleware('auth');
+Route::delete('admin/tata-tertib/{id}', [TataTertibController::class, 'destroy'])->name('admin.tata_tertib.destroy')->middleware('auth');
 
 // Pengumuman public detail view
 Route::get('pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.show');

@@ -536,14 +536,33 @@
         background: rgba(255, 255, 255, 0.25);
         transform: translateX(-4px);
     }
+
+    /* Simple Header Style */
+    .simple-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .simple-header .header-left h1 {
+        color: #000000;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: none;
+    }
+
+    .simple-header .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
-<div class="page-header">
+<div class="page-header simple-header">
     <div class="header-content">
         <div class="header-left">
-            <span><i class="fas fa-users mr-2"></i>Tim Kami</span>
-            <h1><i class="fas fa-sitemap mr-3 text-white"></i>Profil Pegawai</h1>
-            <p>Daftar struktur organisasi dan personel perpustakaan.</p>
+            <h1>PROFIL PEGAWAI</h1>
         </div>
         <a href="{{ route('home') }}" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali
@@ -911,7 +930,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setInterval(() => {
             currentSlide = (currentSlide + 1) % totalSlides;
             updateSlider();
-        }, 6000);
+        }, 60000);
     }
 });
 </script>

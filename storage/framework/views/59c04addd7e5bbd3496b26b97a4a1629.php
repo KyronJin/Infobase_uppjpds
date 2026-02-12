@@ -400,7 +400,9 @@
         .then(response => response.json())
         .then(data => {
             document.getElementById('edit-jenis_id').value = data.jenis_tata_tertib_id || '';
-            document.getElementById('edit-content').value = data.content || '';
+            // Strip HTML tags dari content sebelum ditampilkan di textarea
+            const plainContent = data.content ? data.content.replace(/<[^>]*>/g, '') : '';
+            document.getElementById('edit-content').value = plainContent;
             document.getElementById('edit-is_active').value = data.is_active !== undefined ? data.is_active : '1';
             form.action = `/admin/tata-tertib/${id}`;
             modal.classList.remove('hidden');

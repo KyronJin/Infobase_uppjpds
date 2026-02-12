@@ -32,19 +32,19 @@
     }
 
     .position-filter:hover {
-        border-color: #2563eb;
-        color: #2563eb;
+        border-color: #063A76;
+        color: #063A76;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+        box-shadow: 0 8px 20px rgba(6, 58, 118, 0.15);
         background: white;
     }
 
     .position-filter.active {
-        background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-        border-color: #2563eb;
+        background: linear-gradient(135deg, #063A76 0%, #0D5C9E 100%);
+        border-color: #063A76;
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 8px 20px rgba(6, 58, 118, 0.3);
     }
 
     .staff-display {
@@ -53,7 +53,7 @@
         border-radius: 32px;
         overflow: hidden;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(37, 99, 235, 0.1);
+        border: 1px solid rgba(6, 58, 118, 0.1);
         min-height: 80vh;
     }
 
@@ -86,7 +86,7 @@
         height: 280px;
         border-radius: 50%;
         overflow: hidden;
-        box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 20px 60px rgba(6, 58, 118, 0.2);
         position: relative;
         border: 8px solid white;
         margin: 0 auto;
@@ -101,7 +101,7 @@
     .staff-image-placeholder {
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        background: linear-gradient(135deg, #063A76 0%, #041E3B 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -139,11 +139,11 @@
 
     .staff-position {
         font-size: 1.1rem;
-        color: #0052CC;
+        color: #063A76;
         font-weight: 600;
         margin-bottom: 1.5rem;
         padding: 0.75rem 1.5rem;
-        background: rgba(0, 82, 204, 0.08);
+        background: rgba(6, 58, 118, 0.08);
         border-radius: 12px;
         display: inline-block;
         width: fit-content;
@@ -186,7 +186,7 @@
         background: #f8fafc;
         padding: 2rem;
         border-radius: 16px;
-        border-left: 4px solid #2563eb;
+        border-left: 4px solid #063A76;
     }
 
     .empty-state {
@@ -265,11 +265,33 @@
             font-size: 1rem;
         }
     }
+
+    /* Simple Header Style */
+    .simple-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .simple-header .header-left h1,
+    .simple-header h1 {
+        color: #000000;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: none;
+    }
+
+    .simple-header .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
-<div class="page-header">
+<div class="page-header simple-header">
     <div class="header-content">
-        <h1><i class="fas fa-award mr-4 text-white"></i>{{ $title ?? 'Staff of The Month' }}</h1>
+        <h1>STAFF OF THE MONTH</h1>
         <a href="{{ route('home') }}" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali
         </a>
@@ -287,6 +309,34 @@
 <div class="container">
     <div class="content-wrapper">
         @if($staffByPosition && $staffByPosition->count())
+            <!-- Month Filter Dropdown -->
+            <div style="margin-bottom: 2rem; display: flex; justify-content: center;">
+                <form method="GET" action="{{ route('infobase.staff-of-month') }}" style="display: flex; gap: 1rem; align-items: center;">
+                    @if(request()->has('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+                    <label for="month-filter" style="font-weight: 600; color: #64748b;">Pilih Bulan:</label>
+                    <select id="month-filter" name="month" onchange="this.form.submit()" style="
+                        padding: 0.75rem 1.5rem;
+                        background: #f8fafc;
+                        border: 2px solid #e2e8f0;
+                        border-radius: 50px;
+                        color: #64748b;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 0.9rem;
+                    ">
+                        <option value="">-- Semua Bulan --</option>
+                        @foreach($allMonths as $month)
+                            <option value="{{ $month }}" {{ $selectedMonth == $month ? 'selected' : '' }}>
+                                {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+
             <!-- Position Filters -->
             <div class="position-filters">
                 @foreach($positions as $index => $position)

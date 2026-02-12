@@ -7,7 +7,7 @@ return [
     // Main Navigation
     'home' => 'Beranda',
     'about_us' => 'Tentang Kami',
-    'infobase' => 'Info Data',
+    'infobase' => 'INFOBASE',
     'announcements' => 'Pengumuman',
     'calendar' => 'Kalender',
     'room_profiles' => 'Profil Ruangan',

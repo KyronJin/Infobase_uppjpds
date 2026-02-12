@@ -1,5 +1,23 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+    .room-description {
+        max-width: 100%;
+    }
+    
+    .room-description img {
+        max-width: 100%;
+        max-height: 300px;
+        height: auto;
+        object-fit: contain;
+        border-radius: 8px;
+        display: block;
+        margin: 0.5rem 0;
+    }
+</style>
+@endpush
+
 @section('content')
 
 <style>
@@ -343,8 +361,8 @@
     }
 
     .modal-content img {
-        width: 100%;
-        height: 100%;
+        max-width: 90%;
+        max-height: 80vh;
         object-fit: contain;
         border-radius: 0.75rem;
     }
@@ -465,14 +483,33 @@
             padding: 1.5rem 1rem;
         }
     }
+
+    /* Simple Header Style */
+    .simple-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .simple-header .header-left h1 {
+        color: #000000;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: none;
+    }
+
+    .simple-header .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
-<div class="page-header">
+<div class="page-header simple-header">
     <div class="header-content">
         <div class="header-left">
-            <span><i class="fas fa-door-open mr-2"></i>Profil Ruangan</span>
-            <h1><i class="fas fa-building mr-3 text-[#0052CC]"></i>Ruangan & Fasilitas</h1>
-            <p>Jelajahi ruangan dan fasilitas yang tersedia di perpustakaan kami.</p>
+            <h1>PROFILE RUANGAN</h1>
         </div>
         <a href="{{ route('home') }}" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali

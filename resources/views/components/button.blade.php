@@ -19,13 +19,13 @@
     };
 
     $sizeStyles = match($size) {
-        'sm' => 'padding: 6px 12px; font-size: 12px;',
+        'sm' => 'padding: 8px 14px; font-size: 13px;',
         'md' => 'padding: 8px 16px; font-size: 14px;',
         'lg' => 'padding: 10px 20px; font-size: 14px;',
         default => 'padding: 8px 16px; font-size: 14px;',
     };
 
-    $baseStyles = 'display: inline-flex; align-items: center; gap: 8px; font-weight: 600; border-radius: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all 0.2s; line-height: 1.4;';
+    $baseStyles = 'display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all 0.2s; line-height: 1.4; min-width: fit-content;';
     $disabledStyles = $disabled ? 'opacity: 0.5; cursor: not-allowed; pointer-events: none;' : '';
 
     $allStyles = "$variantStyles $sizeStyles $baseStyles $disabledStyles";

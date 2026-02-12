@@ -6,9 +6,9 @@
         $message = is_array($notification) ? $notification['message'] ?? '' : '';
         $type = is_array($notification) ? $notification['type'] ?? 'success' : 'success';
         
-        $bgColor = $type === 'success' ? 'bg-green-50 border-green-200' : ($type === 'error' ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200');
-        $borderColor = $type === 'success' ? 'border-l-4 border-l-green-500' : ($type === 'error' ? 'border-l-4 border-l-red-500' : 'border-l-4 border-l-blue-500');
-        $iconColor = $type === 'success' ? 'text-green-600' : ($type === 'error' ? 'text-red-600' : 'text-blue-600');
+        $bgColor = $type === 'success' ? 'bg-green-50 border-green-200' : ($type === 'error' ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200');
+        $borderColor = $type === 'success' ? 'border-l-4 border-l-green-500' : ($type === 'error' ? 'border-l-4 border-l-red-500' : 'border-l-4 border-l-teal-600');
+        $iconColor = $type === 'success' ? 'text-green-600' : ($type === 'error' ? 'text-red-600' : 'text-teal-600');
         $icon = $type === 'success' ? 'fa-check-circle' : ($type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
     @endphp
     

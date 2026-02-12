@@ -3,13 +3,57 @@
 {{-- Include Image Cropper Component --}}
 @include('components.image-cropper')
 
+@push('styles')
+<style>
+    #sortable {
+        list-style: none;
+        padding: 1rem !important;
+        background: #f3f4f6 !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    #sortable li {
+        background: white;
+        padding: 12px;
+        margin-bottom: 8px;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        user-select: none;
+        transition: all 0.2s;
+    }
+    
+    #sortable li:hover {
+        border-color: #10b981;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    #sortable li.ui-sortable-helper {
+        opacity: 0.7;
+        transform: rotate(2deg);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 1000 !important;
+    }
+    
+    .ui-state-highlight {
+        background: #cfe9ff !important;
+        border: 2px dashed #3b82f6 !important;
+        border-radius: 0.5rem !important;
+        min-height: 50px !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
     <div class="max-w-6xl mx-auto px-6">
         
         <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
-                <h1 class="h2 text-gray-800">Manajemen Profil Pegawai</h1>
+                <h1 class="h2 text-gray-800"> Profil Pegawai</h1>
                 <p class="text-sm text-gray-500">Kelola profil pegawai perpustakaan di sini.</p>
             </div>
             <div class="flex gap-3 mt-4 md:mt-0">
@@ -50,8 +94,8 @@
         <div id="jabatanModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center">
-                        <i class="fas fa-briefcase text-blue-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-50 rounded-full flex items-center justify-center">
+                        <i class="fas fa-briefcase text-teal-600 text-lg"></i>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-gray-900">Tambah Jabatan</h3>
@@ -65,7 +109,7 @@
                     @csrf
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Jabatan</label>
-                        <input type="text" name="name" placeholder="Masukkan nama jabatan" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition-colors" required>
+                        <input type="text" name="name" placeholder="Masukkan nama jabatan" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 transition-colors" required>
                     </div>
                     <div class="flex gap-3 pt-4">
                         <x-button variant="secondary" size="md" class="flex-1 justify-center" type="button" onclick="closeModal('jabatanModal')">Batal</x-button>
@@ -144,18 +188,18 @@
                     </button>
                 </div>
                 
-                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-3 mb-6">
+                <div class="bg-slate-50 border-l-4 border-teal-600 rounded-lg p-3 mb-6">
                     <p class="text-sm text-gray-700 flex items-start gap-2">
-                        <i class="fas fa-info-circle text-blue-600 mt-0.5 flex-shrink-0"></i>
+                        <i class="fas fa-info-circle text-teal-600 mt-0.5 flex-shrink-0"></i>
                         <span>Drag jabatan untuk mengatur urutan (atas = posisi tertinggi)</span>
                     </p>
                 </div>
                 
-                <ul id="sortable" class="space-y-2 mb-6 bg-gray-50 p-4 rounded-lg">
+                <ul id="sortable" class="mb-6 bg-gray-50 p-4 rounded-lg" style="list-style: none; margin: 0; padding: 1rem;">
                     @foreach($jabatans->sortBy('order') as $jabatan)
-                        <li class="bg-white p-3 rounded-lg cursor-move border-2 border-gray-200 hover:border-green-400 transition-colors flex items-center gap-2 hover:shadow-md" data-id="{{ $jabatan->id }}">
-                            <i class="fas fa-grip-vertical text-gray-400"></i>
-                            <span class="font-medium text-gray-700">{{ $jabatan->name }}</span>
+                        <li data-id="{{ $jabatan->id }}" style="background: white; padding: 12px; margin-bottom: 8px; border: 2px solid #e5e7eb; border-radius: 0.5rem; cursor: grab; display: flex; align-items: center; gap: 12px; user-select: none; transition: all 0.2s;">
+                            <i class="fas fa-grip-vertical" style="color: #9ca3af; font-size: 18px; cursor: grab;"></i>
+                            <span style="font-weight: 500; color: #374151; flex: 1;">{{ $jabatan->name }}</span>
                         </li>
                     @endforeach
                 </ul>
@@ -316,12 +360,29 @@
 <!-- Delete Modal Component -->
 @component('components.delete-modal', ['id' => 'deleteProfilPegawaiModal', 'title' => 'Hapus Profil Pegawai?']) @endcomponent
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+
 <script>
     function openModal(id) {
         document.getElementById(id).classList.remove('hidden');
-        document.getElementById('dropdownMenu').classList.add('hidden');
+        document.getElementById('dropdownMenu')?.classList.add('hidden');
+        
+        // Reinitialize sortable when order modal opens
+        if (id === 'orderModal' && typeof $ !== 'undefined') {
+            setTimeout(function() {
+                if ($('#sortable').data('sortable') === undefined) {
+                    $("#sortable").sortable({
+                        items: "li",
+                        cursor: "grab",
+                        opacity: 0.6,
+                        placeholder: "ui-state-highlight",
+                        revert: 100,
+                        animation: 150,
+                        tolerance: "pointer"
+                    });
+                }
+            }, 100);
+        }
     }
     
     function closeModal(id) {
@@ -382,10 +443,32 @@
         }
     }
 
-    // Sortable for order modal
-    $(function() {
-        $("#sortable").sortable();
-        $("#sortable").disableSelection();
+    // Sortable for order modal - Initialize when document is ready
+    $(document).ready(function() {
+        console.log('jQuery loaded:', typeof jQuery !== 'undefined');
+        console.log('jQuery UI loaded:', typeof $.ui !== 'undefined');
+        
+        if (typeof $.ui !== 'undefined') {
+            $("#sortable").sortable({
+                items: "li",
+                cursor: "grab",
+                opacity: 0.7,
+                placeholder: "ui-state-highlight",
+                revert: 150,
+                animation: 150,
+                tolerance: "pointer",
+                start: function(event, ui) {
+                    console.log('✅ Drag started');
+                    ui.item.css('z-index', 1000);
+                },
+                stop: function(event, ui) {
+                    console.log('✅ Drag stopped');
+                }
+            });
+            console.log('✅ Sortable initialized on page load');
+        } else {
+            console.error('❌ jQuery UI not available');
+        }
     });
 
     document.getElementById('saveOrder').addEventListener('click', function() {

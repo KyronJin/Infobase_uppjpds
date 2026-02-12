@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StaffOfMonth;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StaffOfMonthController extends Controller
 {
@@ -26,35 +27,41 @@ class StaffOfMonthController extends Controller
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
-            ], [
-                'name.required' => 'Nama posisi harus diisi.',
-                'name.string' => 'Nama posisi harus berupa teks.',
-                'name.max' => 'Nama posisi maksimal 255 karakter.',
             ]);
 
-            // Check if jabatan already exists (case-insensitive)
             $exists = Jabatan::whereRaw('LOWER(name) = LOWER(?)', [$request->name])->exists();
-            
             if ($exists) {
                 return redirect()->back()->with('error', '✗ Posisi "' . $request->name . '" sudah ada!');
             }
 
             Jabatan::create($request->only('name'));
-
             return redirect()->back()->with('success', '✓ Posisi berhasil ditambahkan!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', '✗ Gagal menambahkan posisi: ' . $e->getMessage());
         }
     }
 
-    public function destroyJabatan(Jabatan $jabatan)
+    public function destroyJabatan($id)
     {
         try {
+            $jabatan = Jabatan::find($id);
+            if (!$jabatan) {
+                if (request()->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Posisi tidak ditemukan!'], 404);
+                }
+                return redirect()->back()->with('error', 'Posisi tidak ditemukan!');
+            }
             $jabatan->delete();
+            
+            if (request()->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Posisi berhasil dihapus!']);
+            }
+            
             return redirect()->back()->with('success', '✓ Posisi berhasil dihapus!');
         } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            }
             return redirect()->back()->with('error', '✗ Gagal menghapus posisi: ' . $e->getMessage());
         }
     }
@@ -66,169 +73,146 @@ class StaffOfMonthController extends Controller
                 'name' => 'required|string|max:255',
                 'position' => 'required|string|max:255',
                 'month' => 'nullable|integer|min:1|max:12',
-                'year' => 'nullable|integer|min:2026',
+                'year' => 'required|integer|min:2000',
                 'bio' => 'nullable|string',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
                 'photo_link' => 'nullable|url',
-            ], [
-                'name.required' => 'Nama staff harus diisi.',
-                'name.string' => 'Nama staff harus berupa teks.',
-                'name.max' => 'Nama staff maksimal 255 karakter.',
-                'position.required' => 'Posisi harus dipilih.',
-                'position.string' => 'Posisi harus berupa teks.',
-                'position.max' => 'Posisi maksimal 255 karakter.',
-                'month.integer' => 'Bulan harus berupa angka.',
-                'month.min' => 'Bulan minimal 1.',
-                'month.max' => 'Bulan maksimal 12.',
-                'year.integer' => 'Tahun harus berupa angka.',
-                'year.min' => 'Tahun minimal 2026.',
-                'bio.string' => 'Biodata harus berupa teks.',
-                'photo.image' => 'File harus berupa gambar.',
-                'photo.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-                'photo.max' => 'Ukuran gambar maksimal 20MB.',
-                'photo_link.url' => 'Link foto harus berupa URL yang valid.',
             ]);
 
-            $data['is_active'] = $request->has('is_active') ? true : false;
-
-            // Handle photo upload
-            if ($request->hasFile('photo')) {
-                try {
-                    $data['photo_path'] = $request->file('photo')->store('staff_of_month', 'public');
-                } catch (\Exception $e) {
-                    return redirect()->back()->with('error', '✗ Gagal upload foto: ' . $e->getMessage())->withInput();
-                }
+            // Cek duplikat: posisi sama di bulan yang sama
+            $duplicate = StaffOfMonth::where('position', $data['position'])
+                                     ->where('month', $data['month'])
+                                     ->where('year', $data['year'])
+                                     ->exists();
+            
+            if ($duplicate && $data['month']) {
+                return redirect()->back()->with('error', '✗ Posisi "' . $data['position'] . '" sudah ada untuk bulan ini! Silakan ganti bulan atau posisi.')->withInput();
             }
 
-            StaffOfMonth::create($data);
+            $data['is_active'] = $request->has('is_active');
 
+            if ($request->hasFile('photo')) {
+                // Simpan path ke variabel baru
+                $data['photo_path'] = $request->file('photo')->store('staff_of_month', 'public');
+            }
+
+            // PENTING: Hapus 'photo' dari array agar tidak mencoba masuk ke kolom database
+            unset($data['photo']);
+
+            StaffOfMonth::create($data);
             return redirect()->route('admin.staff-of-month.index')->with('success', '✓ Staff of Month berhasil ditambahkan!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', '✗ Gagal menambahkan staff: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function edit(StaffOfMonth $staffOfMonth)
+    public function edit($id)
     {
-        // Untuk AJAX request, return JSON
-        if (request()->expectsJson()) {
-            return response()->json([
-                'id' => $staffOfMonth->id,
-                'name' => $staffOfMonth->name,
-                'position' => $staffOfMonth->position,
-                'month' => $staffOfMonth->month,
-                'year' => $staffOfMonth->year,
-                'bio' => $staffOfMonth->bio,
-                'photo_path' => $staffOfMonth->photo_path,
-                'photo_link' => $staffOfMonth->photo_link,
-                'is_active' => $staffOfMonth->is_active,
-            ]);
+        $staffOfMonth = StaffOfMonth::find($id);
+        if (!$staffOfMonth) {
+            return redirect()->route('admin.staff-of-month.index')->with('error', 'Data tidak ditemukan!');
         }
-        
+
+        if (request()->expectsJson()) {
+            return response()->json($staffOfMonth);
+        }
+
         return view('admin.staff.edit', ['item' => $staffOfMonth]);
     }
 
-    public function update(Request $request, StaffOfMonth $staffOfMonth)
+    public function update(Request $request, $id)
     {
         try {
+            $staffOfMonth = StaffOfMonth::findOrFail($id);
+
             $data = $request->validate([
                 'name' => 'required|string|max:255',
                 'position' => 'required|string|max:255',
                 'month' => 'nullable|integer|min:1|max:12',
-                'year' => 'nullable|integer|min:2026',
+                'year' => 'required|integer|min:2000',
                 'bio' => 'nullable|string',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
                 'photo_link' => 'nullable|url',
                 'delete_photo' => 'nullable|in:0,1',
-            ], [
-                'name.required' => 'Nama staff harus diisi.',
-                'name.string' => 'Nama staff harus berupa teks.',
-                'name.max' => 'Nama staff maksimal 255 karakter.',
-                'position.required' => 'Posisi harus dipilih.',
-                'position.string' => 'Posisi harus berupa teks.',
-                'position.max' => 'Posisi maksimal 255 karakter.',
-                'month.integer' => 'Bulan harus berupa angka.',
-                'month.min' => 'Bulan minimal 1.',
-                'month.max' => 'Bulan maksimal 12.',
-                'year.integer' => 'Tahun harus berupa angka.',
-                'year.min' => 'Tahun minimal 2026.',
-                'bio.string' => 'Biodata harus berupa teks.',
-                'photo.image' => 'File harus berupa gambar.',
-                'photo.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
-                'photo.max' => 'Ukuran gambar maksimal 20MB.',
-                'photo_link.url' => 'Link foto harus berupa URL yang valid.',
             ]);
 
-            $data['is_active'] = $request->has('is_active') ? true : false;
-
-            // Handle photo deletion
-            if ($request->input('delete_photo') === '1') {
-                try {
-                    if ($staffOfMonth->photo_path) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($staffOfMonth->photo_path);
-                    }
-                    $data['photo_path'] = null;
-                } catch (\Exception $e) {
-                    \Log::warning('Failed to delete photo: ' . $e->getMessage());
-                }
+            // Cek duplikat: posisi sama di bulan yang sama (kecuali record ini sendiri)
+            $duplicate = StaffOfMonth::where('position', $data['position'])
+                                     ->where('month', $data['month'])
+                                     ->where('year', $data['year'])
+                                     ->where('id', '!=', $id)
+                                     ->exists();
+            
+            if ($duplicate && $data['month']) {
+                return redirect()->back()->with('error', '✗ Posisi "' . $data['position'] . '" sudah ada untuk bulan ini! Silakan ganti bulan atau posisi.')->withInput();
             }
 
-            // Handle photo upload
+            $data['is_active'] = $request->has('is_active');
+
+            if ($request->input('delete_photo') === '1' && $staffOfMonth->photo_path) {
+                Storage::disk('public')->delete($staffOfMonth->photo_path);
+                $data['photo_path'] = null;
+            }
+
             if ($request->hasFile('photo')) {
-                try {
-                    // Delete old photo
-                    if ($staffOfMonth->photo_path) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($staffOfMonth->photo_path);
-                    }
-                    $data['photo_path'] = $request->file('photo')->store('staff_of_month', 'public');
-                } catch (\Exception $e) {
-                    return redirect()->back()->with('error', '✗ Gagal upload foto: ' . $e->getMessage())->withInput();
+                if ($staffOfMonth->photo_path) {
+                    Storage::disk('public')->delete($staffOfMonth->photo_path);
                 }
+                $data['photo_path'] = $request->file('photo')->store('staff_of_month', 'public');
             }
+
+            // PENTING: Hapus 'photo' agar tidak error tipe data di database
+            unset($data['photo']);
 
             $staffOfMonth->update($data);
-
             return redirect()->route('admin.staff-of-month.index')->with('success', '✓ Staff of Month berhasil diperbarui!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', '✗ Gagal memperbarui staff: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function destroy(StaffOfMonth $staffOfMonth)
+    public function destroy($id)
     {
         try {
-            // Delete photo if exists
-            if ($staffOfMonth->photo_path) {
-                try {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($staffOfMonth->photo_path);
-                } catch (\Exception $e) {
-                    // Continue with deletion even if photo deletion fails
-                    \Log::warning('Failed to delete photo: ' . $e->getMessage());
+            $staffOfMonth = StaffOfMonth::find($id);
+            if (!$staffOfMonth) {
+                if (request()->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Data tidak ditemukan!'], 404);
                 }
+                return redirect()->route('admin.staff-of-month.index')->with('error', 'Data tidak ditemukan!');
             }
+
+            if ($staffOfMonth->photo_path) {
+                Storage::disk('public')->delete($staffOfMonth->photo_path);
+            }
+
             $staffOfMonth->delete();
+            
+            if (request()->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Staff of Month berhasil dihapus!']);
+            }
+            
             return redirect()->route('admin.staff-of-month.index')->with('success', '✓ Staff of Month berhasil dihapus!');
         } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            }
             return redirect()->back()->with('error', '✗ Gagal menghapus staff: ' . $e->getMessage());
         }
     }
 
     public function publicIndex()
     {
-        // Get latest/best staff for each position
         $items = StaffOfMonth::where('is_active', true)
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->groupBy('position')
-            ->map(function($group) {
-                return $group->first(); // Get the most recent staff for each position
-            })
-            ->values(); // Reset array keys
+            ->get();
         
-        return view('infobase.staff', compact('items'));
+        // Ambil bulan-bulan yang tersedia
+        $availableMonths = $items->pluck('month')->filter()->unique()->sort()->values();
+        
+        // Group by position untuk menampilkan satu per posisi
+        $itemsByPosition = $items->groupBy('position')->map(fn($group) => $group->first())->values();
+
+        return view('infobase.staff-of-month', compact('items', 'itemsByPosition', 'availableMonths'));
     }
 }

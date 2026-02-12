@@ -9,6 +9,10 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         border: 1px solid rgba(0, 82, 204, 0.1);
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 530px;
+        overflow: hidden;
     }
 
     .pengumuman-card:hover {
@@ -20,8 +24,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
+        gap: 0.5rem;
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
     }
 
     .pengumuman-date {
@@ -31,10 +37,11 @@
         justify-content: center;
         min-width: 85px;
         padding: 0.75rem;
-        background: linear-gradient(135deg, #0052CC 0%, #0044A3 100%);
+        background: linear-gradient(135deg, #00425A 0%, #002a3d 100%);
         color: white;
         border-radius: 8px;
         font-weight: 700;
+        flex-shrink: 0;
     }
 
     .pengumuman-date-day {
@@ -51,6 +58,11 @@
 
     .pengumuman-content {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        justify-content: space-between;
+        overflow: hidden;
     }
 
     .pengumuman-image {
@@ -58,76 +70,101 @@
         height: 180px;
         object-fit: cover;
         border-radius: 8px;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+        flex-shrink: 0;
     }
 
     .pengumuman-title {
-        font-size: 1.25rem;
+        font-size: 1rem;
         font-weight: 800;
         color: #1f2937;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.3rem;
         transition: all 0.3s ease;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex: 0 0 auto;
     }
 
     .pengumuman-card:hover .pengumuman-title {
-        color: #0052CC;
+        color: #00425A;
     }
 
     .pengumuman-description {
         color: #374151;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
+        line-height: 1.35;
+        margin-bottom: 0.3rem;
+        font-size: 0.78rem;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
     }
 
     .pengumuman-footer {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 1rem;
-        border-top: 1px solid #e5e7eb;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.3rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        flex-shrink: 0;
+        height: auto;
+        min-height: auto;
+        margin-bottom: 0.5rem;
     }
 
     .pengumuman-date-valid {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         color: #6b7280;
-        font-size: 0.8rem;
-        white-space: nowrap;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: normal;
+        line-height: 1.2;
     }
 
     .pengumuman-date-valid::before {
         content: '';
-        width: 6px;
-        height: 6px;
+        width: 4px;
+        height: 4px;
         background: #10b981;
         border-radius: 50%;
         flex-shrink: 0;
     }
 
+    .pengumuman-button-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        flex-shrink: 0;
+        height: 45px;
+        align-items: center;
+        margin-top: 0;
+    }
+
     .pengumuman-read-more {
         color: #ffffff;
-        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
+        background: linear-gradient(135deg, #00425A 0%, #002a3d 100%);
         text-decoration: none;
         font-weight: 600;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: 0.5rem;
+        justify-content: center;
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
         border-radius: 6px;
         box-shadow: 0 2px 8px rgba(0, 82, 204, 0.2);
         white-space: nowrap;
-        flex-shrink: 0;
+        width: 100%;
     }
 
     .pengumuman-read-more:hover {
@@ -173,7 +210,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        color: #0052CC;
+        color: #00425A;
         font-weight: 500;
         font-size: 0.85rem;
         margin-top: 0.5rem;
@@ -183,31 +220,37 @@
         width: 16px;
         height: 16px;
     }
+
+    /* Simple Header Style */
+    .simple-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .simple-header .header-left h1 {
+        color: #000000;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: none;
+    }
+
+    .simple-header .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
-<div class="page-header">
+<div class="page-header simple-header">
     <div class="header-content">
         <div class="header-left">
-            <span><i class="fas fa-bullhorn mr-2"></i>Informasi Terkini</span>
-            <h1><i class="fas fa-bullhorn mr-3 text-white"></i>Pengumuman</h1>
-            <p>Dapatkan berita dan informasi terbaru mengenai layanan dan kegiatan Perpustakaan Jakarta.</p>
+            <h1>PENGUMUMAN</h1>
         </div>
         <a href="<?php echo e(route('home')); ?>" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali
         </a>
-    </div>
-</div>
-
-<!-- Breadcrumb -->
-<div class="bg-gray-100 border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 py-3">
-        <nav class="flex items-center gap-2 text-sm">
-            <a href="<?php echo e(route('home')); ?>" class="text-gray-600 hover:text-[#063A76] transition duration-300">
-                <i class="fas fa-home mr-1"></i>Beranda
-            </a>
-            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-            <span class="text-[#063A76] font-semibold">Pengumuman</span>
-        </nav>
     </div>
 </div>
 
@@ -234,18 +277,34 @@
                             <?php if($item->image_path): ?>
                                 <img src="<?php echo e(asset('storage/' . $item->image_path)); ?>" alt="<?php echo e($item->title); ?>" class="pengumuman-image">
                             <?php endif; ?>
-                            <h2 class="pengumuman-title"><?php echo e($item->title); ?></h2>
-                            <p class="pengumuman-description"><?php echo $item->description; ?></p>
                             <div class="pengumuman-footer">
                                 <div class="pengumuman-date-valid">
-                                    Berlaku: <?php echo e($item->valid_from?->format('d/m/Y') ?? '-'); ?> - <?php echo e($item->valid_until?->format('d/m/Y') ?? '-'); ?>
+                                    <?php if($item->valid_from || $item->valid_until): ?>
+                                        Berlaku: 
+                                        <?php if($item->valid_from && $item->valid_until): ?>
+                                            <?php echo e($item->valid_from->format('d M Y')); ?> - <?php echo e($item->valid_until->format('d M Y')); ?>
 
+                                        <?php elseif($item->valid_from): ?>
+                                            Dari <?php echo e($item->valid_from->format('d M Y')); ?>
+
+                                        <?php else: ?>
+                                            Sampai <?php echo e($item->valid_until->format('d M Y')); ?>
+
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        Berlaku sejak <?php echo e($item->published_at?->format('d M Y') ?? 'sekarang'); ?>
+
+                                    <?php endif; ?>
                                 </div>
-                                <button type="button" class="pengumuman-read-more" data-pengumuman-id="<?php echo e($item->id); ?>" data-title="<?php echo e($item->title); ?>" data-description="<?php echo e($item->description); ?>" data-image="<?php echo e($item->image_path ? asset('storage/' . $item->image_path) : ''); ?>">
-                                    Baca Selengkapnya <i class="fas fa-arrow-right"></i>
-                                </button>
                             </div>
+                            <h2 class="pengumuman-title"><?php echo e($item->title); ?></h2>
+                            <p class="pengumuman-description"><?php echo $item->description; ?></p>
                         </div>
+                    </div>
+                    <div class="pengumuman-button-container">
+                        <button type="button" class="pengumuman-read-more" data-pengumuman-id="<?php echo e($item->id); ?>" data-title="<?php echo e($item->title); ?>" data-description="<?php echo e($item->description); ?>" data-image="<?php echo e($item->image_path ? asset('storage/' . $item->image_path) : ''); ?>">
+                            Selengkapnya <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

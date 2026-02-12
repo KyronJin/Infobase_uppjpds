@@ -169,7 +169,7 @@
 
                             <div class="p-8">
                                 <div class="flex items-center justify-between mb-4">
-                                    <span class="inline-block px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+                                    <span class="inline-block px-4 py-2 bg-slate-50 text-teal-700 text-xs font-bold rounded-full">
                                         <i class="fas fa-calendar-alt mr-2"></i><?php echo e($item->published_at?->format('d M Y') ?? 'N/A'); ?>
 
                                     </span>
@@ -210,7 +210,7 @@
         </div>
     </section>
 
-    <!-- Photo Gallery Section -->
+    <!-- Photo Gallery Carousel Section -->
     <section class="py-20 bg-gradient-to-b from-white to-gray-50">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
@@ -219,33 +219,241 @@
                 <p class="text-lg text-gray-600">Jelajahi keindahan fasilitas dan koleksi kami</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php $__empty_1 = true; $__currentLoopData = $homePhotos ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $photo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                <div class="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 h-72">
-                    <img src="<?php echo e(asset($photo->image_path)); ?>" alt="<?php echo e($photo->title); ?>" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-70 group-hover:opacity-85 transition-opacity duration-500"></div>
-                    <div class="absolute inset-0 flex flex-col items-center justify-end p-6 opacity-100 group-hover:opacity-100">
-                        <h3 class="text-white font-bold text-lg text-center"><?php echo e($photo->title); ?></h3>
-                        <div class="mt-3 h-1 w-12 bg-orange-500 rounded-full"></div>
+            <?php if(($homePhotos ?? collect())->count()): ?>
+                <!-- Swiper Gallery Carousel -->
+                <style>
+                    .gallery-swiper {
+                        position: relative;
+                        width: 100%;
+                        padding-bottom: 20px;
+                    }
+
+                    .gallery-swiper .swiper-slide {
+                        height: auto;
+                        display: flex;
+                    }
+
+                    .gallery-slide-content {
+                        position: relative;
+                        overflow: hidden;
+                        border-radius: 1rem;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                        width: 100%;
+                        aspect-ratio: 4/3;
+                        transition: all 0.3s ease;
+                    }
+
+                    .gallery-swiper .swiper-slide:hover .gallery-slide-content {
+                        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+                    }
+
+                    .gallery-slide-content img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+
+                    .gallery-overlay {
+                        position: absolute;
+                        inset: 0;
+                        background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+                        opacity: 0.7;
+                        transition: opacity 0.5s ease;
+                    }
+
+                    .gallery-swiper .swiper-slide:hover .gallery-overlay {
+                        opacity: 0.85;
+                    }
+
+                    .gallery-content {
+                        position: absolute;
+                        inset: 0;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: flex-end;
+                        padding: 2rem;
+                        display: flex;
+                        z-index: 10;
+                    }
+
+                    .gallery-title {
+                        color: white;
+                        font-weight: bold;
+                        font-size: 1.125rem;
+                        text-align: center;
+                        margin: 0;
+                    }
+
+                    .gallery-divider {
+                        margin-top: 0.75rem;
+                        height: 4px;
+                        width: 3rem;
+                        background-color: rgb(249, 115, 22);
+                        border-radius: 9999px;
+                    }
+
+                    /* Navigation buttons */
+                    .gallery-swiper .swiper-button-prev,
+                    .gallery-swiper .swiper-button-next {
+                        color: white;
+                        width: 50px;
+                        height: 50px;
+                        background: rgba(249, 115, 22, 0.8);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
+
+                    .gallery-swiper .swiper-button-prev:hover,
+                    .gallery-swiper .swiper-button-next:hover {
+                        background: rgba(249, 115, 22, 1);
+                        transform: translateY(-50%) scale(1.1);
+                    }
+
+                    .gallery-swiper .swiper-button-prev::after,
+                    .gallery-swiper .swiper-button-next::after {
+                        font-size: 20px;
+                    }
+
+                    /* Pagination */
+                    .gallery-swiper .swiper-pagination {
+                        bottom: 0;
+                        display: flex;
+                        gap: 8px;
+                        justify-content: center;
+                    }
+
+                    .gallery-swiper .swiper-pagination-bullet {
+                        width: 10px;
+                        height: 10px;
+                        background: rgba(107, 114, 128, 0.5);
+                        opacity: 1;
+                        border-radius: 50%;
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                    }
+
+                    .gallery-swiper .swiper-pagination-bullet:hover {
+                        background: rgba(107, 114, 128, 0.8);
+                    }
+
+                    .gallery-swiper .swiper-pagination-bullet-active {
+                        background: rgb(249, 115, 22);
+                        width: 30px;
+                        border-radius: 5px;
+                    }
+                </style>
+
+                <div class="gallery-swiper swiper w-full">
+                    <div class="swiper-wrapper">
+                        <?php $__currentLoopData = $homePhotos ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $photo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="swiper-slide">
+                            <div class="gallery-slide-content">
+                                <img src="<?php echo e(asset($photo->image_path)); ?>" alt="<?php echo e($photo->title); ?>">
+                                <div class="gallery-overlay"></div>
+                                <div class="gallery-content">
+                                    <h3 class="gallery-title"><?php echo e($photo->title); ?></h3>
+                                    <div class="gallery-divider"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
+
+                    <!-- Navigation buttons -->
+                    <div class="swiper-button-prev text-orange-500"></div>
+                    <div class="swiper-button-next text-orange-500"></div>
+
+                    <!-- Pagination -->
+                    <div class="swiper-pagination"></div>
                 </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                <div class="col-span-full py-20">
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Initialize Swiper untuk gallery carousel
+                        const gallerySwiper = new Swiper('.gallery-swiper', {
+                            loop: true,
+                            spaceBetween: 20,
+                            slidesPerView: 1,
+                            centeredSlides: true,
+
+                            // Breakpoints untuk responsive
+                            breakpoints: {
+                                640: {
+                                    slidesPerView: 1,
+                                    spaceBetween: 15,
+                                },
+                                768: {
+                                    slidesPerView: 2,
+                                    spaceBetween: 20,
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    spaceBetween: 24,
+                                }
+                            },
+
+                            // Smooth sliding effect
+                            effect: 'slide',
+                            speed: 800,
+
+                            // Autoplay
+                            autoplay: {
+                                delay: 4000,
+                                disableOnInteraction: false,
+                                pauseOnMouseEnter: true,
+                            },
+
+                            // Pagination
+                            pagination: {
+                                el: '.gallery-swiper .swiper-pagination',
+                                clickable: true,
+                                dynamicBullets: false,
+                            },
+
+                            // Navigation arrows
+                            navigation: {
+                                nextEl: '.gallery-swiper .swiper-button-next',
+                                prevEl: '.gallery-swiper .swiper-button-prev',
+                            },
+
+                            // Touch & swipe
+                            grabCursor: true,
+                            touchEventsTarget: 'container',
+                            simulateTouch: true,
+                            touchRatio: 1,
+                            touchAngle: 45,
+
+                            // Keyboard
+                            keyboard: {
+                                enabled: true,
+                            },
+
+                            // Accessibility
+                            a11y: {
+                                enabled: true,
+                            }
+                        });
+                    });
+                </script>
+
+                <div class="text-center mt-16">
+                    <a href="<?php echo e(route('about')); ?>" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                        <i class="fas fa-images mr-3"></i>Lihat Selengkapnya
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="py-20">
                     <div class="text-center">
                         <i class="fas fa-image text-gray-300 text-6xl mb-4"></i>
                         <p class="text-gray-500 text-lg">Galeri foto akan segera ditampilkan</p>
                     </div>
                 </div>
-                <?php endif; ?>
-            </div>
-
-            <?php if(($homePhotos ?? collect())->count()): ?>
-            <div class="text-center mt-12">
-                <a href="<?php echo e(route('about')); ?>" class="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    <i class="fas fa-images mr-3"></i>Lihat Selengkapnya
-                </a>
-            </div>
             <?php endif; ?>
         </div>
     </section>
@@ -299,9 +507,9 @@
                             </div>
                         </div>
 
-                        <div class="flex gap-6 p-8 bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-md border border-blue-100 hover:shadow-xl hover:border-blue-200 transition-all duration-300 group cursor-pointer">
+                        <div class="flex gap-6 p-8 bg-gradient-to-br from-slate-50 to-white rounded-2xl shadow-md border border-slate-200 hover:shadow-xl hover:border-slate-300 transition-all duration-300 group cursor-pointer">
                             <div class="flex-shrink-0">
-                                <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-500 group-hover:bg-blue-600 transition-colors duration-300">
+                                <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-teal-600 group-hover:bg-teal-700 transition-colors duration-300">
                                     <i class="fas fa-bullseye text-white text-2xl"></i>
                                 </div>
                             </div>
@@ -314,7 +522,7 @@
                         </div>
                     </div>
 
-                    <a href="<?php echo e(route('about')); ?>" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                    <a href="<?php echo e(route('about')); ?>" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                         Ketahui Lebih Lanjut
                         <i class="fas fa-arrow-right ml-3"></i>
                     </a>

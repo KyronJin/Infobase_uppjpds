@@ -1,16 +1,60 @@
 <?php echo $__env->make('components.image-cropper', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
+<?php $__env->startPush('styles'); ?>
+<style>
+    #sortable {
+        list-style: none;
+        padding: 1rem !important;
+        background: #f3f4f6 !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    #sortable li {
+        background: white;
+        padding: 12px;
+        margin-bottom: 8px;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        user-select: none;
+        transition: all 0.2s;
+    }
+    
+    #sortable li:hover {
+        border-color: #10b981;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    #sortable li.ui-sortable-helper {
+        opacity: 0.7;
+        transform: rotate(2deg);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 1000 !important;
+    }
+    
+    .ui-state-highlight {
+        background: #cfe9ff !important;
+        border: 2px dashed #3b82f6 !important;
+        border-radius: 0.5rem !important;
+        min-height: 50px !important;
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startSection('content'); ?>
-<div class="bg-gray-50 min-h-screen py-12 pt-28">
+<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
     <div class="max-w-6xl mx-auto px-6">
-        <div class="admin-section">
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <h1 class="h2">Manajemen Profil Pegawai</h1>
-                    <p class="text-sm text-gray-500">Kelola profil pegawai perpustakaan di sini.</p>
-                </div>
-                <div class="flex gap-3">
-                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+        
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div>
+                <h1 class="h2 text-gray-800"> Profil Pegawai</h1>
+                <p class="text-sm text-gray-500">Kelola profil pegawai perpustakaan di sini.</p>
+            </div>
+            <div class="flex gap-3 mt-4 md:mt-0">
+                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'lg','icon' => 'arrows-up-down','onclick' => 'openModal(\'orderModal\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
@@ -29,7 +73,7 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','size' => 'lg','icon' => 'plus','onclick' => 'openModal(\'jabatanModal\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
@@ -48,7 +92,7 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','size' => 'lg','icon' => 'user-plus','type' => 'link','href' => ''.e(route('admin.profil_pegawai.create')).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
@@ -67,22 +111,22 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                </div>
             </div>
+        </div>
 
-            <!-- Flash Messages -->
-            <?php if(session('success')): ?>
-                <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top">
-                    <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
-                    <div>
-                        <h3 class="font-semibold">Sukses</h3>
-                        <p class="text-sm"><?php echo e(session('success')); ?></p>
-                    </div>
-                    <button onclick="this.parentElement.style.display='none';" class="ml-auto text-green-600 hover:text-green-800">
-                        <i class="fas fa-times"></i>
-                    </button>
+        <!-- Flash Messages -->
+        <?php if(session('success')): ?>
+            <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top">
+                <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                <div>
+                    <h3 class="font-semibold text-sm">Sukses</h3>
+                    <p class="text-xs"><?php echo e(session('success')); ?></p>
                 </div>
-            <?php endif; ?>
+                <button onclick="this.parentElement.style.display='none';" class="ml-auto text-green-600 hover:text-green-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        <?php endif; ?>
 
             <?php if(session('error')): ?>
                 <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top">
@@ -101,8 +145,8 @@
         <div id="jabatanModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center">
-                        <i class="fas fa-briefcase text-blue-600 text-lg"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-50 rounded-full flex items-center justify-center">
+                        <i class="fas fa-briefcase text-teal-600 text-lg"></i>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-gray-900">Tambah Jabatan</h3>
@@ -116,7 +160,7 @@
                     <?php echo csrf_field(); ?>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Jabatan</label>
-                        <input type="text" name="name" placeholder="Masukkan nama jabatan" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition-colors" required>
+                        <input type="text" name="name" placeholder="Masukkan nama jabatan" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 transition-colors" required>
                     </div>
                     <div class="flex gap-3 pt-4">
                         <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
@@ -267,18 +311,18 @@
                     </button>
                 </div>
                 
-                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-3 mb-6">
+                <div class="bg-slate-50 border-l-4 border-teal-600 rounded-lg p-3 mb-6">
                     <p class="text-sm text-gray-700 flex items-start gap-2">
-                        <i class="fas fa-info-circle text-blue-600 mt-0.5 flex-shrink-0"></i>
+                        <i class="fas fa-info-circle text-teal-600 mt-0.5 flex-shrink-0"></i>
                         <span>Drag jabatan untuk mengatur urutan (atas = posisi tertinggi)</span>
                     </p>
                 </div>
                 
-                <ul id="sortable" class="space-y-2 mb-6 bg-gray-50 p-4 rounded-lg">
+                <ul id="sortable" class="mb-6 bg-gray-50 p-4 rounded-lg" style="list-style: none; margin: 0; padding: 1rem;">
                     <?php $__currentLoopData = $jabatans->sortBy('order'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jabatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <li class="bg-white p-3 rounded-lg cursor-move border-2 border-gray-200 hover:border-green-400 transition-colors flex items-center gap-2 hover:shadow-md" data-id="<?php echo e($jabatan->id); ?>">
-                            <i class="fas fa-grip-vertical text-gray-400"></i>
-                            <span class="font-medium text-gray-700"><?php echo e($jabatan->name); ?></span>
+                        <li data-id="<?php echo e($jabatan->id); ?>" style="background: white; padding: 12px; margin-bottom: 8px; border: 2px solid #e5e7eb; border-radius: 0.5rem; cursor: grab; display: flex; align-items: center; gap: 12px; user-select: none; transition: all 0.2s;">
+                            <i class="fas fa-grip-vertical" style="color: #9ca3af; font-size: 18px; cursor: grab;"></i>
+                            <span style="font-weight: 500; color: #374151; flex: 1;"><?php echo e($jabatan->name); ?></span>
                         </li>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
@@ -387,10 +431,10 @@
         </div>
 
         <!-- Tabel -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 border-b border-gray-100">
+                    <thead class="bg-gray-50 border-b border-gray-100 font-bold">
                         <tr>
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Foto</th>
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Nama</th>
@@ -403,26 +447,28 @@
                         <?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="hover:bg-gray-50/50 transition-colors">
                             <td class="px-6 py-4">
-                                <?php if($item->foto_path): ?>
-                                    <img src="<?php echo e(asset('storage/' . $item->foto_path)); ?>" alt="<?php echo e($item->nama); ?>" class="w-12 h-12 rounded-full object-cover">
-                                <?php else: ?>
-                                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-user text-gray-400"></i>
-                                    </div>
-                                <?php endif; ?>
+                                <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 ring-2 ring-white shadow-sm">
+                                    <?php if($item->foto_path): ?>
+                                        <img src="<?php echo e(asset('storage/' . $item->foto_path)); ?>" alt="<?php echo e($item->nama); ?>" class="w-full h-full object-cover">
+                                    <?php else: ?>
+                                        <div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 text-xs font-bold">
+                                            <?php echo e(strtoupper(substr($item->nama, 0, 1))); ?>
+
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                             </td>
+                            <td class="px-6 py-4 font-medium text-gray-900"><?php echo e($item->nama); ?></td>
                             <td class="px-6 py-4">
-                                <span class="text-sm font-medium text-gray-700"><?php echo e($item->nama); ?></span>
+                                <span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-medium">
+                                    <?php echo e($item->jabatan ? $item->jabatan->name : 'N/A'); ?>
+
+                                </span>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="text-sm text-gray-700"><?php echo e($item->jabatan ? $item->jabatan->name : 'Jabatan Tidak Ditemukan'); ?></span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="text-sm text-gray-700"><?php echo e(Str::limit($item->deskripsi, 50)); ?></span>
-                            </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-gray-600 max-w-xs truncate"><?php echo e($item->deskripsi); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+                                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','onclick' => 'editProfilPegawai('.e($item->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
@@ -441,7 +487,7 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-                                <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+                                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','onclick' => 'openDeleteModal(\'deleteProfilPegawaiModal\', \''.e($item->nama).'\', \'/admin/profil-pegawai/'.e($item->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
@@ -462,16 +508,16 @@
 <?php endif; ?>
                                 </div>
                             </td>
+                        </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic text-sm">Belum ada data profil pegawai.</td>
+                            <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">Belum ada data profil pegawai.</td>
                         </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
             
-            <!-- Pagination -->
             <?php if($items->hasPages()): ?>
                 <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
                     <?php echo e($items->appends(['search' => $search ?? ''])->links()); ?>
@@ -479,6 +525,7 @@
                 </div>
             <?php endif; ?>
         </div>
+
     </div>
 </div>
 
@@ -583,12 +630,29 @@
 <!-- Delete Modal Component -->
 <?php $__env->startComponent('components.delete-modal', ['id' => 'deleteProfilPegawaiModal', 'title' => 'Hapus Profil Pegawai?']); ?> <?php echo $__env->renderComponent(); ?>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+
 <script>
     function openModal(id) {
         document.getElementById(id).classList.remove('hidden');
-        document.getElementById('dropdownMenu').classList.add('hidden');
+        document.getElementById('dropdownMenu')?.classList.add('hidden');
+        
+        // Reinitialize sortable when order modal opens
+        if (id === 'orderModal' && typeof $ !== 'undefined') {
+            setTimeout(function() {
+                if ($('#sortable').data('sortable') === undefined) {
+                    $("#sortable").sortable({
+                        items: "li",
+                        cursor: "grab",
+                        opacity: 0.6,
+                        placeholder: "ui-state-highlight",
+                        revert: 100,
+                        animation: 150,
+                        tolerance: "pointer"
+                    });
+                }
+            }, 100);
+        }
     }
     
     function closeModal(id) {
@@ -649,10 +713,32 @@
         }
     }
 
-    // Sortable for order modal
-    $(function() {
-        $("#sortable").sortable();
-        $("#sortable").disableSelection();
+    // Sortable for order modal - Initialize when document is ready
+    $(document).ready(function() {
+        console.log('jQuery loaded:', typeof jQuery !== 'undefined');
+        console.log('jQuery UI loaded:', typeof $.ui !== 'undefined');
+        
+        if (typeof $.ui !== 'undefined') {
+            $("#sortable").sortable({
+                items: "li",
+                cursor: "grab",
+                opacity: 0.7,
+                placeholder: "ui-state-highlight",
+                revert: 150,
+                animation: 150,
+                tolerance: "pointer",
+                start: function(event, ui) {
+                    console.log('✅ Drag started');
+                    ui.item.css('z-index', 1000);
+                },
+                stop: function(event, ui) {
+                    console.log('✅ Drag stopped');
+                }
+            });
+            console.log('✅ Sortable initialized on page load');
+        } else {
+            console.error('❌ jQuery UI not available');
+        }
     });
 
     document.getElementById('saveOrder').addEventListener('click', function() {

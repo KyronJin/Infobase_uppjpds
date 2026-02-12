@@ -128,6 +128,7 @@ class InfobaseController extends Controller
     public function staffOfMonth(Request $request): View
     {
         $search = $request->query('search', '');
+        $selectedMonth = $request->query('month', null);
         
         $query = StaffOfMonth::where('is_active', true);
 
@@ -135,6 +136,19 @@ class InfobaseController extends Controller
         if (!empty($search)) {
             $query->search($search);
         }
+
+        // Apply month filter if provided
+        if (!empty($selectedMonth) && is_numeric($selectedMonth)) {
+            $query->where('month', $selectedMonth);
+        }
+
+        // Get all available months
+        $allMonths = StaffOfMonth::where('is_active', true)
+            ->whereNotNull('month')
+            ->distinct('month')
+            ->pluck('month')
+            ->sort()
+            ->values();
 
         // Get paginated staff
         $staff = $query->orderBy('created_at', 'desc')->paginate(12);
@@ -158,6 +172,8 @@ class InfobaseController extends Controller
             'positions' => $positions,
             'defaultStaff' => $defaultStaff,
             'search' => $search,
+            'selectedMonth' => $selectedMonth,
+            'allMonths' => $allMonths,
         ]);
     }
 

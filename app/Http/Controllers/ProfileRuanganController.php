@@ -116,6 +116,10 @@ class ProfileRuanganController extends Controller
             $image->delete();
         }
         $profileRuangan->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Profile ruangan berhasil dihapus']);
+        }
         return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil dihapus!');
     }
 

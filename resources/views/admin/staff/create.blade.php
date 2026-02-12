@@ -59,8 +59,8 @@
                         <input type="number" name="month" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" min="1" max="12" value="{{ old('month') }}" placeholder="1-12">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tahun</label>
-                        <input type="number" name="year" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="{{ old('year') }}" placeholder="2026">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tahun *</label>
+                        <input type="number" name="year" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="{{ old('year', date('Y')) }}" placeholder="2026">
                     </div>
                 </div>
 
