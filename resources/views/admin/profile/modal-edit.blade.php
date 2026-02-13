@@ -32,17 +32,12 @@
                 <textarea id="description" name="description" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
             </div>
             <div>
-                <label class="block text-gray-700 font-semibold mb-2">Photo Link</label>
-                <input type="text" id="photo_link" name="photo_link" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-            </div>
-
-            <div>
                 <label class="block text-gray-700 font-semibold mb-2">Gambar Ruangan (Maksimal 3)</label>
                 <div class="grid grid-cols-3 gap-4 mt-2">
                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-teal-400 transition" onclick="document.getElementById('slot-1-input').click()">
                         <div id="slot-1-preview" class="hidden">
                             <img id="slot-1-img" src="" alt="Slot 1" class="w-full h-32 object-cover rounded mb-2">
-                            <button type="button" class="text-xs bg-teal-600 text-white px-2 py-1 rounded w-full">Ubah</button>
+                            <button type="button" class="text-xs bg-orange-600 text-white px-3 py-1 rounded w-full hover:bg-orange-700 transition">Ubah</button>
                         </div>
                         <div id="slot-1-empty" class="flex flex-col items-center justify-center h-32">
                             <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -54,7 +49,7 @@
                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-teal-400 transition" onclick="document.getElementById('slot-2-input').click()">
                         <div id="slot-2-preview" class="hidden">
                             <img id="slot-2-img" src="" alt="Slot 2" class="w-full h-32 object-cover rounded mb-2">
-                            <button type="button" class="text-xs bg-teal-600 text-white px-2 py-1 rounded w-full">Ubah</button>
+                            <button type="button" class="text-xs bg-orange-600 text-white px-3 py-1 rounded w-full hover:bg-orange-700 transition">Ubah</button>
                         </div>
                         <div id="slot-2-empty" class="flex flex-col items-center justify-center h-32">
                             <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -66,7 +61,7 @@
                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-teal-400 transition" onclick="document.getElementById('slot-3-input').click()">
                         <div id="slot-3-preview" class="hidden">
                             <img id="slot-3-img" src="" alt="Slot 3" class="w-full h-32 object-cover rounded mb-2">
-                            <button type="button" class="text-xs bg-teal-600 text-white px-2 py-1 rounded w-full">Ubah</button>
+                            <button type="button" class="text-xs bg-orange-600 text-white px-3 py-1 rounded w-full hover:bg-orange-700 transition">Ubah</button>
                         </div>
                         <div id="slot-3-empty" class="flex flex-col items-center justify-center h-32">
                             <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -100,6 +95,7 @@ function openEditModal(itemId) {
     fetch(`/admin/profile-ruangan/${itemId}/edit`, {
         headers: {
             'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
         }
     })
         .then(response => response.json())
@@ -109,7 +105,6 @@ function openEditModal(itemId) {
             document.getElementById('floor').value = data.floor || '';
             document.getElementById('capacity').value = data.capacity || '';
             document.getElementById('description').value = data.description || '';
-            document.getElementById('photo_link').value = data.photo_link || '';
             document.getElementById('is_active').checked = data.is_active;
             document.getElementById('editModalErrors').classList.add('hidden');
             
@@ -122,7 +117,10 @@ function openEditModal(itemId) {
                     if (index < 3) {
                         const slotNum = index + 1;
                         existingSlots[slotNum] = image;
-                        showSlotImage(slotNum, `/storage/${image.image_path}`);
+                        // Get filename from image_path
+                        const filename = image.image_path.split('/').pop();
+                        const imageUrl = `{{ route('profile-ruangan.image', ['filename' => '']) }}` + filename;
+                        showSlotImage(slotNum, imageUrl);
                     }
                 });
             }
@@ -182,37 +180,86 @@ function submitEditForm(event) {
     event.preventDefault();
     const form = document.getElementById('editForm');
     const formData = new FormData(form);
+    const errorDiv = document.getElementById('editModalErrors');
+    const submitBtn = form.querySelector('[type="submit"]');
+    const originalText = submitBtn.innerText;
+    
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Menyimpan...';
+    errorDiv.classList.add('hidden');
+    
+    // Log FormData content
+    console.log('Modal edit form submission:');
+    console.log('Form action:', form.action);
+    let fileCount = 0;
+    for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+            fileCount++;
+            console.log(`  ${key}: File(${value.name}, ${value.size} bytes)`);
+        } else if (value !== '') {
+            console.log(`  ${key}: ${value}`);
+        }
+    }
+    console.log(`Total files in FormData: ${fileCount}`);
     
     fetch(form.action, {
-        method: 'POST',
+        method: 'POST', // Laravel requires POST with _method override
         body: formData,
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
         }
     })
     .then(response => {
-        if (response.ok) {
-            closeEditModal();
-            location.reload();
-        } else {
+        console.log('Modal response status:', response.status);
+        console.log('Modal response headers:', response.headers);
+        
+        if (response.status === 422) {
+            // Validation error
             return response.json().then(data => {
+                console.log('Modal validation errors:', data);
                 if (data.errors) {
-                    let errorHTML = '<ul>';
+                    let errorHTML = '<strong>Perbaiki kesalahan berikut:</strong><ul style="margin-top: 8px;">';
                     for (let field in data.errors) {
-                        errorHTML += `<li>${data.errors[field].join(', ')}</li>`;
+                        errorHTML += `<li>• ${data.errors[field].join(', ')}</li>`;
                     }
                     errorHTML += '</ul>';
-                    document.getElementById('editModalErrors').innerHTML = errorHTML;
-                    document.getElementById('editModalErrors').classList.remove('hidden');
-                } else {
-                    alert('Error saving data');
+                    errorDiv.innerHTML = errorHTML;
+                    errorDiv.classList.remove('hidden');
                 }
+                throw new Error('Validation error');
+            });
+        } else if (response.ok) {
+            // Success - expect JSON response
+            return response.json().then(data => {
+                console.log('Modal update success:', data);
+                closeEditModal();
+                setTimeout(() => {
+                    location.reload();
+                }, 300);
+            });
+        } else {
+            // Error response
+            return response.json().then(data => {
+                console.log('Modal error response:', data);
+                let errorMsg = data.error || `HTTP Error ${response.status}`;
+                if (data.debug) {
+                    errorMsg += ` (${data.debug.file}:${data.debug.line})`;
+                }
+                throw new Error(errorMsg);
+            }).catch(() => {
+                throw new Error(`HTTP Error ${response.status}`);
             });
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Error saving data');
+        console.error('Modal error:', error);
+        if (error.message !== 'Validation error') {
+            errorDiv.innerHTML = `<strong>Error:</strong> ${error.message || 'Terjadi kesalahan saat menyimpan data'}`;
+            errorDiv.classList.remove('hidden');
+        }
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
     });
 }
 

@@ -23,26 +23,82 @@
         align-items: center;
         gap: 12px;
         user-select: none;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    
+    #sortable li:active {
+        cursor: grabbing;
     }
     
     #sortable li:hover {
         border-color: #10b981;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
     }
     
     #sortable li.ui-sortable-helper {
-        opacity: 0.7;
-        transform: rotate(2deg);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        opacity: 0.95;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 2px solid #10b981;
+        box-shadow: 0 12px 32px rgba(16, 185, 129, 0.25), 0 0 30px rgba(16, 185, 129, 0.15);
+        transform: scale(1.02) rotate(1deg);
+        transition: none;
         z-index: 1000 !important;
     }
     
+    #sortable li.ui-sortable-helper i.fa-grip-vertical {
+        color: #10b981 !important;
+        transform: scale(1.1);
+    }
+    
     .ui-state-highlight {
-        background: #cfe9ff !important;
-        border: 2px dashed #3b82f6 !important;
+        background: linear-gradient(135deg, #e0f2fe 0%, #cfe9ff 100%) !important;
+        border: 2px dashed #0ea5e9 !important;
         border-radius: 0.5rem !important;
         min-height: 50px !important;
+        animation: pulseHighlight 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulseHighlight {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    #sortable li.ui-sortable-helper::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 0.5rem;
+        background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    
+    /* Smooth transitions for list reordering */
+    #sortable li {
+        animation: slideIn 0.2s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0.8;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Grip icon styling */
+    #sortable li i.fa-grip-vertical {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0;
+    }
+    
+    #sortable li:hover i.fa-grip-vertical {
+        color: #10b981 !important;
+        transform: scale(1.1);
     }
 </style>
 @endpush
@@ -200,13 +256,18 @@
                         <li data-id="{{ $jabatan->id }}" style="background: white; padding: 12px; margin-bottom: 8px; border: 2px solid #e5e7eb; border-radius: 0.5rem; cursor: grab; display: flex; align-items: center; gap: 12px; user-select: none; transition: all 0.2s;">
                             <i class="fas fa-grip-vertical" style="color: #9ca3af; font-size: 18px; cursor: grab;"></i>
                             <span style="font-weight: 500; color: #374151; flex: 1;">{{ $jabatan->name }}</span>
+                            <button type="button" onclick="openDeleteJabatanModal('{{ addslashes($jabatan->name) }}', {{ $jabatan->id }})" class="px-3 py-1 bg-red-50 text-red-600 text-sm font-semibold rounded-lg hover:bg-red-100 transition-colors flex items-center gap-1">
+                                <i class="fas fa-trash text-sm"></i> Hapus
+                            </button>
                         </li>
                     @endforeach
                 </ul>
                 
                 <div class="flex gap-3">
-                    <x-button variant="secondary" size="md" class="flex-1 justify-center" type="button" onclick="closeModal('orderModal')">Batal</x-button>
-                    <x-button variant="primary" size="md" icon="check" class="flex-1 justify-center" type="button" id="saveOrder">Simpan</x-button>
+                    <button type="button" onclick="closeModal('orderModal')" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors">Batal</button>
+                    <button type="button" id="saveOrder" onclick="saveSortableOrder()" class="flex-1 px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-check"></i> Simpan
+                    </button>
                 </div>
             </div>
         </div>
@@ -313,7 +374,6 @@
         
         <form id="editProfilPegawaiForm" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
-            @method('PUT')
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Pegawai</label>
@@ -357,142 +417,295 @@
     </div>
 </div>
 
-<!-- Delete Modal Component -->
+<!-- Delete Modal Components -->
 @component('components.delete-modal', ['id' => 'deleteProfilPegawaiModal', 'title' => 'Hapus Profil Pegawai?']) @endcomponent
+
+<!-- Delete Jabatan Modal -->
+<div id="deleteJabatanModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 overflow-y-auto hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 my-8">
+        <div class="flex items-center justify-center mb-6">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+        </div>
+        
+        <h3 class="text-lg font-bold text-center text-gray-900 mb-2">Hapus Jabatan?</h3>
+        
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
+            <p class="text-sm text-gray-700">
+                Yakin ingin menghapus jabatan <strong id="deleteJabatanName"></strong>?
+            </p>
+            <p class="text-xs text-gray-600 mt-2">
+                ⚠️ Pegawai dengan jabatan ini akan tetap ada, tapi jabatan akan dihapus dari daftar.
+            </p>
+        </div>
+        
+        <div class="flex gap-3">
+            <button type="button" onclick="closeDeleteJabatanModal()" class="flex-1 px-4 py-2.5 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors">Batal</button>
+            <button type="button" id="confirmDeleteJabatanBtn" onclick="confirmDeleteJabatan()" class="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-trash"></i> Hapus
+            </button>
+        </div>
+    </div>
+</div>
 
 
 
 <script>
-    function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
-        document.getElementById('dropdownMenu')?.classList.add('hidden');
+// Toast Notification
+function showNotification(msg, type = 'success') {
+    let container = document.getElementById('notifContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notifContainer';
+        container.style = 'position:fixed;top:20px;right:20px;z-index:9999';
+        document.body.appendChild(container);
+    }
+    
+    const bgColor = type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#3b82f6';
+    const icon = type === 'success' ? '✓' : type === 'error' ? '❌' : 'ℹ';
+    
+    const notif = document.createElement('div');
+    notif.style = `background:${bgColor};color:white;padding:16px 24px;border-radius:8px;margin-bottom:12px;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.2)`;
+    notif.innerHTML = `${icon} ${msg}`;
+    
+    container.appendChild(notif);
+    setTimeout(() => notif.remove(), type === 'success' ? 2000 : 3500);
+}
+
+// Save Sortable Order
+function saveSortableOrder() {
+    console.log('Saving order...');
+    
+    const ids = [];
+    document.querySelectorAll('#sortable li').forEach(li => {
+        if (li.dataset.id) ids.push(parseInt(li.dataset.id));
+    });
+    
+    if (!ids.length) {
+        showNotification('Tidak ada jabatan!', 'warning');
+        return;
+    }
+    
+    const btn = document.getElementById('saveOrder');
+    if (!btn) return;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+    btn.disabled = true;
+    
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+    
+    fetch('{{ route("admin.profil_pegawai.update-order") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf
+        },
+        body: JSON.stringify({ jabatans: ids })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('✓ Urutan berhasil disimpan!', 'success');
+            setTimeout(() => {
+                closeModal('orderModal');
+                location.reload();
+            }, 1000);
+        } else {
+            throw new Error('Gagal');
+        }
+    })
+    .catch(e => {
+        showNotification('Error: ' + e.message, 'error');
+        btn.innerHTML = '<i class="fas fa-check"></i> Simpan';
+        btn.disabled = false;
+    });
+}
+
+// Modal functions
+function openModal(id) {
+    document.getElementById(id)?.classList.remove('hidden');
+}
+
+function closeModal(id) {
+    document.getElementById(id)?.classList.add('hidden');
+}
+
+// Edit Profil Pegawai
+function editProfilPegawai(id) {
+    console.log('Editing profil ID:', id);
+    
+    fetch(`/admin/profil-pegawai/${id}/edit`, {
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch');
+        return response.json();
+    })
+    .then(data => {
+        console.log('Data fetched:', data);
         
-        // Reinitialize sortable when order modal opens
-        if (id === 'orderModal' && typeof $ !== 'undefined') {
-            setTimeout(function() {
-                if ($('#sortable').data('sortable') === undefined) {
-                    $("#sortable").sortable({
-                        items: "li",
-                        cursor: "grab",
-                        opacity: 0.6,
-                        placeholder: "ui-state-highlight",
-                        revert: 100,
-                        animation: 150,
-                        tolerance: "pointer"
+        // Fill form with data
+        document.getElementById('edit-nama').value = data.nama || '';
+        document.getElementById('edit-jabatan_id').value = data.jabatan_id || '';
+        document.getElementById('edit-deskripsi').value = data.deskripsi || '';
+        
+        // Set form action
+        const form = document.getElementById('editProfilPegawaiForm');
+        form.action = `/admin/profil-pegawai/${id}`;
+        form.dataset.pegawaiId = id;
+        
+        // Reset file input
+        document.getElementById('edit-foto').value = '';
+        
+        // Open modal
+        openModal('editProfilPegawaiModal');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error: ' + error.message, 'error');
+    });
+}
+
+// Handle Edit Form Submit
+document.addEventListener('DOMContentLoaded', function() {
+    const editForm = document.getElementById('editProfilPegawaiForm');
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('_method', 'PUT'); // Add method override
+            const pegawaiId = this.dataset.pegawaiId;
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            submitBtn.disabled = true;
+            
+            fetch(`/admin/profil-pegawai/${pegawaiId}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                    'X-HTTP-METHOD-OVERRIDE': 'PUT'
+                },
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (response.status === 422) {
+                    return response.json().then(data => {
+                        throw { errors: data.errors, message: 'Validasi gagal' };
                     });
                 }
-            }, 100);
+                if (!response.ok) throw new Error('Update failed: ' + response.statusText);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success data:', data);
+                showNotification('✓ Profil berhasil diperbarui!', 'success');
+                setTimeout(() => {
+                    closeModal('editProfilPegawaiModal');
+                    location.reload();
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                let errorMsg = error.message;
+                if (error.errors) {
+                    const firstError = Object.values(error.errors)[0];
+                    errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+                }
+                showNotification('❌ ' + errorMsg, 'error');
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+});
+
+// Delete Jabatan Functions
+let deleteJabatanData = {};
+
+function openDeleteJabatanModal(jabatanName, jabatanId) {
+    deleteJabatanData = {
+        id: jabatanId,
+        name: jabatanName
+    };
+    document.getElementById('deleteJabatanName').textContent = jabatanName;
+    document.getElementById('deleteJabatanModal').classList.remove('hidden');
+}
+
+function closeDeleteJabatanModal() {
+    document.getElementById('deleteJabatanModal').classList.add('hidden');
+    deleteJabatanData = {};
+}
+
+function confirmDeleteJabatan() {
+    if (!deleteJabatanData.id) {
+        showNotification('Data tidak valid', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('confirmDeleteJabatanBtn');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghapus...';
+    btn.disabled = true;
+
+    fetch(`/admin/profil-pegawai/jabatan/${deleteJabatanData.id}`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+            'X-HTTP-METHOD-OVERRIDE': 'DELETE',
+            'X-Requested-With': 'XMLHttpRequest'
         }
-    }
-    
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-
-    function editProfilPegawai(id) {
-        const modal = document.getElementById('editProfilPegawaiModal');
-        const form = document.getElementById('editProfilPegawaiForm');
-        
-        fetch(`/admin/profil-pegawai/${id}/edit`, {
-            headers: {
-                'Accept': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('edit-nama').value = data.nama || '';
-            document.getElementById('edit-jabatan_id').value = data.jabatan_id || '';
-            document.getElementById('edit-deskripsi').value = data.deskripsi || '';
-            form.action = `/admin/profil-pegawai/${id}`;
-            modal.classList.remove('hidden');
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-
-    
-
-    
-    document.getElementById('dropdownButton').addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('dropdownMenu').classList.toggle('hidden');
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal menghapus jabatan: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        showNotification('✓ Jabatan berhasil dihapus!', 'success');
+        setTimeout(() => {
+            closeDeleteJabatanModal();
+            location.reload();
+        }, 1000);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('❌ ' + error.message, 'error');
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
     });
-    
-    document.addEventListener('click', function() {
-        document.getElementById('dropdownMenu').classList.add('hidden');
-    });
-    
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const jabatanModal = document.getElementById('jabatanModal');
-        const profilPegawaiModal = document.getElementById('profilPegawaiModal');
-        const orderModal = document.getElementById('orderModal');
-        const editProfilPegawaiModal = document.getElementById('editProfilPegawaiModal');
-        
-        if (event.target == jabatanModal) {
-            jabatanModal.classList.add('hidden');
-        }
-        if (event.target == profilPegawaiModal) {
-            profilPegawaiModal.classList.add('hidden');
-        }
-        if (event.target == orderModal) {
-            orderModal.classList.add('hidden');
-        }
-        if (event.target == editProfilPegawaiModal) {
-            editProfilPegawaiModal.classList.add('hidden');
-        }
-    }
+}
 
-    // Sortable for order modal - Initialize when document is ready
-    $(document).ready(function() {
-        console.log('jQuery loaded:', typeof jQuery !== 'undefined');
-        console.log('jQuery UI loaded:', typeof $.ui !== 'undefined');
-        
-        if (typeof $.ui !== 'undefined') {
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    // Sortable
+    if (typeof $ !== 'undefined' && typeof $.ui !== 'undefined') {
+        $(document).ready(function() {
             $("#sortable").sortable({
                 items: "li",
                 cursor: "grab",
-                opacity: 0.7,
+                opacity: 0.95,
                 placeholder: "ui-state-highlight",
-                revert: 150,
-                animation: 150,
+                revert: 200,
+                animation: 250,
+                distance: 5,
                 tolerance: "pointer",
-                start: function(event, ui) {
-                    console.log('✅ Drag started');
-                    ui.item.css('z-index', 1000);
-                },
-                stop: function(event, ui) {
-                    console.log('✅ Drag stopped');
-                }
+                delay: 50
             });
-            console.log('✅ Sortable initialized on page load');
-        } else {
-            console.error('❌ jQuery UI not available');
-        }
-    });
-
-    document.getElementById('saveOrder').addEventListener('click', function() {
-        const jabatanIds = [];
-        document.querySelectorAll('#sortable li').forEach(li => {
-            jabatanIds.push(parseInt(li.dataset.id));
         });
-
-        fetch('{{ route("admin.profil_pegawai.update-order") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ jabatans: jabatanIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                closeModal('orderModal');
-                location.reload(); // Reload to reflect changes
-            }
-        });
-    });
+    }
+});
 </script>
 
 <!-- Setup Click-Outside Handler for Delete Modal -->

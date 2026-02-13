@@ -197,7 +197,7 @@
 
                 <div class="text-center">
                     <a href="<?php echo e(route('infobase.pengumuman')); ?>" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
-                        <i class="fas fa-list mr-3"></i>Lihat Semua Pengumuman
+                        Ketahui Lebih Lanjut
                         <i class="fas fa-arrow-right ml-3"></i>
                     </a>
                 </div>
@@ -444,7 +444,8 @@
 
                 <div class="text-center mt-16">
                     <a href="<?php echo e(route('about')); ?>" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
-                        <i class="fas fa-images mr-3"></i>Lihat Selengkapnya
+                        Ketahui Lebih Lanjut
+                        <i class="fas fa-arrow-right ml-3"></i>
                     </a>
                 </div>
             <?php else: ?>
@@ -461,27 +462,8 @@
     <!-- About Section -->
     <section id="about" class="py-24 bg-gradient-to-b from-gray-50 to-white">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <!-- Image -->
-                <div class="relative order-2 lg:order-1">
-                    <?php if(!empty($content['about_image'])): ?>
-                        <div class="relative rounded-3xl overflow-hidden shadow-2xl">
-                            <img src="<?php echo e($content['about_image']); ?>" alt="Perpustakaan Jakarta" class="w-full h-auto object-cover aspect-[4/3] hover:scale-105 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"></div>
-                        </div>
-                    <?php else: ?>
-                        <div class="relative rounded-3xl bg-gradient-to-br from-orange-400 to-orange-600 aspect-[4/3] flex items-center justify-center shadow-2xl overflow-hidden group">
-                            <div class="text-center space-y-6 transform group-hover:scale-110 transition-transform duration-700">
-                                <i class="fas fa-university text-white text-8xl opacity-90"></i>
-                                <p class="text-white font-bold text-2xl">Perpustakaan Modern Jakarta</p>
-                            </div>
-                            <div class="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gray-900/20"></div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Content -->
-                <div class="space-y-8 order-1 lg:order-2">
+            <!-- Content -->
+            <div class="space-y-8">
                     <div>
                         <div class="h-1 w-16 bg-orange-500 rounded-full mb-4"></div>
                         <h2 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">Tentang Perpustakaan Jakarta</h2>
@@ -492,7 +474,7 @@
                     </p>
 
                     <!-- Vision & Mission -->
-                    <div class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="flex gap-6 p-8 bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group cursor-pointer">
                             <div class="flex-shrink-0">
                                 <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-orange-500 group-hover:bg-orange-600 transition-colors duration-300">
@@ -521,7 +503,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <div class="text-center mt-8">
                     <a href="<?php echo e(route('about')); ?>" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                         Ketahui Lebih Lanjut
                         <i class="fas fa-arrow-right ml-3"></i>

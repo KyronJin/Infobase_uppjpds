@@ -10,126 +10,153 @@ class ProfilPegawaiSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Buat Jabatan sesuai struktur org chart
-        $jabatans = [
-            ['name' => 'Kepala Perpustakaan', 'order' => 1],
-            ['name' => 'Direktur Utama', 'order' => 2],
-            ['name' => 'Wakil Direktur', 'order' => 3],
-            ['name' => 'Kepala Bagian', 'order' => 4],
-            ['name' => 'Staff', 'order' => 5],
-        ];
+        // Buat profil pegawai sesuai struktur organisasi
+        // Struktur: Kepala -> Wakil -> Direktur -> Kepala Bagian -> Staff
 
-        $createdJabatans = [];
-        foreach ($jabatans as $jabatanData) {
-            $createdJabatans[$jabatanData['name']] = Jabatan::firstOrCreate(
-                ['name' => $jabatanData['name']],
-                ['order' => $jabatanData['order']]
-            );
-        }
-
-        // 2. Buat Profil Pegawai sesuai struktur org chart (dari diagram)
         $profilesData = [
-            // Level 1: Kepala Perpustakaan
+            // Level 1: Kepala Perpustakaan (1 orang)
             [
-                'nama' => 'Prof. Ahmad Syaiful',
-                'jabatan_id' => $createdJabatans['Kepala Perpustakaan']->id,
-                'deskripsi' => 'Kepala Perpustakaan dengan pengalaman lebih dari 20 tahun di institusi pendidikan.'
+                'nama' => 'Dr. Muhammad Syaiful, M.Si.',
+                'jabatan' => 'Kepala Perpustakaan',
+                'deskripsi' => 'Kepala Perpustakaan dengan pengalaman lebih dari 20 tahun dalam pengembangan koleksi dan manajemen perpustakaan digital.'
             ],
             
-            // Level 2: Direktur Utama & Komisi
+            // Level 2: Wakil Kepala Perpustakaan (1 orang)
             [
-                'nama' => 'Dewan Komisaris',
-                'jabatan_id' => $createdJabatans['Direktur Utama']->id,
-                'deskripsi' => 'Board dewan komisaris yang mengawasi operasional perpustakaan.'
-            ],
-            [
-                'nama' => 'Komite Nominasi & Remunerasi',
-                'jabatan_id' => $createdJabatans['Direktur Utama']->id,
-                'deskripsi' => 'Tim yang menangani nominasi dan remunerasi staf.'
-            ],
-            [
-                'nama' => 'Komite Audit',
-                'jabatan_id' => $createdJabatans['Direktur Utama']->id,
-                'deskripsi' => 'Tim audit internal untuk menjamin kualitas layanan.'
+                'nama' => 'Siti Nurhaliza, S.Sos.',
+                'jabatan' => 'Wakil Kepala Perpustakaan',
+                'deskripsi' => 'Wakil Kepala Perpustakaan yang bertanggung jawab atas operasional harian dan layanan pengguna.'
             ],
 
-            // Level 3: Direktur Utama & Wakil
+            // Level 3: Direktur Utama (1 orang)
             [
-                'nama' => 'Noersing Handoko',
-                'jabatan_id' => $createdJabatans['Wakil Direktur']->id,
-                'deskripsi' => 'Direktur Utama yang memimpin operasional harian perpustakaan.'
-            ],
-            [
-                'nama' => 'Kanil Mirdlani Imansyah',
-                'jabatan_id' => $createdJabatans['Wakil Direktur']->id,
-                'deskripsi' => 'Wakil Direktur Utama untuk operasional administrasi.'
+                'nama' => 'Budi Santoso, M.A.',
+                'jabatan' => 'Direktur Utama',
+                'deskripsi' => 'Direktur Utama yang memimpin divisi pengembangan koleksi dan strategi jangka panjang perpustakaan.'
             ],
 
-            // Level 4: Middle Management
+            // Level 4: Pustakawan (2 orang)
             [
-                'nama' => 'Ahmad Alfariz',
-                'jabatan_id' => $createdJabatans['Kepala Bagian']->id,
-                'deskripsi' => 'Sekretaris Perusahaan yang mengelola administrasi kantor pusat.'
+                'nama' => 'Ema Widiyastuti, S.Sos., M.Lis.',
+                'jabatan' => 'Pustakawan',
+                'deskripsi' => 'Pustakawan senior dengan expertise dalam katalogisasi dan pengorganisasian metadata koleksi digital.'
             ],
             [
-                'nama' => 'Luthان Fadel Putra',
-                'jabatan_id' => $createdJabatans['Kepala Bagian']->id,
-                'deskripsi' => 'Manajer Hubungan Investor yang menangani investor relations.'
-            ],
-            [
-                'nama' => 'Christophorus Taufik',
-                'jabatan_id' => $createdJabatans['Kepala Bagian']->id,
-                'deskripsi' => 'Legal Perusahaan yang menangani aspek hukum.'
-            ],
-            [
-                'nama' => 'Roy Shandy Darmin',
-                'jabatan_id' => $createdJabatans['Kepala Bagian']->id,
-                'deskripsi' => 'Kepala Audit Internal untuk pengawasan kualitas.'
+                'nama' => 'Rinto Harahap, S.I.Kom.',
+                'jabatan' => 'Pustakawan',
+                'deskripsi' => 'Pustakawan yang fokus pada pelestarian dokumen bersejarah dan digitalisasi arsip.'
             ],
 
-            // Level 5: Direktur & Staff
+            // Level 5: Wakil Direktur (1 orang)
             [
-                'nama' => 'Helmi Balfas',
-                'jabatan_id' => $createdJabatans['Staff']->id,
-                'deskripsi' => 'Direktur Perpustakaan dengan fokus pada pengembangan koleksi.'
+                'nama' => 'Yanita Putri, M.Ed.',
+                'jabatan' => 'Wakil Direktur',
+                'deskripsi' => 'Wakil Direktur yang mengelola program pelatihan dan pengembangan sumber daya manusia.'
+            ],
+
+            // Level 6: Kepala Bagian (1 orang)
+            [
+                'nama' => 'Hendra Wijaya, S.T.',
+                'jabatan' => 'Kepala Bagian',
+                'deskripsi' => 'Kepala Bagian Teknis yang mengawasi infrastruktur IT dan sistem informasi perpustakaan.'
+            ],
+
+            // Level 7: Staff Layanan Sirkulasi (2 orang)
+            [
+                'nama' => 'Ani Wijaya, S.Sos.',
+                'jabatan' => 'Staff Layanan Sirkulasi',
+                'deskripsi' => 'Staff Sirkulasi yang menangani peminjaman, pengembalian, dan administrasi koleksi fisik.'
             ],
             [
-                'nama' => 'Lina P. Tanaya',
-                'jabatan_id' => $createdJabatans['Staff']->id,
-                'deskripsi' => 'Direktur Layanan yang bertanggung jawab atas pengalaman pengguna.'
+                'nama' => 'Cahyo Pratama, S.T.',
+                'jabatan' => 'Staff Layanan Sirkulasi',
+                'deskripsi' => 'Staff Sirkulasi yang bertanggung jawab pada manajemen inventori dan audit koleksi berkala.'
+            ],
+
+            // Level 8: Staff Layanan Referensi (2 orang)
+            [
+                'nama' => 'Dewi Lestari, S.I.Kom., M.Lis.',
+                'jabatan' => 'Staff Layanan Referensi',
+                'deskripsi' => 'Staff Referensi yang memberikan konsultasi dan bantuan pencarian informasi kepada pengguna.'
             ],
             [
-                'nama' => 'Valencia H. Tandosoedjno',
-                'jabatan_id' => $createdJabatans['Staff']->id,
-                'deskripsi' => 'Direktur Teknologi Informasi untuk sistem dan infrastruktur.'
+                'nama' => 'Triadi Heriyanto, S.Sos.',
+                'jabatan' => 'Staff Layanan Referensi',
+                'deskripsi' => 'Staff Referensi yang mengembangkan panduan penelitian dan literasi informasi untuk pengguna.'
+            ],
+
+            // Level 9: Staff Umum (3 orang)
+            [
+                'nama' => 'Slamet Riyadi, S.T.',
+                'jabatan' => 'Staff',
+                'deskripsi' => 'Staff Support yang mengelola sistem database dan troubleshooting teknis perpustakaan.'
             ],
             [
-                'nama' => 'Dewi Tembaga',
-                'jabatan_id' => $createdJabatans['Staff']->id,
-                'deskripsi' => 'Direktur Keuangan yang mengelola budget dan laporan keuangan.'
+                'nama' => 'Ratna Dwi Cahyani, S.I.Kom.',
+                'jabatan' => 'Staff',
+                'deskripsi' => 'Staff Administrasi yang menangani dokumentasi dan koordinasi program perpustakaan.'
             ],
             [
-                'nama' => 'Titan Hermawan',
-                'jabatan_id' => $createdJabatans['Staff']->id,
-                'deskripsi' => 'Direktur Pengembangan yang mengurus program pengembangan staf.'
+                'nama' => 'Bambang Sutrisno, A.Md.',
+                'jabatan' => 'Staff',
+                'deskripsi' => 'Staff Operasional yang membantu pemeliharaan fasilitas dan kebersihan ruang perpustakaan.'
+            ],
+
+            // Level 10: Staff Teknologi Informasi (1 orang)
+            [
+                'nama' => 'Adi Pratama, S.Kom., M.Kom.',
+                'jabatan' => 'Staff Teknologi Informasi',
+                'deskripsi' => 'Specialist TI yang mengembangkan dan memelihara sistem informasi perpustakaan terintegrasi.'
+            ],
+
+            // Level 11: Staff Administrasi (1 orang)
+            [
+                'nama' => 'Susi Handayani, A.Md.',
+                'jabatan' => 'Staff Administrasi',
+                'deskripsi' => 'Staff Administrasi yang menangani surat-menyurat, pengurusan izin, dan administrasi keuangan.'
+            ],
+
+            // Level 12: Security (1 orang)
+            [
+                'nama' => 'Pak Harno',
+                'jabatan' => 'Security',
+                'deskripsi' => 'Petugas keamanan yang menjaga keamanan perpustakaan dan memantau akses pengguna.'
+            ],
+
+            // Level 13: Cleaning Service (2 orang)
+            [
+                'nama' => 'Ibu Marni',
+                'jabatan' => 'Cleaning Service',
+                'deskripsi' => 'Peserta Cleaning Service yang menjaga kebersihan dan kerapian area perpustakaan.'
             ],
             [
-                'nama' => 'Tantan Sumartana',
-                'jabatan_id' => $createdJabatans['Staff']->id,
-                'deskripsi' => 'Direktur Operasional yang mengkoordinasikan seluruh operasi.'
+                'nama' => 'Pak Wayan',
+                'jabatan' => 'Cleaning Service',
+                'deskripsi' => 'Peserta Cleaning Service yang menangani pemeliharaan halaman dan area umum perpustakaan.'
             ],
         ];
 
-        // 3. Simpan semua profil pegawai
-        foreach ($profilesData as $profileData) {
+        // Simpan semua profil pegawai
+        $count = 0;
+        foreach ($profilesData as $data) {
+            $jabatan = Jabatan::where('name', $data['jabatan'])->first();
+            
+            if (!$jabatan) {
+                $this->command->warn("⚠️ Jabatan '{$data['jabatan']}' tidak ditemukan!");
+                continue;
+            }
+
             ProfilPegawai::firstOrCreate(
-                ['nama' => $profileData['nama']],
-                $profileData
+                ['nama' => $data['nama']],
+                [
+                    'jabatan_id' => $jabatan->id,
+                    'deskripsi' => $data['deskripsi'],
+                ]
             );
+            $count++;
         }
 
         $this->command->info('✅ ProfilPegawai seeder berhasil dijalankan!');
-        $this->command->info('   - ' . count($createdJabatans) . ' Jabatan dibuat');
-        $this->command->info('   - ' . count($profilesData) . ' Profil Pegawai dibuat');
+        $this->command->info("   - {$count} Profil Pegawai dibuat/diperbarui");
     }
 }

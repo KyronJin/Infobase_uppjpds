@@ -157,18 +157,44 @@ class PengumumanController extends Controller
 
     public function destroy(Pengumuman $pengumuman)
     {
-        $title = $pengumuman->title;
-        
-        if ($pengumuman->image_path) {
-            Storage::disk('public')->delete($pengumuman->image_path);
-        }
-        $pengumuman->delete();
+        try {
+            $title = $pengumuman->title;
+            
+            if ($pengumuman->image_path) {
+                Storage::disk('public')->delete($pengumuman->image_path);
+            }
+            $pengumuman->delete();
 
-        return redirect()->route('admin.pengumuman.index')->with('success', [
-            'title' => '✓ Pengumuman Dihapus',
-            'message' => '"' . $title . '" telah berhasil dihapus dari sistem.',
-            'type' => 'success',
-        ]);
+            // Check if this is an AJAX request
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => '"' . $title . '" telah berhasil dihapus dari sistem.'
+                ]);
+            }
+
+            return redirect()->route('admin.pengumuman.index')->with('success', [
+                'title' => '✓ Pengumuman Dihapus',
+                'message' => '"' . $title . '" telah berhasil dihapus dari sistem.',
+                'type' => 'success',
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengumuman tidak ditemukan atau sudah dihapus.'
+                ], 404);
+            }
+            return redirect()->route('admin.pengumuman.index')->with('error', 'Pengumuman tidak ditemukan atau sudah dihapus.');
+        } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->route('admin.pengumuman.index')->with('error', 'Gagal menghapus: ' . $e->getMessage());
+        }
     }
 
     public function show(Pengumuman $pengumuman)

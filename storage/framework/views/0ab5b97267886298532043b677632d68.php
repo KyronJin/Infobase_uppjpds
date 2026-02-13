@@ -119,7 +119,7 @@
                                 <div class="flex -space-x-4">
                                     <?php $__currentLoopData = $item->images->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 ring-2 ring-white shadow-sm">
-                                            <img src="<?php echo e(asset('storage/' . $image->image_path)); ?>" alt="Room" class="w-full h-full object-cover">
+                                            <img src="<?php echo e(route('profile-ruangan.image', ['filename' => basename($image->image_path)])); ?>" alt="Room" class="w-full h-full object-cover">
                                         </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php if($item->images->count() == 0): ?>
@@ -455,6 +455,21 @@ document.getElementById('createForm')?.addEventListener('submit', async function
         return;
     }
     
+    // Log FormData content for debugging
+    console.log('Create form submission:');
+    console.log('Form action:', form.action);
+    console.log('FormData entries:');
+    let fileCount = 0;
+    for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+            fileCount++;
+            console.log(`  ${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+        } else {
+            console.log(`  ${key}: ${value}`);
+        }
+    }
+    console.log(`Total files in FormData: ${fileCount}`);
+    
     // Show loading state
     submitBtn.disabled = true;
     submitBtn.innerText = 'Menyimpan...';
@@ -465,14 +480,17 @@ document.getElementById('createForm')?.addEventListener('submit', async function
             method: 'POST',
             body: formData,
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            redirect: 'follow'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
         });
+        
+        console.log('Create response status:', response.status, 'OK:', response.ok);
         
         if (response.status === 422) {
             // Validation error
             const data = await response.json();
+            console.log('Create validation errors:', data);
             let errorMsg = '<strong>Perbaiki kesalahan berikut:</strong><ul style="margin-top: 8px;">';
             if (data.errors) {
                 for (const [field, messages] of Object.entries(data.errors)) {
@@ -485,13 +503,26 @@ document.getElementById('createForm')?.addEventListener('submit', async function
             errorDiv.innerHTML = errorMsg;
             errorDiv.classList.remove('hidden');
             form.parentElement.scrollTop = 0;
-        } else if (response.ok || response.redirected) {
-            // Success - reload page after brief delay
+        } else if (response.ok) {
+            // Success - parse JSON response
+            const data = await response.json();
+            console.log('Create success:', data);
             setTimeout(() => {
-                window.location.href = '<?php echo e(route("admin.profile.index")); ?>';
+                window.location.href = data.redirect || '<?php echo e(route("admin.profile.index")); ?>';
             }, 500);
         } else {
-            errorDiv.innerHTML = `<strong>Error:</strong> Terjadi kesalahan (${response.status})`;
+            // Error response - try to parse JSON
+            try {
+                const data = await response.json();
+                console.log('Create error response:', data);
+                let errorMsg = `<strong>Error:</strong> ${data.error || 'Terjadi kesalahan'}`;
+                if (data.debug) {
+                    errorMsg += `<br><small>File: ${data.debug.file}:${data.debug.line}</small>`;
+                }
+                errorDiv.innerHTML = errorMsg;
+            } catch (e) {
+                errorDiv.innerHTML = `<strong>Error:</strong> Terjadi kesalahan saat menyimpan (${response.status})`;
+            }
             errorDiv.classList.remove('hidden');
         }
     } catch (error) {
@@ -514,49 +545,63 @@ document.getElementById('editForm')?.addEventListener('submit', function(e) {
     const submitBtn = form.querySelector('[type="submit"]');
     const originalText = submitBtn.innerText;
     submitBtn.disabled = true;
-    submitBtn.innerText = 'Loading...';
+    submitBtn.innerText = 'Menyimpan...';
+    
+    const errorDiv = document.getElementById('editErrors');
+    errorDiv.classList.add('hidden');
+    
+    console.log('Edit form action:', form.action);
+    console.log('Edit form data keys:', Array.from(formData.keys()));
     
     fetch(form.action, {
         method: 'POST',
         body: formData,
         headers: {
-            'Accept': 'application/json'
-        }
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        redirect: 'follow'
     })
     .then(response => {
-        if (response.ok) {
-            // Show success and reload page
-            window.location.href = '<?php echo e(route("admin.profile.index")); ?>';
-        } else if (response.status === 422) {
+        console.log('Edit response status:', response.status, 'OK:', response.ok);
+        
+        if (response.status === 422) {
             return response.json().then(data => {
-                throw data;
+                console.log('Validation errors:', data);
+                if (data.errors) {
+                    let errorMsg = '<strong>Perbaiki kesalahan berikut:</strong><ul style="margin-top: 8px;">';
+                    for (const [field, messages] of Object.entries(data.errors)) {
+                        messages.forEach(msg => {
+                            errorMsg += `<li>• ${msg}</li>`;
+                        });
+                    }
+                    errorMsg += '</ul>';
+                    errorDiv.innerHTML = errorMsg;
+                    errorDiv.classList.remove('hidden');
+                    form.parentElement.scrollTop = 0;
+                }
+                throw new Error('Validation error');
             });
+        } else if (response.ok) {
+            // Success - reload page (response.ok is true for 2xx)
+            console.log('Edit success, reloading');
+            setTimeout(() => {
+                window.location.href = '<?php echo e(route("admin.profile.index")); ?>';
+            }, 300);
         } else {
-            throw new Error('Terjadi kesalahan');
+            console.log('Unexpected edit response status');
+            // Try to parse as JSON for error details
+            return response.text().then(text => {
+                console.log('Response text:', text.substring(0, 200));
+                throw new Error(`HTTP ${response.status}`);
+            });
         }
     })
     .catch(error => {
-        const errorDiv = form.querySelector('[id*="Errors"]') || document.createElement('div');
-        if (error.errors) {
-            let errorMsg = '<strong>Perbaiki kesalahan berikut:</strong><ul style="margin-top: 8px;">';
-            Object.values(error.errors).forEach(messages => {
-                messages.forEach(msg => {
-                    errorMsg += `<li>• ${msg}</li>`;
-                });
-            });
-            errorMsg += '</ul>';
-            errorDiv.innerHTML = errorMsg;
-        } else {
-            errorDiv.innerHTML = error.message || 'Terjadi kesalahan saat menyimpan data';
-        }
-        if (!errorDiv.parentNode) {
-            errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm mb-4';
-            form.insertBefore(errorDiv, form.firstChild);
-        } else {
+        console.error('Complete edit error:', error);
+        if (error.message !== 'Validation error') {
+            errorDiv.innerHTML = `<strong>Error:</strong> ${error.message || 'Terjadi kesalahan saat menyimpan data'}`;
             errorDiv.classList.remove('hidden');
         }
-        
-        // Reset button
         submitBtn.disabled = false;
         submitBtn.innerText = originalText;
     });

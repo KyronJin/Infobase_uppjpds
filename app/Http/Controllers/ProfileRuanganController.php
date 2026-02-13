@@ -25,24 +25,100 @@ class ProfileRuanganController extends Controller
 
     private function saveImages(Request $request, ProfileRuangan $profileRuangan, $replace = false)
     {
+        $uploadDir = storage_path('app/profile_ruangan_images');
+        
+        // Create directory if not exists
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0755, true);
+        }
+        
+        \Log::info('saveImages started', [
+            'profileRuangan_id' => $profileRuangan->id,
+            'upload_dir' => $uploadDir,
+            'dir_exists' => is_dir($uploadDir),
+            'dir_writable' => is_writable($uploadDir),
+        ]);
+        
         for ($i = 1; $i <= 3; $i++) {
             $slotName = "slot_{$i}_image";
-            if ($request->hasFile($slotName)) {
+            
+            try {
+                if (!$request->hasFile($slotName)) {
+                    \Log::debug("No file for $slotName");
+                    continue;
+                }
+                
+                $file = $request->file($slotName);
+                
+                if (!$file || !$file->isValid()) {
+                    \Log::warning("Invalid file for $slotName", [
+                        'error' => $file ? $file->getErrorMessage() : 'File is null',
+                    ]);
+                    continue;
+                }
+                
+                \Log::info("File valid for $slotName", [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'mime' => $file->getMimeType(),
+                ]);
+                
+                // Delete old image if replacing
                 if ($replace) {
                     $oldImage = $profileRuangan->images()->where('slot', $i)->first();
-                    if ($oldImage) {
-                        Storage::disk('public')->delete($oldImage->image_path);
+                    if ($oldImage && $oldImage->image_path) {
+                        $oldPath = storage_path('app/' . $oldImage->image_path);
+                        if (file_exists($oldPath)) {
+                            @unlink($oldPath);
+                            \Log::info("Deleted old image: {$oldPath}");
+                        }
                         $oldImage->delete();
                     }
                 }
-                $path = $request->file($slotName)->store('profile_ruangan_images', 'public');
+                
+                // Generate filename
+                $filename = uniqid('profile_' . $profileRuangan->id . '_slot_' . $i . '_', true) . '.' . $file->getClientOriginalExtension();
+                $fullPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
+                $relativePath = 'profile_ruangan_images/' . $filename;
+                
+                \Log::info("Attempting to move file", [
+                    'from' => $file->getRealPath(),
+                    'to' => $fullPath,
+                    'filename' => $filename,
+                ]);
+                
+                // Try to copy file first, then delete original
+                if (!copy($file->getRealPath(), $fullPath)) {
+                    \Log::error("Failed to copy file for $slotName");
+                    throw new \Exception("Failed to copy file for slot $i");
+                }
+                
+                \Log::info("File copied successfully", [
+                    'fullPath' => $fullPath,
+                    'exists' => file_exists($fullPath),
+                    'size' => filesize($fullPath),
+                ]);
+                
+                // Create database record
                 ProfileRuanganImage::create([
                     'profile_ruangan_id' => $profileRuangan->id,
                     'slot'               => $i,
-                    'image_path'         => $path,
+                    'image_path'         => $relativePath,
                 ]);
+                
+                \Log::info("Image record created for slot $i", [
+                    'image_path' => $relativePath,
+                ]);
+                
+            } catch (\Exception $e) {
+                \Log::error("Error saving image for $slotName: " . $e->getMessage(), [
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                // Continue with next slot instead of throwing
             }
         }
+        
+        \Log::info('saveImages completed');
     }
 
     public function index(Request $request)
@@ -76,14 +152,67 @@ class ProfileRuanganController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate($this->rules());
-        $data['is_active'] = $request->has('is_active');
-        $data['description'] = strip_tags($data['description'] ?? '');
+        \Log::info('ProfileRuangan Create started', [
+            'has_files' => [
+                'slot_1' => $request->hasFile('slot_1_image'),
+                'slot_2' => $request->hasFile('slot_2_image'),
+                'slot_3' => $request->hasFile('slot_3_image'),
+            ]
+        ]);
 
-        $profileRuangan = ProfileRuangan::create($data);
-        $this->saveImages($request, $profileRuangan);
+        try {
+            $data = $request->validate($this->rules());
+            \Log::info('Validation passed', ['data_keys' => array_keys($data)]);
 
-        return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil ditambahkan!');
+            $data['is_active'] = $request->has('is_active');
+            $data['description'] = strip_tags($data['description'] ?? '');
+
+            $profileRuangan = ProfileRuangan::create($data);
+            \Log::info('Profile ruangan created', ['id' => $profileRuangan->id]);
+
+            $this->saveImages($request, $profileRuangan);
+            \Log::info('Images saved successfully');
+
+            // Return JSON for fetch API
+            if ($request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => true,
+                    'message' => '✓ Profile ruangan berhasil ditambahkan!',
+                    'redirect' => route('admin.profile.index')
+                ]);
+            }
+
+            return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil ditambahkan!');
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            \Log::warning('ProfileRuangan Validation Error', [
+                'errors' => $ve->errors()
+            ]);
+
+            if ($request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json(['errors' => $ve->errors()], 422);
+            }
+
+            return back()->withErrors($ve->errors())->withInput();
+        } catch (\Exception $e) {
+            \Log::error('ProfileRuangan Store Error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            if ($request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'debug' => [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                    ]
+                ], 500);
+            }
+            
+            return back()->withErrors(['error' => 'Gagal menambah profile ruangan: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function edit(ProfileRuangan $profileRuangan)
@@ -99,20 +228,79 @@ class ProfileRuanganController extends Controller
 
     public function update(Request $request, ProfileRuangan $profileRuangan)
     {
-        $data = $request->validate($this->rules());
-        $data['is_active'] = $request->has('is_active');
-        $data['description'] = strip_tags($data['description'] ?? '');
+        \Log::info('ProfileRuangan Update started', [
+            'id' => $profileRuangan->id,
+            'has_files' => [
+                'slot_1' => $request->hasFile('slot_1_image'),
+                'slot_2' => $request->hasFile('slot_2_image'),
+                'slot_3' => $request->hasFile('slot_3_image'),
+            ]
+        ]);
 
-        $profileRuangan->update($data);
-        $this->saveImages($request, $profileRuangan, true);
+        try {
+            $data = $request->validate($this->rules());
+            \Log::info('Validation passed', ['data_keys' => array_keys($data)]);
+            
+            $data['is_active'] = $request->has('is_active');
+            $data['description'] = strip_tags($data['description'] ?? '');
 
-        return redirect()->route('admin.profile.edit', $profileRuangan->id)->with('success', '✓ Profile ruangan berhasil diperbarui!');
+            $profileRuangan->update($data);
+            \Log::info('Profile ruangan data updated');
+            
+            $this->saveImages($request, $profileRuangan, true);
+            \Log::info('Images saved successfully');
+
+            // Return JSON for fetch API
+            if ($request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => true,
+                    'message' => '✓ Profile ruangan berhasil diperbarui!',
+                    'redirect' => route('admin.profile.index')
+                ]);
+            }
+
+            return redirect()->route('admin.profile.index')->with('success', '✓ Profile ruangan berhasil diperbarui!');
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            \Log::warning('ProfileRuangan Validation Error', [
+                'id' => $profileRuangan->id,
+                'errors' => $ve->errors()
+            ]);
+
+            if ($request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json(['errors' => $ve->errors()], 422);
+            }
+
+            return back()->withErrors($ve->errors())->withInput();
+        } catch (\Exception $e) {
+            \Log::error('ProfileRuangan Update Error: ' . $e->getMessage(), [
+                'id' => $profileRuangan->id ?? null,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            if ($request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'debug' => [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                    ]
+                ], 500);
+            }
+            
+            return back()->withErrors(['error' => 'Gagal update profile ruangan: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function destroy(ProfileRuangan $profileRuangan)
     {
         foreach ($profileRuangan->images as $image) {
-            Storage::disk('public')->delete($image->image_path);
+            $imagePath = storage_path('app/' . $image->image_path);
+            if (file_exists($imagePath)) {
+                @unlink($imagePath);
+            }
             $image->delete();
         }
         $profileRuangan->delete();
@@ -139,7 +327,15 @@ class ProfileRuanganController extends Controller
     public function deleteImage(ProfileRuanganImage $image)
     {
         $profileRuanganId = $image->profile_ruangan_id;
-        Storage::disk('public')->delete($image->image_path);
+        
+        // Delete physical file
+        $imagePath = storage_path('app/' . $image->image_path);
+        if (file_exists($imagePath)) {
+            @unlink($imagePath);
+            \Log::info('Deleted image file: ' . $image->image_path);
+        }
+        
+        // Delete database record
         $image->delete();
 
         if (request()->wantsJson()) {

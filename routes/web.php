@@ -78,6 +78,102 @@ Route::resource('admin/calendar', CalendarEventController::class)->names('admin.
 // Admin Tata Tertib CRUD
 Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.tata_tertib')->middleware('auth');
 
+// Route untuk serve profile ruangan images
+Route::get('/storage/profile_ruangan_images/{filename}', function ($filename) {
+    // Sanitize filename untuk security
+    $filename = basename($filename);
+    $path = storage_path('app/profile_ruangan_images/' . $filename);
+    
+    \Log::debug('Image serving request', [
+        'filename' => $filename,
+        'path' => $path,
+        'exists' => file_exists($path),
+    ]);
+    
+    if (!file_exists($path)) {
+        \Log::warning('Image not found', ['path' => $path]);
+        abort(404, 'Image not found');
+    }
+    
+    if (!is_readable($path)) {
+        \Log::error('Image not readable', ['path' => $path]);
+        abort(403, 'Image not readable');
+    }
+    
+    return response()->file($path, [
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->name('profile-ruangan.image');
+
+// Debug route untuk show upload test form
+Route::get('/debug/upload-test', function () {
+    return view('debug.upload-test');
+})->name('debug.upload-test.form')->middleware('auth');
+
+// Debug route untuk test file upload dengan copy
+Route::post('/debug/upload-test', function (\Illuminate\Http\Request $request) {
+    \Log::info('Upload test endpoint hit', [
+        'files' => $request->files->keys(),
+        'all_input' => array_keys($request->all()),
+    ]);
+    
+    $uploadDir = storage_path('app/profile_ruangan_images');
+    $result = [
+        'upload_dir' => $uploadDir,
+        'dir_exists' => is_dir($uploadDir),
+        'dir_writable' => is_writable($uploadDir),
+        'files' => [],
+    ];
+    
+    // Create dir if not exists
+    if (!is_dir($uploadDir)) {
+        @mkdir($uploadDir, 0755, true);
+        $result['dir_created'] = true;
+    }
+    
+    for ($i = 1; $i <= 3; $i++) {
+        $slotName = "slot_{$i}_image";
+        if ($request->hasFile($slotName)) {
+            $file = $request->file($slotName);
+            $fileData = [
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType(),
+                'valid' => $file->isValid(),
+                'temp_path' => $file->getRealPath(),
+            ];
+            
+            // Try to copy file
+            try {
+                $filename = uniqid('test_' . $i . '_') . '.' . $file->getClientOriginalExtension();
+                $fullPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
+                
+                if (copy($file->getRealPath(), $fullPath)) {
+                    $fileData['saved'] = true;
+                    $fileData['saved_path'] = $fullPath;
+                    $fileData['file_exists'] = file_exists($fullPath);
+                    $fileData['file_size'] = file_exists($fullPath) ? filesize($fullPath) : 0;
+                    $fileData['is_readable'] = is_readable($fullPath);
+                } else {
+                    $fileData['saved'] = false;
+                    $fileData['error'] = 'copy() returned false';
+                }
+            } catch (\Exception $e) {
+                $fileData['error'] = $e->getMessage();
+            }
+            
+            $result['files'][$slotName] = $fileData;
+        }
+    }
+    
+    \Log::info('Test upload result', $result);
+    
+    return response()->json([
+        'success' => true,
+        'debug' => $result,
+    ]);
+})->name('debug.upload-test.post')->middleware('auth');
+
 // Admin Profile Ruangan CRUD (protected)
 Route::resource('admin/profile-ruangan', ProfileRuanganController::class)->names('admin.profile')->middleware('auth');
 Route::delete('admin/profile-ruangan/image/{image}', [ProfileRuanganController::class, 'deleteImage'])->name('admin.profile.deleteImage')->middleware('auth');
@@ -91,6 +187,8 @@ Route::delete('admin/staff-of-month/jabatan/{jabatan}', [StaffOfMonthController:
 Route::resource('admin/profil-pegawai', ProfilPegawaiController::class)->names('admin.profil_pegawai')->middleware('auth');
 Route::post('admin/profil-pegawai/store-jabatan', [ProfilPegawaiController::class, 'storeJabatan'])->name('admin.profil_pegawai.store-jabatan')->middleware('auth');
 Route::post('admin/profil-pegawai/update-order', [ProfilPegawaiController::class, 'updateOrder'])->name('admin.profil_pegawai.update-order')->middleware('auth');
+Route::delete('admin/profil-pegawai/jabatan/{id}', [ProfilPegawaiController::class, 'deleteJabatan'])->name('admin.profil_pegawai.destroy-jabatan')->middleware('auth');
+Route::post('admin/profil-pegawai/jabatan/{id}', [ProfilPegawaiController::class, 'deleteJabatan'])->name('admin.profil_pegawai.destroy-jabatan-post')->middleware('auth');
 
 // Simple create form for testing
 Route::get('admin/profil-pegawai-simple', function() {

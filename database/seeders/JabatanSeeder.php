@@ -15,20 +15,24 @@ class JabatanSeeder extends Seeder
         $jabatans = [
             'Kepala Perpustakaan',
             'Wakil Kepala Perpustakaan',
+            'Direktur Utama',
             'Pustakawan',
-            'Staf Layanan Sirkulasi',
-            'Staf Layanan Referensi',
-            'Staf Teknologi Informasi',
-            'Staf Administrasi',
+            'Wakil Direktur',
+            'Kepala Bagian',
+            'Staff Layanan Sirkulasi',
+            'Staff Layanan Referensi',
+            'Staff',
+            'Staff Teknologi Informasi',
+            'Staff Administrasi',
             'Security',
             'Cleaning Service'
         ];
 
         foreach ($jabatans as $index => $name) {
-            Jabatan::create([
-                'name' => $name,
-                'order' => $index + 1
-            ]);
+            Jabatan::firstOrCreate(
+                ['name' => $name],
+                ['order' => $index + 1]
+            );
         }
     }
 }

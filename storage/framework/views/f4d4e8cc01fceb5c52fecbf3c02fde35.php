@@ -540,8 +540,8 @@
                                         <?php echo e($index === 0 ? 'checked' : ''); ?>
 
                                     >
-                                    <figure class="slider-figure" onclick="openImageModal('<?php echo e(asset('storage/' . $image->image_path)); ?>', <?php echo e($item->id); ?>, <?php echo e($index); ?>)">
-                                        <img src="<?php echo e(asset('storage/' . $image->image_path)); ?>" alt="<?php echo e($item->room_name); ?>">
+                                    <figure class="slider-figure" onclick="openImageModal('<?php echo e(route('profile-ruangan.image', ['filename' => basename($image->image_path)])); ?>', <?php echo e($item->id); ?>, <?php echo e($index); ?>)">
+                                        <img src="<?php echo e(route('profile-ruangan.image', ['filename' => basename($image->image_path)])); ?>" alt="<?php echo e($item->room_name); ?>" loading="lazy">
                                     </figure>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 

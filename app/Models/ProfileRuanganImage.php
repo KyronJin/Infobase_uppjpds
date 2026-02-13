@@ -8,7 +8,7 @@ class ProfileRuanganImage extends Model
 {
     protected $table = 'profile_ruangan_images';
     
-    protected $fillable = ['profile_ruangan_id', 'image_path'];
+    protected $fillable = ['profile_ruangan_id', 'slot', 'image_path'];
 
     public function profileRuangan()
     {

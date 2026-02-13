@@ -541,8 +541,8 @@
                                         name="room-{{ $item->id }}"
                                         {{ $index === 0 ? 'checked' : '' }}
                                     >
-                                    <figure class="slider-figure" onclick="openImageModal('{{ asset('storage/' . $image->image_path) }}', {{ $item->id }}, {{ $index }})">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $item->room_name }}">
+                                    <figure class="slider-figure" onclick="openImageModal('{{ route('profile-ruangan.image', ['filename' => basename($image->image_path)]) }}', {{ $item->id }}, {{ $index }})">
+                                        <img src="{{ route('profile-ruangan.image', ['filename' => basename($image->image_path)]) }}" alt="{{ $item->room_name }}" loading="lazy">
                                     </figure>
                                 @endforeach
 

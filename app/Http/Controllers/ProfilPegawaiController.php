@@ -135,9 +135,22 @@ class ProfilPegawaiController extends Controller
 
             $profil_pegawai->update($validated);
 
+            // Return JSON for AJAX requests, redirect for regular form submissions
+            if ($request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Profil berhasil diperbarui']);
+            }
+
             return redirect()->route('admin.profil_pegawai.index')
                 ->with('success', '✓ Profil Pegawai berhasil diperbarui!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+            }
+            throw $e;
         } catch (ModelNotFoundException $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Data pegawai tidak ditemukan'], 404);
+            }
             return redirect()->route('admin.profil_pegawai.index')
                 ->with('error', '✗ Data pegawai tidak ditemukan!');
         }
@@ -234,5 +247,36 @@ class ProfilPegawaiController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function deleteJabatan($id)
+    {
+        try {
+            $jabatan = Jabatan::findOrFail($id);
+            
+            // Check if any profil pegawai using this jabatan
+            $count = ProfilPegawai::where('jabatan_id', $id)->count();
+            
+            // Delete the jabatan
+            $jabatan->delete();
+            
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Jabatan '{$jabatan->name}' berhasil dihapus" . ($count > 0 ? " ($count pegawai terpengaruh)" : '')
+                ]);
+            }
+
+            return redirect()->back()->with('success', "Jabatan berhasil dihapus!");
+        } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus jabatan: ' . $e->getMessage()
+                ], 400);
+            }
+
+            return redirect()->back()->with('error', 'Gagal menghapus jabatan!');
+        }
     }
 }

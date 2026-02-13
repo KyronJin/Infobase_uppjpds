@@ -218,25 +218,9 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
-                                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','size' => 'sm','icon' => 'edit','class' => 'rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold','onclick' => 'editStaff('.e($item->id).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'ghost','size' => 'sm','icon' => 'edit','class' => 'rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold','onclick' => 'editStaff('.e($item->id).')']); ?>Edit <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
+                                    <button type="button" onclick="editStaff(<?php echo e($item->id); ?>); return false;" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all 0.2s; line-height: 1.4; min-width: fit-content; background-color: #ffffff; color: #ea580c; border: 1px solid #fdba74; padding: 8px 14px; font-size: 13px;">
+                                        <i class="fa-solid fa-edit"></i>Edit
+                                    </button>
                                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost-danger','size' => 'sm','icon' => 'trash','class' => 'rounded-xl font-bold','onclick' => 'openDeleteModal(\'deleteStaffModal\', \''.e($item->name).'\', \'/admin/staff-of-month/'.e($item->id).'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -814,22 +798,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function editStaff(id) {
+    console.log('editStaff function called with ID:', id);
     const editModal = document.getElementById('edit-staff-modal');
     const editForm = document.getElementById('edit-form');
+    
+    console.log('Modal element:', editModal);
+    console.log('Form element:', editForm);
     
     fetch('/admin/staff-of-month/' + id + '/edit', {
         headers: {
             'Accept': 'application/json',
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.status);
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('Data received:', data);
         document.getElementById('edit-name').value = data.name || '';
         document.getElementById('edit-position').value = data.position || '';
         document.getElementById('edit-month').value = data.month || '';
         document.getElementById('edit-year').value = data.year || '';
         document.getElementById('edit-bio').value = data.bio || '';
-        document.getElementById('edit-photo_link').value = data.photo_link || '';
         document.getElementById('edit-is_active').checked = data.is_active === 1;
         
         // Reset delete photo flag
@@ -851,9 +845,13 @@ function editStaff(id) {
         
         editForm.action = `/admin/staff-of-month/${id}`;
         
+        console.log('Opening modal...');
         editModal.classList.remove('hidden');
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error in editStaff:', error);
+        alert('Error loading staff data: ' + error.message);
+    });
 }
 
 function deleteExistingPhoto() {
