@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProfileRuangan;
-use App\Models\CalendarEvent;
 use App\Models\Pengumuman;
 use App\Models\JenisTataTertib;
 use App\Models\StaffOfMonth;
@@ -84,19 +83,9 @@ class InfobaseController extends Controller
     public function calendarAktifitas(Request $request): View
     {
         $search = $request->query('search', '');
-        
-        $query = CalendarEvent::where('is_active', true);
-
-        // Apply search if provided
-        if (!empty($search)) {
-            $query->search($search);
-        }
-
-        $events = $query->orderBy('start_at', 'asc')->paginate(12);
 
         return view('infobase.calendar-aktifitas', [
             'title'  => 'Kalender Kegiatan',
-            'events' => $events,
             'search' => $search,
         ]);
     }

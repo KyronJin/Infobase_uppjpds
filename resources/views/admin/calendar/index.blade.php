@@ -1,15 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
-    <div class="max-w-6xl mx-auto px-6">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8 font-cairo">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
         
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
             <div>
-                <h1 class="h2 text-gray-800"> kalender Event</h1>
-                <p class="text-sm text-gray-500">Kelola agenda kegiatan dan jadwal event perpustakaan.</p>
+                <h1 class="h2 text-[#063A76]">Kalender Event</h1>
+                <p class="text-sm text-slate-500">Kelola agenda kegiatan dan jadwal event perpustakaan.</p>
             </div>
-            <x-button variant="primary" size="md" icon="plus" onclick="openCreateModal()" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Buat Event</x-button>
+            <div class="flex gap-2 mt-3 md:mt-0">
+                <x-button variant="primary" size="md" type="link" href="{{ route('admin.agenda.login') }}" icon="right-to-bracket">Login AgendaCerdas   </x-button>
+            </div>
+        </div>
+
+        <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl flex items-center gap-3">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2360A5FA' d='M13 20v-4h4.001v4H13zm-6 0v-4h4v4H7zm-6 0v-4h4v4H1zm12-6v-4h4v4h-4zm-6 0v-4h4v4H7zm-6 0v-4h4v4H1zm18-6V3.999h4V8h-4zm0 6v-4h4v4h-4zm-6-6V3.999h4.001V8H13zM7 8V3.999h4V8H7z'/%3E%3C/svg%3E" alt="AgendaCerdas" class="w-6 h-6">
+            <span class="text-sm font-semibold">Terintegrasi dengan AgendaCerdas</span>
         </div>
 
         @if(session('success'))
@@ -20,10 +27,10 @@
         @endif
 
         <!-- Daftar Calendar Events -->
-        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-8 text-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
+                    <thead class="bg-slate-50 border-b border-slate-100 font-bold text-slate-500">
                         <tr>
                             <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Event</th>
                             <th class="px-8 py-5 text-xs font-bold uppercase tracking-widest">Jadwal</th>
@@ -35,20 +42,20 @@
                     </thead>
                     <tbody class="divide-y divide-gray-50 text-gray-600">
                         @forelse($items as $item)
-                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
+                        <tr class="hover:bg-slate-50 transition-all duration-300">
                             <td class="px-8 py-4">
                                 <div class="font-black text-gray-900 text-base leading-tight">{{ $item->title }}</div>
                                 <div class="text-[10px] text-gray-400 font-medium italic truncate max-w-[200px]">{{ $item->description }}</div>
                             </td>
                             <td class="px-8 py-4">
                                 <div class="flex flex-col">
-                                    <span class="text-[11px] font-black uppercase text-teal-600">{{ $item->start_at?->translatedFormat('d F Y') ?? '-' }}</span>
+                                    <span class="text-[11px] font-black uppercase text-[#063A76]">{{ $item->start_at?->translatedFormat('d F Y') ?? '-' }}</span>
                                     <span class="text-[10px] font-bold text-gray-400 tracking-tighter">{{ $item->start_at?->format('H:i') ?? '-' }} WIB</span>
                                 </div>
                             </td>
                             <td class="px-8 py-4">
                                 <div class="flex items-center gap-2">
-                                    <i class="fas fa-map-marker-alt text-[10px] text-teal-400"></i>
+                                    <i class="fas fa-map-marker-alt text-[10px] text-[#063A76]"></i>
                                     <span class="font-bold text-xs">{{ $item->location ?? '-' }}</span>
                                 </div>
                             </td>
@@ -65,9 +72,10 @@
                                 @endif
                             </td>
                             <td class="px-8 py-4 whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-2">
-                                    <x-button variant="ghost" size="sm" icon="edit" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" onclick="editCalendarEvent({{ $item->id }})">Edit</x-button>
-                                    <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteCalendarModal', '{{ $item->title }}', '/admin/calendar/{{ $item->id }}')">Hapus</x-button>
+                                <div class="flex items-center justify-end">
+                                    <button type="button" onclick="openInfoModal('infoReadOnlyModal')" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors" title="Info">
+                                        <i class="fas fa-info text-sm"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -91,179 +99,49 @@
                 </div>
             @endif
         </div>
-
-
-        <!-- Modal Create Event -->
-        <div id="createCalendarModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
+        <!-- Info Read-Only Modal -->
+        <div id="infoReadOnlyModal" class="fixed inset-0 backdrop-blur-sm bg-slate-900/40 hidden z-50 flex items-center justify-center">
             <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Buat Event</h3>
-                            <button onclick="closeModal('createCalendarModal')" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
+                <div class="bg-white rounded-2xl max-w-md w-full shadow-xl">
+                    <div class="p-6 text-center">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-lock text-blue-600 text-xl"></i>
+                            </div>
                         </div>
-                        <form action="{{ route('admin.calendar.store') }}" method="POST" class="grid grid-cols-2 gap-4">
-                            @csrf
-                            <div class="col-span-2">
-                                <label class="block text-gray-700 font-semibold mb-2">Judul <span class="text-red-500">*</span></label>
-                                <input type="text" name="title" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                                <textarea name="description" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Mulai</label>
-                                <input type="datetime-local" name="start_at" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Selesai</label>
-                                <input type="datetime-local" name="end_at" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Lokasi</label>
-                                <input type="text" name="location" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                                <input type="number" name="capacity" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Jumlah Peserta</label>
-                                <input type="number" name="participants" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="flex items-center text-gray-700 font-semibold">
-                                    <input type="checkbox" name="is_active" value="1" checked class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500 mr-2">
-                                    Aktif
-                                </label>
-                            </div>
-                            <div class="col-span-2 flex justify-end gap-3 pt-4">
-                                <x-button variant="secondary" size="md" type="button" onclick="closeModal('createCalendarModal')">Batal</x-button>
-                                <x-button variant="primary" size="md" type="submit">Simpan</x-button>
-                            </div>
-                        </form>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Read-Only</h3>
+                        <p class="text-gray-600 mb-6">Hanya bisa dihapus dan diedit di <span class="font-semibold">AgendaCerdas</span></p>
+                        
+                        <!-- AgendaCerdas Branding -->
+                        <div class="flex items-center justify-center gap-2 p-3 bg-blue-50 rounded-xl border border-blue-200 mb-4">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2360A5FA' d='M13 20v-4h4.001v4H13zm-6 0v-4h4v4H7zm-6 0v-4h4v4H1zm12-6v-4h4v4h-4zm-6 0v-4h4v4H7zm-6 0v-4h4v4H1zm18-6V3.999h4V8h-4zm0 6v-4h4v4h-4zm-6-6V3.999h4.001V8H13zM7 8V3.999h4V8H7z'/%3E%3C/svg%3E" alt="AgendaCerdas" class="w-5 h-5">
+                            <span class="text-xs font-semibold text-blue-700">AgendaCerdas</span>
+                        </div>
+                        
+                        <button onclick="closeModal('infoReadOnlyModal')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors">
+                            Tutup
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Modal Edit Event -->
-        <div id="editCalendarModal" class="fixed inset-0 backdrop-blur-sm bg-white/30 hidden z-50 flex items-center justify-center">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">Edit Event</h3>
-                            <button onclick="closeModal('editCalendarModal')" class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
-                        </div>
-                        <form id="editCalendarForm" method="POST" class="grid grid-cols-2 gap-4">
-                            @csrf
-                            @method('PUT')
-                            <div class="col-span-2">
-                                <label class="block text-gray-700 font-semibold mb-2">Judul <span class="text-red-500">*</span></label>
-                                <input type="text" id="edit-title" name="title" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
-                                <textarea id="edit-description" name="description" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Mulai</label>
-                                <input type="datetime-local" id="edit-start_at" name="start_at" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Selesai</label>
-                                <input type="datetime-local" id="edit-end_at" name="end_at" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Lokasi</label>
-                                <input type="text" id="edit-location" name="location" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                                <input type="number" id="edit-capacity" name="capacity" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Jumlah Peserta</label>
-                                <input type="number" id="edit-participants" name="participants" min="0" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            </div>
-                            <div>
-                                <label class="flex items-center text-gray-700 font-semibold">
-                                    <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-4 h-4 text-teal-600 rounded focus:ring-2 focus:ring-teal-500 mr-2">
-                                    Aktif
-                                </label>
-                            </div>
-                            <div class="col-span-2 flex justify-end gap-3 pt-4">
-                                <x-button variant="secondary" size="md" type="button" onclick="closeModal('editCalendarModal')">Batal</x-button>
-                                <x-button variant="primary" size="md" type="submit">Simpan</x-button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Delete Modal Component -->
-        @component('components.delete-modal', ['id' => 'deleteCalendarModal', 'title' => 'Hapus Calendar Event?']) @endcomponent
     </div>
 </div>
 
 <script>
-function openCreateModal() {
-    document.getElementById('createCalendarModal').classList.remove('hidden');
-}
-
 function closeModal(id) {
     document.getElementById(id).classList.add('hidden');
 }
 
-function editCalendarEvent(id) {
-    const modal = document.getElementById('editCalendarModal');
-    const form = document.getElementById('editCalendarForm');
-    
-    fetch(`/admin/calendar/${id}/edit`, {
-        headers: {
-            'Accept': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('edit-title').value = data.title || '';
-        document.getElementById('edit-description').value = data.description || '';
-        document.getElementById('edit-start_at').value = data.start_at || '';
-        document.getElementById('edit-end_at').value = data.end_at || '';
-        document.getElementById('edit-location').value = data.location || '';
-        document.getElementById('edit-capacity').value = data.capacity || '';
-        document.getElementById('edit-participants').value = data.participants || '';
-        document.getElementById('edit-is_active').checked = data.is_active || false;
-        form.action = `/admin/calendar/${id}`;
-        modal.classList.remove('hidden');
-    })
-    .catch(error => console.error('Error:', error));
+function openInfoModal(id) {
+    document.getElementById(id).classList.remove('hidden');
 }
 
-
-
 // Close modals when clicking outside
-document.getElementById('createCalendarModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('createCalendarModal');
+document.getElementById('infoReadOnlyModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeModal('infoReadOnlyModal');
 });
-
-document.getElementById('editCalendarModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeModal('editCalendarModal');
-});
-
-// Setup Click-Outside Handler for Delete Modal
-setupDeleteModalClickOutside('deleteCalendarModal');
 </script>
 
-<script>
-    setupDeleteModalClickOutside('deleteCalendarModal');
-</script>
 @endsection
 

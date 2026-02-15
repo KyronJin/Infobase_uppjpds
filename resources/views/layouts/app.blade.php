@@ -218,9 +218,82 @@
             showToast(message, 'info', duration);
         }
     </script>
+
+      <style>
+        .admin-nav-link {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.75rem 0.875rem;
+          border-radius: 0.75rem;
+          color: #1e293b;
+          font-weight: 600;
+          transition: all 0.2s ease;
+        }
+
+        .admin-nav-link:hover {
+          background: #eef2ff;
+          color: #063A76;
+        }
+
+        .admin-nav-link.active {
+          background: #063A76;
+          color: #ffffff;
+          box-shadow: 0 6px 16px rgba(6, 58, 118, 0.2);
+        }
+
+        body.admin-panel-mode .pt-28 {
+          padding-top: 1rem !important;
+        }
+
+        body.admin-panel-mode .mt-20 {
+          margin-top: 0 !important;
+        }
+      </style>
     
   </head>
-  <body class="bg-white text-gray-900 antialiased font-primary">
+  <body class="bg-white text-gray-900 antialiased font-primary {{ request()->is('admin*') && !request()->routeIs('admin.login') && !request()->routeIs('admin.login.post') ? 'admin-panel-mode' : '' }}">
+    @php
+      $isAdminPanel = request()->is('admin*') && !request()->routeIs('admin.login') && !request()->routeIs('admin.login.post');
+    @endphp
+
+    @if($isAdminPanel)
+      <div id="app" class="min-h-screen bg-white">
+        @include('components.admin.sidebar')
+
+        <div class="lg:pl-72 min-h-screen bg-[#f8fafc]">
+          <header class="sticky top-0 z-30 h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <button id="adminSidebarToggle" type="button" class="lg:hidden w-10 h-10 rounded-lg border border-slate-200 text-[#063A76] hover:bg-slate-50">
+                <i class="fas fa-bars"></i>
+              </button>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-[#063A76]">Dashboard Admin</h2>
+                <p class="text-xs sm:text-sm text-slate-500">Kelola konten infobase dengan aman</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+              <span class="hidden sm:inline text-sm text-slate-600 font-medium">{{ auth()->user()->name ?? 'Admin' }}</span>
+              <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm hover:bg-slate-50">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Website</span>
+              </a>
+            </div>
+          </header>
+
+          <!-- Notification Toast -->
+          @include('components.notification-toast')
+
+          <main class="min-h-screen">
+            @yield('content')
+          </main>
+
+          <!-- Global Delete Modal Component -->
+          @component('components.delete-modal', ['id' => 'globalDeleteModal', 'title' => 'Konfirmasi Hapus?']) @endcomponent
+        </div>
+      </div>
+    @else
     <div id="app">
       @includeIf('components.navbar')
 
@@ -393,23 +466,50 @@
         <i class="fas fa-arrow-up"></i>
       </button>
     </div>
+    @endif
 
     <script>
+      const adminSidebar = document.getElementById('adminSidebar');
+      const adminSidebarToggle = document.getElementById('adminSidebarToggle');
+      const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
+
+      function openAdminSidebar() {
+        if (!adminSidebar || !adminSidebarBackdrop) return;
+        adminSidebar.classList.remove('-translate-x-full');
+        adminSidebarBackdrop.classList.remove('hidden');
+      }
+
+      function closeAdminSidebar() {
+        if (!adminSidebar || !adminSidebarBackdrop) return;
+        adminSidebar.classList.add('-translate-x-full');
+        adminSidebarBackdrop.classList.add('hidden');
+      }
+
+      if (adminSidebarToggle) {
+        adminSidebarToggle.addEventListener('click', openAdminSidebar);
+      }
+
+      if (adminSidebarBackdrop) {
+        adminSidebarBackdrop.addEventListener('click', closeAdminSidebar);
+      }
+
       // Scroll to Top functionality
       const scrollToTopBtn = document.getElementById('scrollToTop');
 
-      window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-          scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-        } else {
-          scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none');
-        }
-      });
-
-      scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
+      if (scrollToTopBtn) {
+        window.addEventListener('scroll', () => {
+          if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+          } else {
+            scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+          }
         });
-      });
+
+        scrollToTopBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
     </script>

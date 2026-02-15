@@ -7,15 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::table('staff_of_months', function (Blueprint $table) {
-            $table->string('photo_path')->nullable()->after('bio');
-        });
+        if (!Schema::hasColumn('staff_of_months', 'photo_path')) {
+            Schema::table('staff_of_months', function (Blueprint $table) {
+                $table->string('photo_path')->nullable()->after('bio');
+            });
+        }
     }
 
     public function down()
     {
-        Schema::table('staff_of_months', function (Blueprint $table) {
-            $table->dropColumn('photo_path');
-        });
+        if (Schema::hasColumn('staff_of_months', 'photo_path')) {
+            Schema::table('staff_of_months', function (Blueprint $table) {
+                $table->dropColumn('photo_path');
+            });
+        }
     }
 };

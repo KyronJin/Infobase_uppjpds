@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('staff_of_months', function (Blueprint $table) {
-            $table->string('foto_path')->nullable();
-        });
+        if (!Schema::hasColumn('staff_of_months', 'foto_path')) {
+            Schema::table('staff_of_months', function (Blueprint $table) {
+                $table->string('foto_path')->nullable();
+            });
+        }
     }
 
     public function down()
     {
-        Schema::table('staff_of_months', function (Blueprint $table) {
-            $table->dropColumn('foto_path');
-        });
+        if (Schema::hasColumn('staff_of_months', 'foto_path')) {
+            Schema::table('staff_of_months', function (Blueprint $table) {
+                $table->dropColumn('foto_path');
+            });
+        }
     }
 };

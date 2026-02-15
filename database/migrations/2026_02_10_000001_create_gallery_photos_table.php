@@ -7,17 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('gallery_photos', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('image_path');
-            $table->string('category')->nullable();
-            $table->enum('location', ['home', 'infobase', 'both'])->default('both');
-            $table->boolean('is_active')->default(true);
-            $table->integer('order')->default(0);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('gallery_photos')) {
+            Schema::create('gallery_photos', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->text('description')->nullable();
+                $table->string('image_path');
+                $table->string('category')->nullable();
+                $table->enum('location', ['home', 'infobase', 'both'])->default('both');
+                $table->boolean('is_active')->default(true);
+                $table->integer('order')->default(0);
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

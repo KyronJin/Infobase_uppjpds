@@ -51,7 +51,10 @@ class PengumumanController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
-            'published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'published_at' => 'required|date_format:Y-m-d\TH:i',
+            'unpublished_at' => 'required|date_format:Y-m-d\TH:i|after:published_at',
+            'valid_from' => 'required|date_format:Y-m-d',
+            'valid_until' => 'required|date_format:Y-m-d|after_or_equal:valid_from',
             'status' => 'required|in:active,inactive',
         ], [
             'title.required' => 'Judul pengumuman harus diisi.',
@@ -62,7 +65,16 @@ class PengumumanController extends Controller
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
             'image.max' => 'Ukuran gambar maksimal 20 MB.',
+            'published_at.required' => 'Tanggal publikasi harus diisi.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
+            'unpublished_at.required' => 'Tanggal unpublikasi harus diisi.',
+            'unpublished_at.date_format' => 'Format tanggal dan waktu unpublikasi tidak valid.',
+            'unpublished_at.after' => 'Tanggal unpublikasi harus setelah tanggal publikasi.',
+            'valid_from.required' => 'Tanggal mulai berlaku harus diisi.',
+            'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
+            'valid_until.required' => 'Tanggal berakhir berlaku harus diisi.',
+            'valid_until.date_format' => 'Format tanggal berakhir berlaku tidak valid.',
+            'valid_until.after_or_equal' => 'Tanggal berakhir berlaku harus sama atau setelah mulai berlaku.',
             'status.required' => 'Status harus dipilih.',
             'status.in' => 'Status harus berupa "active" atau "inactive".',
         ]);
@@ -73,10 +85,11 @@ class PengumumanController extends Controller
             $validated['image_path'] = $imagePath;
         }
 
-        // Konversi tanggal dari datetime-local ke UTC
-        if ($validated['published_at']) {
-            $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
+        // Konversi tanggal dari input form ke UTC
+        $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
+        $validated['unpublished_at'] = Carbon::parse($validated['unpublished_at'], 'Asia/Jakarta')->setTimezone('UTC');
+        $validated['valid_from'] = Carbon::parse($validated['valid_from'], 'Asia/Jakarta')->startOfDay()->setTimezone('UTC');
+        $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->endOfDay()->setTimezone('UTC');
 
         // Add status column if not exists
         if (!Schema::hasColumn('pengumumans', 'status')) {
@@ -116,7 +129,10 @@ class PengumumanController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:20480',
-            'published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'published_at' => 'required|date_format:Y-m-d\TH:i',
+            'unpublished_at' => 'required|date_format:Y-m-d\TH:i|after:published_at',
+            'valid_from' => 'required|date_format:Y-m-d',
+            'valid_until' => 'required|date_format:Y-m-d|after_or_equal:valid_from',
             'status' => 'required|in:active,inactive',
         ], [
             'title.required' => 'Judul pengumuman harus diisi.',
@@ -127,7 +143,16 @@ class PengumumanController extends Controller
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau svg.',
             'image.max' => 'Ukuran gambar maksimal 20 MB.',
+            'published_at.required' => 'Tanggal publikasi harus diisi.',
             'published_at.date_format' => 'Format tanggal dan waktu publikasi tidak valid.',
+            'unpublished_at.required' => 'Tanggal unpublikasi harus diisi.',
+            'unpublished_at.date_format' => 'Format tanggal dan waktu unpublikasi tidak valid.',
+            'unpublished_at.after' => 'Tanggal unpublikasi harus setelah tanggal publikasi.',
+            'valid_from.required' => 'Tanggal mulai berlaku harus diisi.',
+            'valid_from.date_format' => 'Format tanggal mulai berlaku tidak valid.',
+            'valid_until.required' => 'Tanggal berakhir berlaku harus diisi.',
+            'valid_until.date_format' => 'Format tanggal berakhir berlaku tidak valid.',
+            'valid_until.after_or_equal' => 'Tanggal berakhir berlaku harus sama atau setelah mulai berlaku.',
             'status.required' => 'Status harus dipilih.',
             'status.in' => 'Status harus berupa "active" atau "inactive".',
         ]);
@@ -142,10 +167,11 @@ class PengumumanController extends Controller
             $validated['image_path'] = $imagePath;
         }
 
-        // Konversi tanggal dari datetime-local ke UTC
-        if ($validated['published_at']) {
-            $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
-        }
+        // Konversi tanggal dari input form ke UTC
+        $validated['published_at'] = Carbon::parse($validated['published_at'], 'Asia/Jakarta')->setTimezone('UTC');
+        $validated['unpublished_at'] = Carbon::parse($validated['unpublished_at'], 'Asia/Jakarta')->setTimezone('UTC');
+        $validated['valid_from'] = Carbon::parse($validated['valid_from'], 'Asia/Jakarta')->startOfDay()->setTimezone('UTC');
+        $validated['valid_until'] = Carbon::parse($validated['valid_until'], 'Asia/Jakarta')->endOfDay()->setTimezone('UTC');
 
         // Remove image key if it wasn't processed
         unset($validated['image']);

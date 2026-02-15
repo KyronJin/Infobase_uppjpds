@@ -10,21 +10,26 @@
         padding: 1rem !important;
         background: #f3f4f6 !important;
         border-radius: 0.5rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+        gap: 1rem !important;
+        width: 100%;
     }
     
     #sortable li {
         background: white;
-        padding: 12px;
-        margin-bottom: 8px;
+        padding: 16px 12px;
         border: 2px solid #e5e7eb;
         border-radius: 0.5rem;
         cursor: grab;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         user-select: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
+        text-align: center;
     }
     
     #sortable li:active {
@@ -32,7 +37,7 @@
     }
     
     #sortable li:hover {
-        border-color: #10b981;
+        border-color: #063A76;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transform: translateY(-2px);
     }
@@ -40,15 +45,15 @@
     #sortable li.ui-sortable-helper {
         opacity: 0.95;
         background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        border: 2px solid #10b981;
-        box-shadow: 0 12px 32px rgba(16, 185, 129, 0.25), 0 0 30px rgba(16, 185, 129, 0.15);
+        border: 2px solid #063A76;
+        box-shadow: 0 12px 32px rgba(6, 58, 118, 0.25), 0 0 30px rgba(6, 58, 118, 0.15);
         transform: scale(1.02) rotate(1deg);
         transition: none;
         z-index: 1000 !important;
     }
     
     #sortable li.ui-sortable-helper i.fa-grip-vertical {
-        color: #10b981 !important;
+        color: #063A76 !important;
         transform: scale(1.1);
     }
     
@@ -56,7 +61,7 @@
         background: linear-gradient(135deg, #e0f2fe 0%, #cfe9ff 100%) !important;
         border: 2px dashed #0ea5e9 !important;
         border-radius: 0.5rem !important;
-        min-height: 50px !important;
+        min-height: 140px !important;
         animation: pulseHighlight 1.5s ease-in-out infinite;
     }
     
@@ -97,20 +102,45 @@
     }
     
     #sortable li:hover i.fa-grip-vertical {
-        color: #10b981 !important;
+        color: #063A76 !important;
         transform: scale(1.1);
+    }
+
+    .order-badge {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background: #063A76;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+        #sortable {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        #sortable {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+        }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
-    <div class="max-w-6xl mx-auto px-6">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8 font-cairo">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
         
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
             <div>
-                <h1 class="h2 text-gray-800"> Profil Pegawai</h1>
-                <p class="text-sm text-gray-500">Kelola profil pegawai perpustakaan di sini.</p>
+                <h1 class="h2 text-[#063A76]">Profil Pegawai</h1>
+                <p class="text-sm text-slate-500">Kelola profil pegawai perpustakaan di sini.</p>
             </div>
             <div class="flex gap-3 mt-4 md:mt-0">
                 <x-button variant="secondary" size="lg" icon="arrows-up-down" onclick="openModal('orderModal')">Atur Posisi</x-button>
@@ -151,7 +181,7 @@
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-50 rounded-full flex items-center justify-center">
-                        <i class="fas fa-briefcase text-teal-600 text-lg"></i>
+                        <i class="fas fa-briefcase text-[#063A76] text-lg"></i>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-gray-900">Tambah Jabatan</h3>
@@ -165,7 +195,7 @@
                     @csrf
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Jabatan</label>
-                        <input type="text" name="name" placeholder="Masukkan nama jabatan" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 transition-colors" required>
+                        <input type="text" name="name" placeholder="Masukkan nama jabatan" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors" required>
                     </div>
                     <div class="flex gap-3 pt-4">
                         <x-button variant="secondary" size="md" class="flex-1 justify-center" type="button" onclick="closeModal('jabatanModal')">Batal</x-button>
@@ -229,8 +259,8 @@
         </div>
 
         <!-- Modal Atur Posisi Jabatan -->
-        <div id="orderModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+        <div id="orderModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-[95vw] max-w-6xl max-h-[90vh] overflow-hidden p-5 sm:p-8">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center">
                         <i class="fas fa-arrow-up-down text-green-600 text-lg"></i>
@@ -246,22 +276,25 @@
                 
                 <div class="bg-slate-50 border-l-4 border-teal-600 rounded-lg p-3 mb-6">
                     <p class="text-sm text-gray-700 flex items-start gap-2">
-                        <i class="fas fa-info-circle text-teal-600 mt-0.5 flex-shrink-0"></i>
-                        <span>Drag jabatan untuk mengatur urutan (atas = posisi tertinggi)</span>
+                        <i class="fas fa-info-circle text-[#063A76] mt-0.5 flex-shrink-0"></i>
+                        <span>Tarik & lepas (drag & drop) untuk mengatur urutan jabatan. Posisi teratas = prioritas tertinggi.</span>
                     </p>
                 </div>
                 
-                <ul id="sortable" class="mb-6 bg-gray-50 p-4 rounded-lg" style="list-style: none; margin: 0; padding: 1rem;">
-                    @foreach($jabatans->sortBy('order') as $jabatan)
-                        <li data-id="{{ $jabatan->id }}" style="background: white; padding: 12px; margin-bottom: 8px; border: 2px solid #e5e7eb; border-radius: 0.5rem; cursor: grab; display: flex; align-items: center; gap: 12px; user-select: none; transition: all 0.2s;">
-                            <i class="fas fa-grip-vertical" style="color: #9ca3af; font-size: 18px; cursor: grab;"></i>
-                            <span style="font-weight: 500; color: #374151; flex: 1;">{{ $jabatan->name }}</span>
-                            <button type="button" onclick="openDeleteJabatanModal('{{ addslashes($jabatan->name) }}', {{ $jabatan->id }})" class="px-3 py-1 bg-red-50 text-red-600 text-sm font-semibold rounded-lg hover:bg-red-100 transition-colors flex items-center gap-1">
-                                <i class="fas fa-trash text-sm"></i> Hapus
-                            </button>
-                        </li>
-                    @endforeach
-                </ul>
+                <div class="mb-6 max-h-[50vh] overflow-y-auto">
+                    <ul id="sortable" class="bg-gray-50 p-4 rounded-lg" style="list-style: none; margin: 0;">
+                        @foreach($jabatans->sortBy('order') as $jabatan)
+                            <li data-id="{{ $jabatan->id }}">
+                                <span class="order-badge" data-order-badge>0</span>
+                                <i class="fas fa-grip-vertical" style="color: #9ca3af; font-size: 16px; cursor: grab; flex-shrink: 0;"></i>
+                                <span class="font-medium text-gray-700 text-sm line-clamp-2">{{ $jabatan->name }}</span>
+                                <button type="button" onclick="openDeleteJabatanModal('{{ addslashes($jabatan->name) }}', {{ $jabatan->id }})" class="px-2 py-1 w-full bg-red-50 text-red-600 text-xs font-semibold rounded hover:bg-red-100 transition-colors inline-flex items-center justify-center gap-1 mt-1">
+                                    <i class="fas fa-trash text-xs"></i><span class="hidden sm:inline">Hapus</span>
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
                 
                 <div class="flex gap-3">
                     <button type="button" onclick="closeModal('orderModal')" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors">Batal</button>
@@ -281,7 +314,7 @@
                         name="search" 
                         placeholder="Cari pegawai berdasarkan nama, jabatan, atau deskripsi..." 
                         value="{{ $search ?? '' }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                        class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76]"
                     >
                 </div>
                 <x-button variant="primary" size="md" type="submit"><i class="fas fa-search mr-2"></i>Cari</x-button>
@@ -297,10 +330,10 @@
         </div>
 
         <!-- Tabel -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden text-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 border-b border-gray-100 font-bold">
+                    <thead class="bg-slate-50 border-b border-slate-100 font-bold">
                         <tr>
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Foto</th>
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Nama</th>
@@ -317,7 +350,7 @@
                                     @if($item->foto_path)
                                         <img src="{{ asset('storage/' . $item->foto_path) }}" alt="{{ $item->nama }}" class="w-full h-full object-cover">
                                     @else
-                                        <div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 text-xs font-bold">
+                                        <div class="w-full h-full flex items-center justify-center bg-blue-100 text-[#063A76] text-xs font-bold">
                                             {{ strtoupper(substr($item->nama, 0, 1)) }}
                                         </div>
                                     @endif
@@ -325,7 +358,7 @@
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama }}</td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-medium">
+                                <span class="px-2 py-1 rounded-md bg-blue-50 text-[#063A76] font-medium">
                                     {{ $item->jabatan ? $item->jabatan->name : 'N/A' }}
                                 </span>
                             </td>
@@ -522,9 +555,20 @@ function saveSortableOrder() {
     });
 }
 
+function refreshOrderIndicators() {
+    document.querySelectorAll('#sortable li').forEach((li, index) => {
+        const order = index + 1;
+        const badge = li.querySelector('[data-order-badge]');
+        if (badge) badge.textContent = order;
+    });
+}
+
 // Modal functions
 function openModal(id) {
     document.getElementById(id)?.classList.remove('hidden');
+    if (id === 'orderModal') {
+        refreshOrderIndicators();
+    }
 }
 
 function closeModal(id) {
@@ -701,10 +745,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 animation: 250,
                 distance: 5,
                 tolerance: "pointer",
-                delay: 50
+                delay: 50,
+                stop: function() {
+                    refreshOrderIndicators();
+                }
             });
+            refreshOrderIndicators();
         });
     }
+
+
 });
 </script>
 

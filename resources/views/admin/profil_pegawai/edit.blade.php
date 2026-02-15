@@ -10,23 +10,23 @@
 @endpush
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
-    <div class="max-w-4xl mx-auto px-6">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8 font-cairo">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
         <!-- Header -->
-        <div class="mb-8">
+        <div class="mb-6 sm:mb-8">
             <div class="flex items-center gap-4 mb-4">
-                <a href="{{ route('admin.profil_pegawai.index') }}" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm" title="Kembali">
+                <a href="{{ route('admin.profil_pegawai.index') }}" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-[#063A76] rounded-xl hover:bg-slate-50 transition-colors shadow-sm" title="Kembali">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </a>
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900">Edit Profil Pegawai</h1>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-[#063A76]">Edit Profil Pegawai</h1>
                     <p class="text-sm text-gray-500 mt-1">Perbarui informasi profil pegawai perpustakaan di sini.</p>
                 </div>
             </div>
         </div>
 
         <!-- Form Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-10">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8 lg:p-10">
             <form id="formEditPegawai" action="{{ route('admin.profil_pegawai.update', $profil_pegawai) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
@@ -39,7 +39,7 @@
                         id="nama" 
                         name="nama" 
                         value="{{ old('nama', $profil_pegawai->nama) }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all" 
+                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-transparent transition-all" 
                         placeholder="Masukkan nama lengkap"
                         required>
                     @error('nama')
@@ -54,7 +54,7 @@
                         <select 
                             id="jabatan_id" 
                             name="jabatan_id" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-transparent transition-all"
                             required>
                             <option value="">-- Pilih Jabatan --</option>
                             @foreach($jabatans as $jabatan)
@@ -76,7 +76,7 @@
                         id="deskripsi" 
                         name="deskripsi"
                         rows="5"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all @error('deskripsi') border-red-500 @enderror"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-transparent transition-all @error('deskripsi') border-red-500 @enderror"
                         placeholder="Jelaskan peran dan tanggung jawab pegawai..."
                         required>{{ old('deskripsi', $profil_pegawai->deskripsi) }}</textarea>
                     @error('deskripsi')
@@ -107,7 +107,7 @@
                                     id="foto" 
                                     name="foto" 
                                     accept="image/*"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all cursor-pointer"
+                                    class="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#063A76] transition-all cursor-pointer"
                                     onchange="previewImageWithCropper(event, 'fotoPreview', 'crop-foto')">
                                 <p class="text-xs text-gray-500 mt-2 italic">Format: JPG, PNG. Maks 2MB. Biarkan kosong jika tidak ingin ganti.</p>
                             </div>
@@ -117,7 +117,7 @@
                             <button 
                                 type="button" 
                                 id="crop-foto" 
-                                class="mt-3 w-full md:w-auto px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-semibold hover:bg-teal-700 transition-colors shadow-sm hidden"
+                                class="mt-3 w-full md:w-auto px-4 py-2 bg-[#063A76] text-white rounded-lg text-sm font-semibold hover:bg-[#052A57] transition-colors shadow-sm hidden"
                                 onclick="window.imageCropper.openCropper('foto')">
                                 <i class="fas fa-crop-alt mr-2"></i>Edit & Crop Foto
                             </button>

@@ -305,6 +305,58 @@
     color: #111827 !important;
   }
 
+  /* Mobile menu styling */
+  #mobile-menu {
+    background-color: white !important;
+    border-top: 1px solid #e5e7eb !important;
+  }
+
+  #mobile-menu a,
+  #mobile-menu button,
+  #mobile-menu span,
+  #mobile-menu * {
+    color: #111827 !important;
+  }
+
+  /* Mobile menu language selector */
+  #mobile-lang-select {
+    color: #111827 !important;
+    background-color: transparent !important;
+  }
+
+  #mobile-lang-select option {
+    color: #111827 !important;
+    background-color: white !important;
+  }
+
+  /* Mobile admin button styling */
+  #mobile-admin-btn {
+    background-color: #f85e38 !important;
+    color: white !important;
+  }
+
+  #mobile-admin-btn:hover {
+    background-color: #d94e2e !important;
+    color: white !important;
+  }
+
+  #mobile-admin-btn i {
+    color: white !important;
+  }
+
+  #mobile-data-info-btn {
+    color: #111827 !important;
+  }
+
+  #mobile-data-info-btn:hover {
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
+  }
+
+  #mobile-data-info-btn i {
+    color: #111827 !important;
+  }
+
   /* Mobile menu when scrolled */
   header.navbar-home.navbar-scrolled #mobile-menu {
     background-color: white !important;
@@ -316,58 +368,96 @@
   }
 
   /* ==================== DROPDOWN PROTECTION - Always consistent style ==================== */
-  /* Ensure dropdowns are never affected by scroll state */
+  /* Dropdown menus ALWAYS have white background and dark text - override everything */
   #data-info-menu,
   #lang-menu,
   #admin-menu,
   #mobile-data-info-menu,
-  #mobile-admin-menu,
-  header #data-info-menu,
-  header #lang-menu,
-  header #admin-menu {
+  #mobile-admin-menu {
     background-color: white !important;
     color: #111827 !important;
   }
 
+  /* All dropdown container elements must have dark text */
+  #data-info-menu *,
+  #lang-menu *,
+  #admin-menu *,
+  #mobile-data-info-menu *,
+  #mobile-admin-menu * {
+    color: #111827 !important;
+  }
+
+  /* Dropdown links - always dark base text */
   #data-info-menu a,
   #lang-menu a,
   #admin-menu a,
   #mobile-data-info-menu a,
-  #mobile-admin-menu a,
-  header #data-info-menu a,
-  header #lang-menu a,
-  header #admin-menu a {
+  #mobile-admin-menu a {
     color: #111827 !important;
+    text-decoration: none;
   }
 
-  /* Ensure text inside dropdown links is visible */
+  /* Dropdown link text and spans */
+  #data-info-menu a span,
   #data-info-menu a p,
+  #lang-menu a span,
   #lang-menu a p,
+  #admin-menu a span,
   #admin-menu a p,
+  #mobile-data-info-menu a span,
   #mobile-data-info-menu a p,
-  #mobile-admin-menu a p,
-  header #data-info-menu a p,
-  header #lang-menu a p,
-  header #admin-menu a p {
+  #mobile-admin-menu a span,
+  #mobile-admin-menu a p {
     color: #111827 !important;
   }
 
+  /* Dropdown link hover state */
   #data-info-menu a:hover,
   #lang-menu a:hover,
   #admin-menu a:hover,
   #mobile-data-info-menu a:hover,
-  #mobile-admin-menu a:hover,
-  header #data-info-menu a:hover,
-  header #lang-menu a:hover,
-  header #admin-menu a:hover {
+  #mobile-admin-menu a:hover {
     color: #f97316 !important;
     background-color: #f3f4f6 !important;
   }
 
-  /* Smooth transitions for all elements */
+  #data-info-menu a:hover *,
+  #lang-menu a:hover *,
+  #admin-menu a:hover *,
+  #mobile-data-info-menu a:hover *,
+  #mobile-admin-menu a:hover * {
+    color: #f97316 !important;
+  }
+
+  /* Icon color in dropdown menus */
+  #data-info-menu i,
+  #lang-menu i,
+  #admin-menu i,
+  #mobile-data-info-menu i,
+  #mobile-admin-menu i {
+    color: #111827 !important;
+  }
+
+  #data-info-menu a:hover i,
+  #lang-menu a:hover i,
+  #admin-menu a:hover i,
+  #mobile-data-info-menu a:hover i,
+  #mobile-admin-menu a:hover i {
+    color: #f97316 !important;
+  }
+
+  /* Smooth transitions for all elements except dropdowns */
   header,
-  header *,
-  header > * {
+  header > nav,
+  header > nav > div,
+  header .brand-logo,
+  header .nav-links,
+  header #nav-links,
+  header #nav-toggle,
+  header #mobile-menu,
+  header button[id$="-btn"],
+  header .fa-bars,
+  header .fa-times {
     transition: all 0.4s ease !important;
   }
 
@@ -426,7 +516,7 @@
           </button>
 
           <!-- Dropdown Menu -->
-          <div id="data-info-menu" class="absolute top-full left-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50">
+          <div id="data-info-menu" class="absolute top-full left-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50" style="background-color: white !important;">
             <a href="{{ route('infobase.pengumuman') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 transition duration-200 text-sm font-medium">
               {{ __('messages.announcements') }}
             </a>
@@ -460,7 +550,7 @@
           </button>
           
           <!-- Language Dropdown -->
-          <div id="lang-menu" class="absolute top-full right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-40">
+          <div id="lang-menu" class="absolute top-full right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-40" style="background-color: white !important;">
             <a href="{{ route('language.switch', 'id') }}" data-lang="id" class="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition duration-200 text-sm font-medium">
               <i class="fas fa-check text-[#f85e38] {{ app()->getLocale() == 'id' ? '' : 'hidden' }}" id="check-id"></i>
               <span>{{ __('messages.indonesian') }}</span>
@@ -484,7 +574,7 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="admin-menu" class="absolute top-full right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50">
+            <div id="admin-menu" class="absolute top-full right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible transition-all duration-300 py-2 z-50" style="background-color: white !important;">
               @if(Route::has('admin.pengumuman.index'))
               <a href="{{ route('admin.pengumuman.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 transition duration-200 text-sm font-medium">
                 {{ __('messages.announcements') }}
@@ -547,7 +637,7 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
       <!-- Mobile Language & Dark Mode Controls -->
-      <div class="flex items-center justify-between gap-2 px-4 py-3 mb-4 bg-gray-100 rounded-lg">
+      <div class="flex items-center justify-between gap-2 px-4 py-3 mb-4 bg-gray-100 rounded-lg" style="background-color: #f3f4f6 !important;">
         <div class="flex items-center gap-2">
           <i class="fas fa-globe text-[#f85e38]"></i>
           <select id="mobile-lang-select" class="bg-transparent text-black text-sm font-medium outline-none cursor-pointer">
@@ -559,22 +649,22 @@
 
       <ul class="space-y-2">
         <li>
-          <a href="{{ route('home') }}" class="block px-4 py-3 text-black hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
+          <a href="{{ route('home') }}" class="block px-4 py-3 text-gray-900 hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
             {{ __('messages.home') }}
           </a>
         </li>
         <li>
-          <a href="{{ route('about') }}" class="block px-4 py-3 text-black hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
+          <a href="{{ route('about') }}" class="block px-4 py-3 text-gray-900 hover:bg-gray-100 rounded-lg transition duration-300 font-medium">
             {{ __('messages.about_us') }}
           </a>
         </li>
         <li class="border-t border-gray-200 pt-4 mt-4">
-          <button id="mobile-data-info-btn" class="w-full flex items-center justify-between px-4 py-3 text-black hover:bg-gray-100 rounded-lg font-medium transition duration-300">
+          <button id="mobile-data-info-btn" class="w-full flex items-center justify-between px-4 py-3 text-gray-900 hover:bg-gray-100 rounded-lg font-medium transition duration-300">
             Infobase
             <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
           </button>
 
-          <div id="mobile-data-info-menu" class="hidden mt-2 space-y-1 pl-4 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
+          <div id="mobile-data-info-menu" class="hidden mt-2 space-y-1 pl-4 bg-white rounded-xl overflow-hidden shadow-inner border border-gray-100" style="background-color: #ffffff !important;">
             <a href="{{ route('infobase.pengumuman') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-white hover:text-[#00425A] transition duration-300 transform hover:translate-x-1">
               <div class="w-8 h-8 rounded-lg bg-[#00425A]/10 flex items-center justify-center text-[#00425A]">
                 <i class="fas fa-bullhorn"></i>
@@ -616,7 +706,7 @@
 
         <li class="border-t border-gray-200 pt-4 mt-4">
           @auth
-            <button id="mobile-admin-btn" class="w-full flex items-center justify-between px-4 py-2 bg-[#f85e38] text-white rounded-lg font-semibold hover:bg-[#d94e2e] transition duration-300">
+            <button id="mobile-admin-btn" class="w-full flex items-center justify-between px-4 py-2.5 bg-[#f85e38] text-white rounded-lg font-semibold hover:bg-[#d94e2e] transition duration-300" style="background-color: #f85e38 !important;">
               <span class="flex items-center gap-2">
                 <i class="fas fa-user-shield"></i>
                 Admin
@@ -624,7 +714,7 @@
               <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
             </button>
 
-            <div id="mobile-admin-menu" class="hidden mt-2 space-y-1 pl-4 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
+            <div id="mobile-admin-menu" class="hidden mt-2 space-y-1 pl-4 bg-white rounded-xl overflow-hidden shadow-inner border border-gray-100" style="background-color: #ffffff !important;">
               @if(Route::has('admin.pengumuman.index'))
               <a href="{{ route('admin.pengumuman.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300">
                 <span class="text-sm font-semibold">{{ __('messages.announcements') }}</span>
@@ -669,7 +759,7 @@
 
               <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-gray-200">
                 @csrf
-                <button type="submit" class="w-full text-left px-4 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-300 font-semibold text-sm">
+                <button type="submit" class="w-full text-left px-4 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-300 font-medium text-sm">
                   Keluar
                 </button>
               </form>

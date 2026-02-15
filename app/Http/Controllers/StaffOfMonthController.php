@@ -84,11 +84,18 @@ class StaffOfMonthController extends Controller
             $data = $request->validate([
                 'name' => 'required|string|max:255',
                 'position' => 'required|string|max:255',
-                'month' => 'nullable|integer|min:1|max:12',
+                'month' => 'required|integer|min:1|max:12',
                 'year' => 'required|integer|min:2000',
                 'bio' => 'nullable|string',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
                 'photo_link' => 'nullable|url',
+            ], [
+                'name.required' => 'Nama lengkap wajib diisi.',
+                'position.required' => 'Posisi / jabatan wajib dipilih.',
+                'month.required' => 'Bulan wajib diisi.',
+                'month.min' => 'Bulan minimal 1.',
+                'month.max' => 'Bulan maksimal 12.',
+                'year.required' => 'Tahun wajib diisi.',
             ]);
 
             // Cek duplikat staff pada posisi & periode yang sama
@@ -127,10 +134,7 @@ class StaffOfMonthController extends Controller
         $jabatans = Jabatan::orderBy('name', 'asc')->get();
 
         if (request()->expectsJson()) {
-            return response()->json([
-                'staff' => $staffOfMonth,
-                'jabatans' => $jabatans
-            ]);
+            return response()->json($staffOfMonth);
         }
 
         return view('admin.staff.edit', [
@@ -150,12 +154,19 @@ class StaffOfMonthController extends Controller
             $data = $request->validate([
                 'name' => 'required|string|max:255',
                 'position' => 'required|string|max:255',
-                'month' => 'nullable|integer|min:1|max:12',
+                'month' => 'required|integer|min:1|max:12',
                 'year' => 'required|integer|min:2000',
                 'bio' => 'nullable|string',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
                 'photo_link' => 'nullable|url',
                 'delete_photo' => 'nullable|in:0,1',
+            ], [
+                'name.required' => 'Nama lengkap wajib diisi.',
+                'position.required' => 'Posisi / jabatan wajib dipilih.',
+                'month.required' => 'Bulan wajib diisi.',
+                'month.min' => 'Bulan minimal 1.',
+                'month.max' => 'Bulan maksimal 12.',
+                'year.required' => 'Tahun wajib diisi.',
             ]);
 
             // Cek duplikat kecuali untuk ID yang sedang diupdate

@@ -111,6 +111,10 @@
     <div class="header-content">
         <div class="header-left">
             <h1>CALENDAR AKTIFITAS</h1>
+            <div class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs font-semibold">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2360A5FA' d='M13 20v-4h4.001v4H13zm-6 0v-4h4v4H7zm-6 0v-4h4v4H1zm12-6v-4h4v4h-4zm-6 0v-4h4v4H7zm-6 0v-4h4v4H1zm18-6V3.999h4V8h-4zm0 6v-4h4v4h-4zm-6-6V3.999h4.001V8H13zM7 8V3.999h4V8H7z'/%3E%3C/svg%3E" alt="AgendaCerdas" class="w-4 h-4">
+                <span>Terintegrasi dengan AgendaCerdas by Langen Dimas</span>
+            </div>
         </div>
         <a href="{{ route('home') }}" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali
@@ -233,7 +237,7 @@
 </script>
 <script>
     // ===== KONFIGURASI =====
-    const API_BASE_URL = 'https://agenda-cerdas.dimasp.app';
+    const EVENTS_ENDPOINT = '{{ route('public.events') }}';
     const ITEMS_PER_PAGE = 8;
 
     let currentFilter = 'all';
@@ -307,7 +311,11 @@ function toLocal24Hour(utcString) {
             document.getElementById('errorState').classList.add('hidden');
             document.getElementById('contentState').classList.add('hidden');
 
-            const response = await fetch(`${API_BASE_URL}/api/v1/events`);
+            const currentUrl = new URL(window.location.href);
+            const query = new URLSearchParams(currentUrl.search);
+            const targetUrl = `${EVENTS_ENDPOINT}?${query.toString()}`;
+
+            const response = await fetch(targetUrl);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -333,7 +341,7 @@ function toLocal24Hour(utcString) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('errorState').classList.remove('hidden');
             document.getElementById('errorMessage').textContent = 
-                `${error.message}. Pastikan URL API sudah benar: ${API_BASE_URL}`;
+                `${error.message}. Cek koneksi integrasi agenda di admin panel.`;
         }
     }
 

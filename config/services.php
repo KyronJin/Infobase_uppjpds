@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'agendacerdas' => [
+        'base_url' => env('AGENDACERDAS_BASE_URL'),
+    ],
+
 ];

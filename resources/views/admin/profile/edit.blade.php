@@ -1,169 +1,151 @@
 @extends('layouts.app')
 
-@push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-<style>
-    .font-cairo { font-family: 'Cairo', sans-serif; }
-    .quill-editor { min-height: 250px; }
-    .image-slot { aspect-ratio: 16/9; overflow: hidden; }
-</style>
-@endpush
-
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
-    <div class="max-w-4xl mx-auto px-6">
-        
-        <!-- Standardized Header -->
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <div class="flex items-center gap-4">
-                <a href="{{ route('admin.profile.index') }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
-                <div>
-                    <h1 class="h2 text-gray-800">Edit Profile Ruangan</h1>
-                    <p class="text-sm text-gray-500">Ubah informasi dan fasilitas ruangan.</p>
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="mb-6 sm:mb-8 flex items-center gap-3">
+            <a href="{{ route('admin.profile.index') }}" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-[#063A76] rounded-xl hover:bg-slate-50 transition-colors" title="Kembali">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-[#063A76]">Edit Profile Ruangan</h1>
+                <p class="text-sm text-slate-500">Perbarui informasi ruangan dan tambah gambar baru.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+            @if($errors->any())
+                <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mb-6">
+                    <h3 class="font-semibold mb-2">Terjadi Kesalahan:</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-            </div>
-        </div>
+            @endif
 
-        @if($errors->any())
-        <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-xl">
-            <h3 class="text-sm font-bold text-red-800">Gagal Memperbarui</h3>
-            <ul class="mt-1 text-sm text-red-700 list-disc list-inside">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+            <form action="{{ route('admin.profile.update', $profileRuangan) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                @method('PUT')
 
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="p-10">
-                <form action="{{ route('admin.profile.update', $profile_ruangan) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Ruangan *</label>
+                    <input type="text" name="room_name" required value="{{ old('room_name', $profileRuangan->room_name) }}" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76] @error('room_name') border-red-500 @enderror">
+                    @error('room_name')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Nama Ruangan</label>
-                            <input type="text" name="room_name" value="{{ old('room_name', $profile_ruangan->room_name) }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none" required>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Lantai</label>
-                            <input type="number" name="floor" value="{{ old('floor', $profile_ruangan->floor) }}" min="1" max="10" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Kapasitas (Orang)</label>
-                            <input type="number" name="capacity" value="{{ old('capacity', $profile_ruangan->capacity) }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none">
-                        </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Lantai</label>
+                        <input type="number" name="floor" min="1" max="7" value="{{ old('floor', $profileRuangan->floor) }}" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76]">
                     </div>
-
-                    <div class="mb-8">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi Ruangan</label>
-                        <div id="editor-container" class="quill-editor bg-gray-50 border-gray-200 rounded-xl overflow-hidden">
-                            {!! old('description', $profile_ruangan->description) !!}
-                        </div>
-                        <input type="hidden" name="description" id="description-input">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kapasitas</label>
+                        <input type="number" name="capacity" value="{{ old('capacity', $profileRuangan->capacity) }}" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76]">
                     </div>
+                </div>
 
-                    <div class="mb-10">
-                        <label class="block text-sm font-bold text-gray-700 mb-4 text-center">Foto Ruangan (Maksimal 3)</label>
-                        <div class="grid grid-cols-3 gap-6">
-                            @for($i = 1; $i <= 3; $i++)
-                            <div class="relative group">
-                                <div onclick="document.getElementById('slot-{{$i}}-input').click()" 
-                                     class="image-slot bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-teal-400 hover:bg-teal-50/30 transition-all group overflow-hidden">
-                                    
-                                    <div id="slot-{{$i}}-placeholder" class="flex flex-col items-center">
-                                        <i class="fas fa-camera text-gray-300 text-3xl mb-2 group-hover:text-teal-400"></i>
-                                        <span class="text-xs text-gray-400 font-medium">Slot {{$i}}</span>
-                                    </div>
-                                    
-                                    <img id="slot-{{$i}}-img" src="" class="hidden w-full h-full object-cover">
-                                    
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <span class="text-white text-xs font-bold px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/30">Ganti Foto</span>
-                                    </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
+                    <textarea name="description" rows="6" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76]">{{ old('description', $profileRuangan->description) }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Tersimpan</label>
+                    @if($profileRuangan->images->count())
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                            @foreach($profileRuangan->images->sortBy('slot') as $image)
+                                <div class="border border-slate-200 rounded-lg p-2">
+                                    <img src="{{ route('profile-ruangan.image', ['filename' => basename($image->image_path)]) }}" alt="Gambar" class="w-full h-24 object-cover rounded mb-2">
+                                    <button type="button" onclick="deleteStoredImage({{ $image->id }}, this)" class="w-full text-xs px-2 py-1 rounded bg-red-50 text-red-600 hover:bg-red-100">Hapus</button>
                                 </div>
-                                <input type="file" id="slot-{{$i}}-input" name="slot_{{$i}}_image" class="hidden" accept="image/*" onchange="previewSlotImage({{$i}}, this)">
-                            </div>
-                            @endfor
+                            @endforeach
                         </div>
-                    </div>
+                    @else
+                        <p class="text-sm text-slate-500 mb-4">Belum ada gambar tersimpan.</p>
+                    @endif
 
-                    <div class="mb-8">
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <div class="relative">
-                                <input type="checkbox" name="is_active" value="1" {{ $profile_ruangan->is_active ? 'checked' : '' }} class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
-                            </div>
-                            <span class="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors">Ruangan Aktif</span>
-                        </label>
-                    </div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Tambah Gambar Baru (Bisa Banyak)</label>
+                    <input type="file" id="images-input" name="images[]" accept="image/*" multiple class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#063A76] @error('images') border-red-500 @enderror @error('images.*') border-red-500 @enderror">
+                    <p class="text-xs text-slate-500 mt-2">File yang dipilih akan ditambahkan ke gambar yang sudah ada.</p>
+                    @error('images')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                    @error('images.*')
+                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                    <div id="images-preview" class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+                </div>
 
-                    <div class="flex items-center gap-4 pt-8 border-t border-gray-100">
-                        <x-button variant="primary" size="lg" icon="save" type="submit" class="flex-1">Simpan Perubahan</x-button>
-                        <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.profile.index') }}">Batal</x-button>
-                    </div>
-                </form>
-            </div>
+                <div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $profileRuangan->is_active) ? 'checked' : '' }} class="w-4 h-4 text-[#063A76] rounded">
+                        <span class="text-sm font-semibold text-gray-700">Aktifkan Ruangan</span>
+                    </label>
+                </div>
+
+                <div class="flex gap-3 pt-6 border-t border-gray-200">
+                    <x-button variant="secondary" size="lg" type="link" href="{{ route('admin.profile.index') }}">Batal</x-button>
+                    <x-button variant="primary" size="lg" type="submit" icon="check">Simpan Perubahan</x-button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const quill = new Quill('#editor-container', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['clean']
-                ]
-            }
-        });
+document.getElementById('images-input')?.addEventListener('change', function (event) {
+    const preview = document.getElementById('images-preview');
+    preview.innerHTML = '';
 
-        const form = document.querySelector('form');
-        form.onsubmit = function() {
-            const contentInput = document.querySelector('#description-input');
-            contentInput.value = quill.root.innerHTML;
+    Array.from(event.target.files || []).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const item = document.createElement('div');
+            item.className = 'border border-slate-200 rounded-lg p-2';
+            item.innerHTML = `
+                <img src="${e.target.result}" class="w-full h-24 object-cover rounded mb-2" alt="Preview ${index + 1}">
+                <p class="text-xs text-slate-600 truncate">${file.name}</p>
+            `;
+            preview.appendChild(item);
         };
-
-        // Load existing images
-        @if($profile_ruangan->images && count($profile_ruangan->images) > 0)
-            @foreach($profile_ruangan->images as $index => $image)
-                @if($index < 3)
-                    showSlotImage({{ $index + 1 }}, '/storage/{{ $image->image_path }}');
-                @endif
-            @endforeach
-        @endif
+        reader.readAsDataURL(file);
     });
+});
 
-    function showSlotImage(slotNum, imagePath) {
-        const placeholder = document.getElementById(`slot-${slotNum}-placeholder`);
-        const img = document.getElementById(`slot-${slotNum}-img`);
-        
-        img.src = imagePath;
-        img.classList.remove('hidden');
-        placeholder.classList.add('hidden');
+function deleteStoredImage(imageId, buttonElement) {
+    if (!confirm('Hapus gambar ini?')) {
+        return;
     }
 
-    window.previewSlotImage = function(slotNum, input) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                showSlotImage(slotNum, e.target.result);
-            };
-            reader.readAsDataURL(file);
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    fetch(`/admin/profile-ruangan/image/${imageId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrf,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         }
-    };
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal menghapus gambar');
+        }
+        return response.json();
+    })
+    .then(() => {
+        const card = buttonElement.closest('.border');
+        if (card) {
+            card.remove();
+        }
+    })
+    .catch((error) => {
+        alert(error.message || 'Terjadi kesalahan saat menghapus gambar');
+    });
+}
 </script>
-@endpush
+@endsection
