@@ -13,22 +13,25 @@ return new class extends Migration
             return;
         }
 
-        // If photo_path doesn't exist, create it
+        // Ensure photo_path exists
         if (!Schema::hasColumn('staff_of_months', 'photo_path')) {
             Schema::table('staff_of_months', function (Blueprint $table) {
                 $table->string('photo_path')->nullable()->after('photo_link');
             });
+        }
 
-            // If foto_path exists, copy its data to photo_path then drop foto_path
-            if (Schema::hasColumn('staff_of_months', 'foto_path')) {
-                // Copy values from foto_path to photo_path
-                DB::table('staff_of_months')->whereNotNull('foto_path')->update(['photo_path' => DB::raw('foto_path')]);
+        // If old foto_path exists, merge data and drop old column
+        if (Schema::hasColumn('staff_of_months', 'foto_path')) {
+            DB::table('staff_of_months')
+                ->whereNotNull('foto_path')
+                ->where(function ($query) {
+                    $query->whereNull('photo_path')->orWhere('photo_path', '');
+                })
+                ->update(['photo_path' => DB::raw('foto_path')]);
 
-                // Drop the old column
-                Schema::table('staff_of_months', function (Blueprint $table) {
-                    $table->dropColumn('foto_path');
-                });
-            }
+            Schema::table('staff_of_months', function (Blueprint $table) {
+                $table->dropColumn('foto_path');
+            });
         }
     }
 
@@ -46,9 +49,11 @@ return new class extends Migration
 
             if (Schema::hasColumn('staff_of_months', 'photo_path')) {
                 DB::table('staff_of_months')->whereNotNull('photo_path')->update(['foto_path' => DB::raw('photo_path')]);
-                Schema::table('staff_of_months', function (Blueprint $table) {
-                    $table->dropColumn('photo_path');
-                });
+                if (Schema::hasColumn('staff_of_months', 'photo_path')) {
+                    Schema::table('staff_of_months', function (Blueprint $table) {
+                        $table->dropColumn('photo_path');
+                    });
+                }
             }
         }
     }

@@ -9,10 +9,69 @@
         box-sizing: border-box;
     }
 
+    .section-shell {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+
+    .section-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #111827;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #4b5563;
+        max-width: 42rem;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.75;
+    }
+
+    .section-divider {
+        height: 4px;
+        width: 3.5rem;
+        background-color: #f97316;
+        border-radius: 9999px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .btn-primary-clean {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.9rem 2.25rem;
+        border-radius: 0.75rem;
+        background: #f97316;
+        color: #ffffff;
+        font-weight: 700;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+        transition: all 0.25s ease;
+        border: 1px solid transparent;
+    }
+
+    .btn-primary-clean:hover {
+        background: #ea580c;
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
+        transform: translateY(-2px);
+    }
+
+    @media (min-width: 1024px) {
+        .section-title {
+            font-size: 3rem;
+        }
+    }
+
     /* Hero Section Styles */
     .hero-section {
-        height: 100vh;
+        min-height: 88vh;
+        height: 88vh;
         overflow: hidden;
+        border-bottom: 1px solid #e5e7eb;
     }
 
     .hero-swiper {
@@ -29,7 +88,7 @@
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.52);
         z-index: 10;
     }
 
@@ -76,6 +135,93 @@
         animation: fadeInUp 0.8s ease-out 0.3s forwards;
         opacity: 0;
     }
+
+    /* Centered hero title */
+    .hero-center-text {
+        position: absolute;
+        inset: 0;
+        z-index: 25;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .hero-center-text .hero-title {
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 2.25rem; /* 36px */
+        line-height: 1.05;
+        letter-spacing: 0.04em;
+        text-shadow: 0 8px 30px rgba(0,0,0,0.55);
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    @media (min-width: 768px) {
+        .hero-center-text .hero-title { font-size: 3.5rem; /* 56px */ }
+    }
+    @media (min-width: 1024px) {
+        .hero-center-text .hero-title { font-size: 4.5rem; /* 72px */ }
+    }
+
+    .announcement-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        transition: all 0.35s ease;
+        overflow: hidden;
+    }
+
+    .announcement-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+        border-color: #d1d5db;
+    }
+
+    .gallery-section {
+        background: #f9fafb;
+        border-top: 1px solid #f3f4f6;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(17, 24, 39, 0.45);
+        opacity: 0.7;
+        transition: opacity 0.5s ease;
+    }
+
+    .about-section {
+        background: #ffffff;
+    }
+
+    .about-summary {
+        font-size: 1.125rem;
+        color: #374151;
+        line-height: 1.9;
+        max-width: 62rem;
+    }
+
+    .about-card {
+        display: flex;
+        gap: 1.5rem;
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .about-card:hover {
+        box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+        transform: translateY(-4px);
+    }
 </style>
 
 <script>
@@ -88,11 +234,12 @@
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
             },
-            effect: 'fade',
-            fadeEffect: { crossFade: true },
-            speed: 1000,
+            effect: 'slide',
+            speed: 800,
             slidesPerView: 1,
             centeredSlides: true,
+            touchRatio: 1,
+            threshold: 20,
             
             // Pagination
             pagination: {
@@ -140,31 +287,36 @@
                 @endif
             </div>
 
+            <!-- Centered title over hero -->
+            <div class="hero-center-text animate-fadeInUp">
+                <h1 class="hero-title">INFOBASE UPPJDS</h1>
+            </div>
+
             <!-- Pagination - hanya dots, tidak ada tombol next/prev -->
             <div class="swiper-pagination"></div>
         </div>
     </section>
 
     <!-- Announcements Section -->
-    <section id="announcements" class="py-24 bg-white">
+    <section id="announcements" class="section-shell bg-white">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-20">
-                <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">Berita & Pengumuman</h2>
-                <div class="h-1 w-16 bg-orange-500 mx-auto rounded-full mb-6"></div>
-                <p class="text-lg text-gray-600">Informasi terbaru dan penting untuk Anda</p>
+                <h2 class="section-title">Berita & Pengumuman</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">Informasi terbaru dan penting untuk Anda</p>
             </div>
 
             @if(isset($latestAnnouncements) && $latestAnnouncements->count())
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     @foreach($latestAnnouncements as $item)
-                        <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 group">
+                        <div class="announcement-card group">
                             @if($item->image_path)
-                                <div class="relative h-56 overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300">
+                                <div class="relative h-56 overflow-hidden bg-gray-200">
                                     <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent"></div>
+                                    <div class="absolute inset-0 bg-black/20"></div>
                                 </div>
                             @else
-                                <div class="h-56 bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center">
+                                <div class="h-56 bg-orange-100 flex items-center justify-center">
                                     <i class="fas fa-newspaper text-orange-400 text-6xl opacity-30"></i>
                                 </div>
                             @endif
@@ -195,7 +347,7 @@
                 </div>
 
                 <div class="text-center">
-                    <a href="{{ route('infobase.pengumuman') }}" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                    <a href="{{ route('infobase.pengumuman') }}" class="btn-primary-clean">
                         Ketahui Lebih Lanjut
                         <i class="fas fa-arrow-right ml-3"></i>
                     </a>
@@ -210,10 +362,16 @@
     </section>
 
     <!-- Photo Gallery Carousel Section -->
-    <section class="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section class="section-shell gallery-section">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
+<<<<<<< HEAD
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">Galeri Perpustakaan</h2>
+=======
+                <h2 class="section-title">Galeri Perpustakaan</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">Jelajahi keindahan fasilitas dan koleksi kami</p>
+>>>>>>> 6d2c88843864b0b0d416bda9b1054fe13bf5980c
             </div>
 
             @if(($homePhotos ?? collect())->count())
@@ -248,14 +406,6 @@
                         width: 100%;
                         height: 100%;
                         object-fit: cover;
-                    }
-
-                    .gallery-overlay {
-                        position: absolute;
-                        inset: 0;
-                        background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
-                        opacity: 0.7;
-                        transition: opacity 0.5s ease;
                     }
 
                     .gallery-swiper .swiper-slide:hover .gallery-overlay {
@@ -435,7 +585,7 @@
                 </script>
 
                 <div class="text-center mt-16">
-                    <a href="{{ route('about') }}" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                    <a href="{{ route('about') }}" class="btn-primary-clean">
                         Ketahui Lebih Lanjut
                         <i class="fas fa-arrow-right ml-3"></i>
                     </a>
@@ -452,22 +602,22 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section id="about" class="section-shell about-section">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <!-- Content -->
             <div class="space-y-8">
                     <div>
-                        <div class="h-1 w-16 bg-orange-500 rounded-full mb-4"></div>
-                        <h2 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">Tentang Perpustakaan Jakarta</h2>
+                        <div class="section-divider !mx-0 mb-4"></div>
+                        <h2 class="section-title text-left">Tentang Perpustakaan Jakarta</h2>
                     </div>
                     
-                    <p class="text-lg lg:text-xl text-gray-700 leading-relaxed">
+                    <p class="about-summary">
                         Perpustakaan Jakarta (UPPJPDS) adalah institusi publik yang berkomitmen menyediakan sumber daya pembelajaran, ruang kolaborasi, dan program pemberdayaan masyarakat. Kami percaya bahwa akses informasi yang mudah adalah kunci kemajuan sosial dan intelektual.
                     </p>
 
                     <!-- Vision & Mission -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="flex gap-6 p-8 bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-md border border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group cursor-pointer">
+                        <div class="about-card group cursor-pointer">
                             <div class="flex-shrink-0">
                                 <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-orange-500 group-hover:bg-orange-600 transition-colors duration-300">
                                     <i class="fas fa-eye text-white text-2xl"></i>
@@ -481,7 +631,7 @@
                             </div>
                         </div>
 
-                        <div class="flex gap-6 p-8 bg-gradient-to-br from-slate-50 to-white rounded-2xl shadow-md border border-slate-200 hover:shadow-xl hover:border-slate-300 transition-all duration-300 group cursor-pointer">
+                        <div class="about-card group cursor-pointer">
                             <div class="flex-shrink-0">
                                 <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-teal-600 group-hover:bg-teal-700 transition-colors duration-300">
                                     <i class="fas fa-bullseye text-white text-2xl"></i>
@@ -498,7 +648,7 @@
                 </div>
 
                 <div class="text-center mt-8">
-                    <a href="{{ route('about') }}" class="inline-flex items-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
+                    <a href="{{ route('about') }}" class="btn-primary-clean">
                         Ketahui Lebih Lanjut
                         <i class="fas fa-arrow-right ml-3"></i>
                     </a>

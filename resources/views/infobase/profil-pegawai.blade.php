@@ -2,95 +2,60 @@
 
 @section('content')
 <style>
-    /* Profil Pegawai Org Chart specific styles */
+    /* ===========================================
+       ORGANIZATIONAL CHART STYLES
+       =========================================== */
+
+    /* Container */
     .orgchart-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 25px 15px;
+        padding: 20px 10px;
+        min-width: max-content;
     }
 
-    /* Root card wrapper */
+    /* Root Level */
     .org-root {
         display: flex;
         flex-direction: column;
         align-items: center;
         position: relative;
+        margin-bottom: 40px;
     }
 
-    /* Garis vertikal dari root ke horizontal line */
     .org-root::after {
         content: '';
         position: absolute;
-        bottom: -25px;
+        bottom: -20px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 25px;
+        height: 20px;
         background: #00425A;
     }
 
-    /* Children wrapper */
-    .org-children {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        margin-top: 50px;
-        position: relative;
-    }
-
-    /* Garis horizontal di atas children */
-    .org-children::before {
-        content: '';
-        position: absolute;
-        top: -25px;
-        left: var(--line-left, 0);
-        width: var(--line-width, 100%);
-        height: 2px;
-        background: #00425A;
-    }
-
-    /* Wrapper untuk setiap child */
-    .org-child {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        flex-shrink: 0;
-    }
-
-    /* Garis vertikal dari horizontal ke child card */
-    .org-child::before {
-        content: '';
-        position: absolute;
-        top: -25px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: 25px;
-        background: #00425A;
-    }
-
-    /* Grandchildren wrapper */
-    .org-grandchildren {
+    /* Children and Grandchildren Levels */
+    .org-children, .org-grandchildren {
         display: flex;
         justify-content: center;
         gap: 25px;
-        margin-top: 50px;
+        margin-top: 40px;
         position: relative;
     }
 
-    .org-grandchildren::before {
+    .org-children::before, .org-grandchildren::before {
         content: '';
         position: absolute;
-        top: -25px;
+        top: -20px;
         left: var(--line-left, 0);
         width: var(--line-width, 100%);
         height: 2px;
         background: #00425A;
     }
 
-    .org-grandchild {
+    /* Individual Child/Grandchild Wrappers */
+    .org-child, .org-grandchild {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -98,55 +63,42 @@
         flex-shrink: 0;
     }
 
-    .org-grandchild::before {
+    .org-child::before, .org-grandchild::before {
         content: '';
         position: absolute;
-        top: -25px;
+        top: -20px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 25px;
+        height: 20px;
         background: #00425A;
     }
 
-    /* Garis dari child card ke grandchildren */
-    .org-child.has-children::after {
+    /* Connection Lines for Children */
+    .org-child.has-children::after, .org-grandchild.has-children::after {
         content: '';
         position: absolute;
-        bottom: -25px;
+        bottom: -20px;
         left: 50%;
         transform: translateX(-50%);
         width: 2px;
-        height: 25px;
+        height: 20px;
         background: #00425A;
     }
 
-    /* Garis dari grandchild card ke great-grandchildren */
-    .org-grandchild.has-children::after {
-        content: '';
-        position: absolute;
-        bottom: -25px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: 25px;
-        background: #00425A;
-    }
-
-    /* Single child - tidak perlu garis horizontal */
-    .org-children.single::before,
-    .org-grandchildren.single::before {
+    /* Single Child - No Horizontal Line */
+    .org-children.single::before, .org-grandchildren.single::before {
         display: none;
     }
 
-    /* ORG CARD - Compact Design dengan Foto Circular */
+    /* Organization Card */
     .org-card {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
-        width: 130px;
-        padding: 12px 10px;
+        gap: 6px;
+        width: 120px;
+        padding: 10px 8px;
         min-height: auto;
         background: white;
         border: 1.5px solid #e0e7ff;
@@ -162,88 +114,76 @@
         transform: translateY(-2px);
     }
 
-    /* Foto circular dalam org card */
-    .org-card img {
-        width: 60px;
-        height: 60px;
+    /* Card Image */
+    .org-card img, .org-card .icon-placeholder {
+        width: 55px;
+        height: 55px;
         border-radius: 50%;
-        object-fit: cover;
         border: 3px solid #00425A;
         flex-shrink: 0;
     }
 
-    /* Icon placeholder circular */
+    .org-card img {
+        object-fit: cover;
+    }
+
     .org-card .icon-placeholder {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
         background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
-        border: 3px solid #00425A;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-shrink: 0;
     }
 
     .org-card .icon-placeholder i {
-        font-size: 28px;
+        font-size: 24px;
         color: #00425A;
     }
 
-    /* Nama dalam org card */
+    /* Card Text */
     .org-card h4 {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         color: #00425A;
         margin: 0;
         line-height: 1.3;
-        min-height: 26px;
+        min-height: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* Jabatan dalam org card */
     .org-card p {
-        font-size: 10px;
+        font-size: 9px;
         color: #f85e38;
         font-weight: 600;
         margin: 0;
         line-height: 1.3;
-        min-height: 20px;
+        min-height: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* Banner uses shared page-header styling */
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: white;
-        padding: 6px;
-        border-radius: 12px;
-        border: 2px solid #e2e8f0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
+    /* View Toggle Buttons */
     .view-toggle-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
         border-radius: 10px;
         border: none;
         background: transparent;
         color: #94a3b8;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-size: 18px;
     }
 
     .view-toggle-btn:hover {
         color: #00425A;
         background: #f1f5f9;
+        transform: scale(1.05);
     }
 
     .view-toggle-btn.active {
@@ -252,106 +192,58 @@
         box-shadow: 0 4px 12px rgba(0, 66, 90, 0.3);
     }
 
-    .view-toggle-btn i {
-        font-size: 20px;
+    /* Mobile responsive for view toggle */
+    @media (max-width: 640px) {
+        .view-toggle-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
     }
 
-    /* Responsive */
+    /* ===========================================
+       RESPONSIVE BREAKPOINTS
+       =========================================== */
+
+    /* Tablet */
     @media (max-width: 1024px) {
-        .org-children, .org-grandchildren {
-            gap: 25px;
-        }
-
-        .org-card {
-            width: 125px;
-            padding: 11px 9px;
-        }
-
-        .org-card img {
-            width: 55px;
-            height: 55px;
-        }
-
-        .org-card .icon-placeholder {
-            width: 55px;
-            height: 55px;
-        }
-
-        .org-card h4 {
-            font-size: 11px;
-            min-height: 24px;
-        }
-
-        .org-card p {
-            font-size: 9px;
-            min-height: 18px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        /* Tetap gunakan desktop layout, biarkan parent scroll */
         .orgchart-container {
-            padding: 30px 15px;
-            min-width: max-content;
-        }
-
-        .org-root::after {
-            height: 30px;
-            bottom: -30px;
+            padding: 25px 15px;
         }
 
         .org-children, .org-grandchildren {
             gap: 20px;
-            margin-top: 60px;
-        }
-
-        /* Jangan ubah ke flex-direction: column */
-        .org-children::before, .org-grandchildren::before {
-            display: block !important;
-        }
-
-        .org-child::before, .org-grandchild::before {
-            display: block !important;
-            height: 30px;
-            top: -30px;
-        }
-
-        .org-child.has-children::after, .org-grandchild.has-children::after {
-            height: 30px;
-            bottom: -30px;
         }
 
         .org-card {
-            width: 120px;
-            padding: 10px 8px;
-            gap: 6px;
+            width: 110px;
+            padding: 9px 7px;
         }
 
-        .org-card img {
-            width: 52px;
-            height: 52px;
-        }
-
-        .org-card .icon-placeholder {
-            width: 52px;
-            height: 52px;
+        .org-card img, .org-card .icon-placeholder {
+            width: 50px;
+            height: 50px;
         }
 
         .org-card h4 {
             font-size: 10px;
-            min-height: 22px;
+            min-height: 20px;
         }
 
         .org-card p {
-            font-size: 9px;
-            min-height: 18px;
+            font-size: 8px;
+            min-height: 14px;
+        }
+
+        .org-card .icon-placeholder i {
+            font-size: 22px;
         }
     }
 
-    @media (max-width: 480px) {
+    /* Mobile Large */
+    @media (max-width: 768px) {
         .orgchart-container {
             padding: 20px 10px;
-            min-width: max-content;
         }
 
         .org-root::after {
@@ -361,7 +253,11 @@
 
         .org-children, .org-grandchildren {
             gap: 15px;
-            margin-top: 50px;
+            margin-top: 45px;
+        }
+
+        .org-children::before, .org-grandchildren::before {
+            display: block !important;
         }
 
         .org-child::before, .org-grandchild::before {
@@ -375,83 +271,125 @@
         }
 
         .org-card {
-            width: 110px;
-            padding: 9px 7px;
+            width: 105px;
+            padding: 8px 6px;
             gap: 5px;
         }
 
-        .org-card img {
-            width: 48px;
-            height: 48px;
-        }
-
-        .org-card .icon-placeholder {
+        .org-card img, .org-card .icon-placeholder {
             width: 48px;
             height: 48px;
         }
 
         .org-card h4 {
             font-size: 9px;
-            min-height: 20px;
+            min-height: 18px;
         }
 
         .org-card p {
             font-size: 8px;
-            min-height: 16px;
+            min-height: 14px;
         }
 
         .org-card .icon-placeholder i {
-            font-size: 22px;
+            font-size: 20px;
         }
     }
 
-    @media (max-width: 360px) {
+    /* Mobile Medium */
+    @media (max-width: 480px) {
         .orgchart-container {
             padding: 15px 8px;
-            min-width: max-content;
+        }
+
+        .org-root::after {
+            height: 20px;
+            bottom: -20px;
         }
 
         .org-children, .org-grandchildren {
             gap: 12px;
-            margin-top: 40px;
+            margin-top: 35px;
         }
 
-        .org-root::after,
-        .org-child::before, .org-grandchild::before,
-        .org-child.has-children::after, .org-grandchild.has-children::after {
+        .org-child::before, .org-grandchild::before {
             height: 20px;
             top: -20px;
+        }
+
+        .org-child.has-children::after, .org-grandchild.has-children::after {
+            height: 20px;
             bottom: -20px;
         }
 
         .org-card {
-            width: 100px;
-            padding: 8px 6px;
+            width: 95px;
+            padding: 7px 5px;
             gap: 4px;
         }
 
-        .org-card img {
-            width: 45px;
-            height: 45px;
-        }
-
-        .org-card .icon-placeholder {
+        .org-card img, .org-card .icon-placeholder {
             width: 45px;
             height: 45px;
         }
 
         .org-card h4 {
             font-size: 8px;
-            min-height: 18px;
+            min-height: 16px;
         }
 
         .org-card p {
             font-size: 7px;
-            min-height: 15px;
+            min-height: 12px;
         }
 
         .org-card .icon-placeholder i {
-            font-size: 20px;
+            font-size: 18px;
+        }
+    }
+
+    /* Mobile Small */
+    @media (max-width: 360px) {
+        .orgchart-container {
+            padding: 10px 5px;
+        }
+
+        .org-children, .org-grandchildren {
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .org-root::after,
+        .org-child::before, .org-grandchild::before,
+        .org-child.has-children::after, .org-grandchild.has-children::after {
+            height: 15px;
+            top: -15px;
+            bottom: -15px;
+        }
+
+        .org-card {
+            width: 85px;
+            padding: 6px 4px;
+            gap: 3px;
+        }
+
+        .org-card img, .org-card .icon-placeholder {
+            width: 40px;
+            height: 40px;
+        }
+
+        .org-card h4 {
+            font-size: 7px;
+            min-height: 14px;
+        }
+
+        .org-card p {
+            font-size: 6px;
+            min-height: 10px;
+        }
+
+        .org-card .icon-placeholder i {
+            font-size: 16px;
         }
     }
 </style>
@@ -579,19 +517,26 @@
 ])
 
 <div class="min-h-screen bg-[#f8fafc] pt-6 pb-24">
-    <div class="max-w-7xl mx-auto px-6">
-            </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Content Header with View Toggle -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#00425A] mb-2">Daftar Pegawai</h2>
+                    <p class="text-gray-600">Temukan profil pegawai berdasarkan jabatan dan struktur organisasi</p>
+                </div>
 
-            <!-- View Toggle Icons -->
-            <div class="view-toggle">
-                <button id="sliderBtn" class="view-toggle-btn active" title="Tampilan Slider">
-                    <i class="fas fa-images"></i>
-                </button>
-                <button id="orgBtn" class="view-toggle-btn" title="Tampilan Struktur Organisasi">
-                    <i class="fas fa-sitemap"></i>
-                </button>
+                <!-- View Toggle Icons -->
+                <div class="flex items-center gap-2 bg-gray-50 rounded-xl p-1">
+                    <button id="sliderBtn" class="view-toggle-btn active" title="Tampilan Slider">
+                        <i class="fas fa-images"></i>
+                    </button>
+                    <button id="orgBtn" class="view-toggle-btn" title="Tampilan Struktur Organisasi">
+                        <i class="fas fa-sitemap"></i>
+                    </button>
+                </div>
             </div>
-        </header>
+        </div>
 
         <!-- Slider Content -->
         <div id="sliderContent" class="view-content transition-opacity duration-300">
@@ -600,27 +545,27 @@
                     <div class="overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100">
                         <div id="slider" class="flex transition-transform duration-500 ease-in-out">
                             @foreach($slides as $slideIndex => $profilesInSlide)
-                                <div class="w-full flex-shrink-0 p-8">
-                                    <div class="flex justify-center gap-8">
+                                <div class="w-full flex-shrink-0 p-4 sm:p-6 lg:p-8">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center">
                                         @foreach($profilesInSlide as $p)
-                                            <div class="flex flex-col items-center text-center space-y-3 flex-1 max-w-max">
+                                            <div class="flex flex-col items-center text-center space-y-3 max-w-xs">
                                                 <!-- Foto -->
                                                 <div class="relative">
                                                     <div class="absolute inset-0 bg-[#f85e38] rounded-full blur-lg opacity-20 transform translate-y-2"></div>
                                                     @if($p->foto_path)
-                                                        <img src="{{ asset('storage/' . $p->foto_path) }}" alt="{{ $p->nama }}" class="relative w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg">
+                                                        <img src="{{ asset('storage/' . $p->foto_path) }}" alt="{{ $p->nama }}" class="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full object-cover border-4 border-white shadow-lg">
                                                     @else
-                                                        <div class="relative w-28 h-28 bg-gray-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                                                            <i class="fas fa-user text-gray-300 text-3xl"></i>
+                                                        <div class="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-gray-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                                                            <i class="fas fa-user text-gray-300 text-2xl sm:text-3xl"></i>
                                                         </div>
                                                     @endif
                                                 </div>
                                                 <!-- Nama -->
-                                                <h3 class="text-base font-bold text-[#00425A] leading-tight min-h-10">{{ $p->nama }}</h3>
+                                                <h3 class="text-sm sm:text-base font-bold text-[#00425A] leading-tight min-h-[2.5rem] sm:min-h-10 flex items-center">{{ $p->nama }}</h3>
                                                 <!-- Posisi/Jabatan -->
-                                                <p class="text-sm text-[#f85e38] font-semibold leading-tight min-h-8">{{ $p->jabatan ? $p->jabatan->name : 'Jabatan' }}</p>
+                                                <p class="text-xs sm:text-sm text-[#f85e38] font-semibold leading-tight min-h-6 sm:min-h-8 flex items-center">{{ $p->jabatan ? $p->jabatan->name : 'Jabatan' }}</p>
                                                 <!-- Deskripsi -->
-                                                <p class="text-gray-600 text-xs leading-relaxed line-clamp-4 min-h-16">{{ $p->deskripsi ?? 'Berdedikasi untuk memberikan pelayanan terbaik bagi pengunjung perpustakaan.' }}</p>
+                                                <p class="text-gray-600 text-xs leading-relaxed line-clamp-3 sm:line-clamp-4 min-h-12 sm:min-h-16">{{ $p->deskripsi ?? 'Berdedikasi untuk memberikan pelayanan terbaik bagi pengunjung perpustakaan.' }}</p>
                                             </div>
                                         @endforeach
                                     </div>
@@ -630,24 +575,24 @@
                     </div>
                     
                     <!-- Navigation Buttons -->
-                    <button id="prevBtn" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#00425A] w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm">
-                        <i class="fas fa-chevron-left text-lg"></i>
+                    <button id="prevBtn" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#00425A] w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm">
+                        <i class="fas fa-chevron-left text-sm sm:text-lg"></i>
                     </button>
-                    <button id="nextBtn" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#00425A] w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm">
-                        <i class="fas fa-chevron-right text-lg"></i>
+                    <button id="nextBtn" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#00425A] w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm">
+                        <i class="fas fa-chevron-right text-sm sm:text-lg"></i>
                     </button>
                     
                     <!-- Dots -->
-                    <div class="flex justify-center mt-8 space-x-3">
+                    <div class="flex justify-center mt-6 sm:mt-8 space-x-2 sm:space-x-3">
                         @for($i = 0; $i < $slides->count(); $i++)
-                            <button class="dot w-3 h-3 rounded-full bg-gray-300 hover:bg-[#00425A] transition-colors" data-slide="{{ $i }}"></button>
+                            <button class="dot w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gray-300 hover:bg-[#00425A] transition-colors" data-slide="{{ $i }}"></button>
                         @endfor
                     </div>
                 </div>
             @else
-                <div class="bg-white rounded-2xl p-16 text-center border-2 border-dashed border-gray-200">
-                    <i class="fas fa-users-slash text-gray-300 text-5xl mb-4"></i>
-                    <h3 class="text-xl font-bold text-gray-800">Belum ada data pegawai</h3>
+                <div class="bg-white rounded-2xl p-8 sm:p-16 text-center border-2 border-dashed border-gray-200">
+                    <i class="fas fa-users-slash text-gray-300 text-4xl sm:text-5xl mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Belum ada data pegawai</h3>
                     <p class="text-gray-500 mt-2">Data pegawai akan muncul di sini.</p>
                 </div>
             @endif
@@ -656,7 +601,7 @@
         <!-- OrgChart Content -->
         <div id="orgContent" class="view-content hidden">
             @if(isset($jabatans) && $jabatans->count() > 0 && isset($allPegawai) && $allPegawai->count() > 0)
-                <div class="bg-white rounded-2xl p-8 md:p-12 overflow-x-auto shadow-sm border border-gray-200 min-h-[500px]">
+                <div class="bg-white rounded-2xl p-4 sm:p-6 lg:p-8 overflow-x-auto shadow-sm border border-gray-200 min-h-[400px] sm:min-h-[500px]">
                     
                     @php
                         $sortedJabatans = $jabatans->sortBy('order')->values();
@@ -771,9 +716,9 @@
 
                 </div>
             @else
-                <div class="bg-white rounded-2xl p-16 text-center border-2 border-dashed border-gray-200">
-                    <i class="fas fa-sitemap text-gray-300 text-5xl mb-4"></i>
-                    <h3 class="text-xl font-bold text-gray-800">Menunggu Struktur</h3>
+                <div class="bg-white rounded-2xl p-8 sm:p-16 text-center border-2 border-dashed border-gray-200">
+                    <i class="fas fa-sitemap text-gray-300 text-4xl sm:text-5xl mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Menunggu Struktur</h3>
                     <p class="text-gray-500 mt-2">Struktur organisasi belum tersedia.</p>
                 </div>
             @endif

@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="mb-8 flex justify-between items-start">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="mb-6 sm:mb-8 flex justify-between items-start">
         <div>
-            <h1 class="text-3xl font-bold text-gray-800">Tambah Foto Galeri</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-[#063A76]">Tambah Foto Galeri</h1>
             <p class="text-gray-600 mt-2">Tambahkan foto baru ke galeri perpustakaan</p>
         </div>
-        <a href="{{ route('admin.gallery.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+        <a href="{{ route('admin.gallery.index') }}" class="bg-white border border-slate-200 text-[#063A76] font-semibold py-3 px-6 rounded-xl hover:bg-slate-50 transition duration-300">
             <i class="fas fa-arrow-left mr-2"></i>Kembali
         </a>
     </div>
@@ -23,7 +24,7 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-lg shadow-lg p-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
         <form action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
@@ -34,7 +35,7 @@
                     name="category" 
                     id="category"
                     required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                 >
                     <option value="">-- Pilih Kategori --</option>
                     <option value="building" {{ old('category') === 'building' ? 'selected' : '' }}>Gedung</option>
@@ -53,7 +54,7 @@
                     name="location" 
                     id="location"
                     required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                     onchange="toggleFormFields()"
                 >
                     <option value="">-- Pilih Lokasi --</option>
@@ -67,7 +68,7 @@
             <!-- Rekomendasi Rasio Foto -->
             <div id="resolutionInfo" class="p-4 bg-slate-50 border border-slate-200 rounded-lg hidden">
                 <div class="flex items-start gap-3">
-                    <i class="fas fa-info-circle text-teal-600 mt-1 flex-shrink-0"></i>
+                    <i class="fas fa-info-circle text-[#063A76] mt-1 flex-shrink-0"></i>
                     <div>
                         <h4 class="font-semibold text-teal-900 mb-2">Rekomendasi Ukuran Foto</h4>
                         <p id="resolutionText" class="text-sm text-teal-800"></p>
@@ -86,7 +87,7 @@
                         id="title" 
                         value="{{ old('title') }}"
                         required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                         placeholder="Judul foto galeri"
                     >
                 </div>
@@ -98,7 +99,7 @@
                         name="description" 
                         id="description" 
                         rows="4"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                         placeholder="Deskripsi foto"
                     >{{ old('description') }}</textarea>
                 </div>
@@ -107,7 +108,7 @@
             <!-- Upload Foto -->
             <div>
                 <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">Upload Foto <span class="text-red-600">*</span></label>
-                <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-teal-600 hover:bg-teal-50 transition duration-200 cursor-pointer"
+                <div class="relative border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-[#063A76] hover:bg-blue-50 transition duration-200 cursor-pointer"
                     onclick="document.getElementById('image').click()">
                     <input 
                         type="file" 
@@ -138,7 +139,7 @@
                     name="order" 
                     id="order" 
                     value="{{ old('order', 0) }}"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                     placeholder="0"
                     min="0"
                     onchange="checkOrderExists()"
@@ -160,7 +161,7 @@
                         type="checkbox" 
                         name="is_active" 
                         {{ old('is_active') ? 'checked' : '' }}
-                        class="w-5 h-5 text-teal-600 rounded border-gray-300 focus:ring-2 focus:ring-teal-200"
+                        class="w-5 h-5 text-[#063A76] rounded border-gray-300 focus:ring-2 focus:ring-blue-100"
                     >
                     <span class="ml-3 text-sm font-medium text-gray-700">Aktif</span>
                 </label>
@@ -175,7 +176,7 @@
                         name="button_text" 
                         id="button_text" 
                         value="{{ old('button_text') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                         placeholder="Contoh: Jelajahi, Lihat Detail, dll"
                     >
                 </div>
@@ -186,7 +187,7 @@
                         name="button_link" 
                         id="button_link" 
                         value="{{ old('button_link') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-200 transition duration-200"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-blue-100 transition duration-200"
                         placeholder="Contoh: #announcements, /about, dll"
                     >
                 </div>
@@ -356,4 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateResolutionInfo();
 });
 </script>
+
+</div>
 @endsection

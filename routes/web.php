@@ -12,11 +12,24 @@ use App\Http\Controllers\ProfilPegawaiController;
 use App\Http\Controllers\StaffOfMonthController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\GalleryPhotoController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Models\GalleryPhoto;
+use App\Http\Controllers\AgendaIntegrationController;
+use App\Http\Controllers\PublicAgendaController;
 
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
+
+Route::prefix('admin/integrasi-agenda')->middleware('auth')->group(function () {
+    Route::get('/login', [AgendaIntegrationController::class, 'showLogin'])->name('admin.agenda.login');
+    Route::post('/login', [AgendaIntegrationController::class, 'login'])->name('admin.agenda.login.post');
+
+    Route::get('/calendars', [AgendaIntegrationController::class, 'calendars'])->name('admin.agenda.calendars');
+    Route::post('/calendars', [AgendaIntegrationController::class, 'saveCalendars'])->name('admin.agenda.calendars.save');
+});
+
+Route::get('/events', [PublicAgendaController::class, 'index'])->name('public.events');
 
 Route::get('/', [InfobaseController::class, 'home'])->name('home');
 
@@ -54,7 +67,6 @@ Route::prefix('infobase')->name('infobase.')->group(function () {
 
 Route::post('admin/tata_tertib/store-jenis', [TataTertibController::class, 'storeJenis'])->name('admin.tata_tertib.store-jenis')->middleware('auth');
 Route::delete('admin/tata-tertib/jenis/{jenis}', [TataTertibController::class, 'destroyJenis'])->name('admin.tata_tertib.destroy-jenis')->middleware('auth');
-Route::delete('admin/tata-tertib/{id}', [TataTertibController::class, 'destroy'])->name('admin.tata_tertib.destroy')->middleware('auth');
 
 // Pengumuman public detail view
 Route::get('pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.show');
@@ -72,8 +84,11 @@ Route::get('admin/dashboard', function() {
 // Admin Pengumuman CRUD (protected)
 Route::resource('admin/pengumuman', PengumumanController::class)->names('admin.pengumuman')->middleware('auth');
 
-// Admin Calendar Events CRUD (protected)
-Route::resource('admin/calendar', CalendarEventController::class)->names('admin.calendar')->middleware('auth');
+// Admin Calendar Events (tanpa create/store; event dibuat dari aplikasi terintegrasi)
+Route::resource('admin/calendar', CalendarEventController::class)
+    ->except(['create', 'store'])
+    ->names('admin.calendar')
+    ->middleware('auth');
 
 // Admin Tata Tertib CRUD
 Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.tata_tertib')->middleware('auth');
@@ -82,7 +97,19 @@ Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.
 Route::get('/storage/profile_ruangan_images/{filename}', function ($filename) {
     // Sanitize filename untuk security
     $filename = basename($filename);
-    $path = storage_path('app/profile_ruangan_images/' . $filename);
+    $candidatePaths = [
+        storage_path('app/profile_ruangan_images/' . $filename),
+        storage_path('app/private/profile_ruangan_images/' . $filename),
+        storage_path('app/public/profile_ruangan_images/' . $filename),
+    ];
+    
+    $path = null;
+    foreach ($candidatePaths as $candidatePath) {
+        if (file_exists($candidatePath)) {
+            $path = $candidatePath;
+            break;
+        }
+    }
     
     \Log::debug('Image serving request', [
         'filename' => $filename,
@@ -90,8 +117,11 @@ Route::get('/storage/profile_ruangan_images/{filename}', function ($filename) {
         'exists' => file_exists($path),
     ]);
     
-    if (!file_exists($path)) {
-        \Log::warning('Image not found', ['path' => $path]);
+    if (!$path) {
+        \Log::warning('Image not found', [
+            'filename' => $filename,
+            'checked_paths' => $candidatePaths,
+        ]);
         abort(404, 'Image not found');
     }
     
@@ -205,29 +235,6 @@ Route::get('admin/profil-pegawai-debug', function() {
 // Admin Gallery Photo CRUD (protected)
 Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
 
-// Admin Gallery Photo CRUD (protected)
-// Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.gallery')->middleware('auth');
-
-// routes/web.php
-
-Route::middleware('auth')->group(function () {
-
-    // Halaman yang dilihat semua user (Inbox pengumuman)
-    Route::get('/pengumuman', [PengumumanController::class, 'index'])
-        ->name('pengumuman.index');
-
-    // Halaman khusus admin (list + form seperti di gambar)
-    Route::middleware('can:manage,App\Models\Pengumuman')->group(function () {
-        Route::get('/pengumuman/admin', [PengumumanController::class, 'admin'])
-            ->name('pengumuman.admin');
-
-        Route::post('/pengumuman', [PengumumanController::class, 'store'])
-            ->name('pengumuman.store');
-
-        Route::patch('/pengumuman/{pengumuman}', [PengumumanController::class, 'update'])
-            ->name('pengumuman.update');
-
-        Route::delete('/pengumuman/{pengumuman}', [PengumumanController::class, 'destroy'])
-            ->name('pengumuman.destroy');
-    });
-});
+// Admin User Management (protected)
+Route::get('admin/users', [AdminUserController::class, 'index'])->name('admin.users.index')->middleware('auth');
+Route::post('admin/users', [AdminUserController::class, 'store'])->name('admin.users.store')->middleware('auth');

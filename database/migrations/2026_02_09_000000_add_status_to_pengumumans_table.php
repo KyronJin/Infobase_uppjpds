@@ -7,15 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('pengumumans', function (Blueprint $table) {
-            $table->enum('status', ['active', 'inactive'])->default('active')->after('valid_until');
-        });
+        if (!Schema::hasColumn('pengumumans', 'status')) {
+            Schema::table('pengumumans', function (Blueprint $table) {
+                $table->enum('status', ['active', 'inactive'])->default('active')->after('valid_until');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('pengumumans', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        if (Schema::hasColumn('pengumumans', 'status')) {
+            Schema::table('pengumumans', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
 };

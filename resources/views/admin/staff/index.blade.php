@@ -116,25 +116,25 @@
     }
 </style>
 
-<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
-    <div class="max-w-6xl mx-auto px-6">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8 font-cairo">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
         
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
             <div>
-                <h1 class="h2 text-gray-800"> Staff Of The Month</h1>
-                <p class="text-sm text-gray-500">Kelola Staff Terbaik perpustakaan di sini.</p>
+                <h1 class="h2 text-[#063A76]">Staff Of The Month</h1>
+                <p class="text-sm text-slate-500">Kelola Staff Terbaik perpustakaan di sini.</p>
             </div>
             <div class="flex items-center gap-3">
                 <x-button variant="secondary" size="md" id="manage-jabatan-btn" icon="briefcase" class="rounded-2xl font-bold shadow-sm">Posisi</x-button>
-                <x-button variant="primary" size="md" onclick="openCreateModal()" icon="plus" class="rounded-2xl font-bold shadow-teal-100 shadow-lg">Tambah Staff</x-button>
+                <x-button variant="primary" size="md" onclick="openCreateModal()" icon="plus" class="rounded-2xl font-bold shadow-blue-100 shadow-lg">Tambah Staff</x-button>
             </div>
         </div>
 
         <!-- Daftar Staff -->
-        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden mb-8 text-sm">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-8 text-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50/80 border-b border-gray-100 font-bold text-gray-400">
+                    <thead class="bg-slate-50 border-b border-slate-100 font-bold text-slate-500">
                         <tr>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Profil</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Nama</th>
@@ -146,7 +146,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($items as $item)
-                        <tr class="hover:bg-teal-50/30 transition-all duration-300">
+                        <tr class="hover:bg-slate-50 transition-all duration-300">
                             <td class="px-6 py-4">
                                 <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 ring-4 ring-white shadow-sm transition-transform hover:scale-110">
                                     @if($item->photo_path)
@@ -180,7 +180,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
-                                    <button type="button" onclick="editStaff({{ $item->id }}); return false;" class="rounded-xl hover:bg-orange-50 hover:text-orange-600 font-bold" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all 0.2s; line-height: 1.4; min-width: fit-content; background-color: #ffffff; color: #ea580c; border: 1px solid #fdba74; padding: 8px 14px; font-size: 13px;">
+                                    <button type="button" onclick="editStaff({{ $item->id }}); return false;" class="rounded-xl font-bold" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all 0.2s; line-height: 1.4; min-width: fit-content; background-color: #ffffff; color: #063A76; border: 1px solid #cbd5e1; padding: 8px 14px; font-size: 13px;">
                                         <i class="fa-solid fa-edit"></i>Edit
                                     </button>
                                     <x-button variant="ghost-danger" size="sm" icon="trash" class="rounded-xl font-bold" onclick="openDeleteModal('deleteStaffModal', '{{ $item->name }}', '/admin/staff-of-month/{{ $item->id }}')">Hapus</x-button>
@@ -214,8 +214,8 @@
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-300">
                 <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-teal-100 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-plus text-teal-600"></i>
+                        <div class="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-plus text-[#063A76]"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-gray-900">Tambah Staff</h3>
@@ -233,7 +233,7 @@
                         <div class="space-y-5">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
-                                <input type="text" id="create-name" name="name" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Nama Lengkap Staff">
+                                <input type="text" id="create-name" name="name" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-[#063A76] transition-all font-medium" placeholder="Nama Lengkap Staff">
                             </div>
 
                             <div>
@@ -249,17 +249,17 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Bulan</label>
-                                    <input type="number" id="create-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="1-12">
+                                    <input type="number" id="create-month" name="month" min="1" max="12" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-[#063A76] transition-all font-medium" placeholder="1-12">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label>
-                                    <input type="number" id="create-year" name="year" min="2026" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="2026">
+                                    <input type="number" id="create-year" name="year" min="2026" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-[#063A76] transition-all font-medium" placeholder="2026">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Biodata / Kutipan</label>
-                                <textarea id="create-bio" name="bio" rows="3" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-teal-500 transition-all font-medium" placeholder="Kata-kata mutiara atau biodata singkat..."></textarea>
+                                <textarea id="create-bio" name="bio" rows="3" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-[#063A76] transition-all font-medium" placeholder="Kata-kata mutiara atau biodata singkat..."></textarea>
                             </div>
 
                             <div class="bg-gray-50/80 p-6 rounded-3xl border-2 border-dashed border-gray-100 transition-all hover:border-teal-400 group">
@@ -276,14 +276,14 @@
                             </div>
 
                             <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
-                                <input type="checkbox" id="create-is_active" name="is_active" value="1" checked class="w-5 h-5 text-teal-600 rounded-lg focus:ring-teal-500 cursor-pointer border-gray-300">
+                                <input type="checkbox" id="create-is_active" name="is_active" value="1" checked class="w-5 h-5 text-[#063A76] rounded-lg focus:ring-[#063A76] cursor-pointer border-gray-300">
                                 <label for="create-is_active" class="text-sm font-bold text-gray-700 cursor-pointer select-none tracking-tight">Aktifkan Profile di Halaman Utama</label>
                             </div>
                         </div>
 
                         <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
                             <x-button variant="secondary" size="md" type="button" onclick="document.getElementById('create-staff-modal').classList.add('hidden')" class="rounded-xl font-bold">Batal</x-button>
-                            <x-button variant="primary" size="md" icon="check" type="submit" class="rounded-xl font-bold shadow-lg shadow-teal-100">Simpan Staff</x-button>
+                            <x-button variant="primary" size="md" icon="check" type="submit" class="rounded-xl font-bold shadow-lg shadow-blue-100">Simpan Staff</x-button>
                         </div>
                     </form>
                 </div>
@@ -331,7 +331,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Bulan</label>
-                                    <input type="number" id="edit-month" name="month" min="1" max="12" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
+                                    <input type="number" id="edit-month" name="month" min="1" max="12" required class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 focus:outline-none focus:border-orange-500 transition-all font-medium">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Tahun <span class="text-red-500">*</span></label>
@@ -513,69 +513,71 @@ function openCreateModal() {
 document.addEventListener('DOMContentLoaded', function() {
     const createModal = document.getElementById('create-staff-modal');
     const editModal = document.getElementById('edit-staff-modal');
-    const deleteModal = document.getElementById('delete-staff-modal');
     const manageJabatanModal = document.getElementById('manage-jabatan-modal');
-    const deleteJabatanModal = document.getElementById('delete-jabatan-modal');
     const openBtn = document.getElementById('create-staff-btn');
     const closeCreateBtn = document.getElementById('close-create-modal-btn');
     const closeEditBtn = document.getElementById('close-edit-modal-btn');
     const manageJabatanBtn = document.getElementById('manage-jabatan-btn');
     const closeJabatanBtn = document.getElementById('close-jabatan-modal-btn');
 
-    openBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('create-form').action = "{{ route('admin.staff-of-month.store') }}";
-        document.getElementById('create-form').reset();
-        document.getElementById('create-year').value = new Date().getFullYear();
-        createModal.classList.remove('hidden');
-    });
+    if (openBtn) {
+        openBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('create-form').action = "{{ route('admin.staff-of-month.store') }}";
+            document.getElementById('create-form').reset();
+            document.getElementById('create-year').value = new Date().getFullYear();
+            createModal.classList.remove('hidden');
+        });
+    }
 
-    manageJabatanBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        manageJabatanModal.classList.remove('hidden');
-    });
+    if (manageJabatanBtn && manageJabatanModal) {
+        manageJabatanBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            manageJabatanModal.classList.remove('hidden');
+        });
+    }
 
-    closeCreateBtn.addEventListener('click', function() {
-        createModal.classList.add('hidden');
-    });
-
-    closeEditBtn.addEventListener('click', function() {
-        editModal.classList.add('hidden');
-    });
-
-    closeJabatanBtn.addEventListener('click', function() {
-        manageJabatanModal.classList.add('hidden');
-    });
-
-    createModal.addEventListener('click', function(e) {
-        if (e.target === createModal) {
+    if (closeCreateBtn && createModal) {
+        closeCreateBtn.addEventListener('click', function() {
             createModal.classList.add('hidden');
-        }
-    });
+        });
+    }
 
-    editModal.addEventListener('click', function(e) {
-        if (e.target === editModal) {
+    if (closeEditBtn && editModal) {
+        closeEditBtn.addEventListener('click', function() {
             editModal.classList.add('hidden');
-        }
-    });
+        });
+    }
 
-    deleteModal.addEventListener('click', function(e) {
-        if (e.target === deleteModal) {
-            deleteModal.classList.add('hidden');
-        }
-    });
-
-    manageJabatanModal.addEventListener('click', function(e) {
-        if (e.target === manageJabatanModal) {
+    if (closeJabatanBtn && manageJabatanModal) {
+        closeJabatanBtn.addEventListener('click', function() {
             manageJabatanModal.classList.add('hidden');
-        }
-    });
+        });
+    }
 
-    deleteJabatanModal.addEventListener('click', function(e) {
-        if (e.target === deleteJabatanModal) {
-            deleteJabatanModal.classList.add('hidden');
-        }
-    });
+    if (createModal) {
+        createModal.addEventListener('click', function(e) {
+            if (e.target === createModal) {
+                createModal.classList.add('hidden');
+            }
+        });
+    }
+
+    if (editModal) {
+        editModal.addEventListener('click', function(e) {
+            if (e.target === editModal) {
+                editModal.classList.add('hidden');
+            }
+        });
+    }
+
+    if (manageJabatanModal) {
+        manageJabatanModal.addEventListener('click', function(e) {
+            if (e.target === manageJabatanModal) {
+                manageJabatanModal.classList.add('hidden');
+            }
+        });
+    }
 });
 
 function editStaff(id) {
@@ -605,7 +607,7 @@ function editStaff(id) {
         document.getElementById('edit-month').value = data.month || '';
         document.getElementById('edit-year').value = data.year || '';
         document.getElementById('edit-bio').value = data.bio || '';
-        document.getElementById('edit-is_active').checked = data.is_active === 1;
+        document.getElementById('edit-is_active').checked = data.is_active === 1 || data.is_active === true || data.is_active === '1';
         
         // Reset delete photo flag
         document.getElementById('edit-delete-photo-flag').value = '0';

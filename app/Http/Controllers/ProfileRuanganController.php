@@ -16,109 +16,34 @@ class ProfileRuanganController extends Controller
             'floor'       => 'nullable|integer|min:1|max:7',
             'capacity'    => 'nullable|integer',
             'description' => 'nullable|string',
-            'slot_1_image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
-            'slot_2_image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
-            'slot_3_image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'images'      => 'nullable|array',
+            'images.*'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
             'is_active'   => 'nullable|in:0,1,on,true,false',
         ];
     }
 
-    private function saveImages(Request $request, ProfileRuangan $profileRuangan, $replace = false)
+    private function saveImages(Request $request, ProfileRuangan $profileRuangan)
     {
-        $uploadDir = storage_path('app/profile_ruangan_images');
-        
-        // Create directory if not exists
-        if (!is_dir($uploadDir)) {
-            @mkdir($uploadDir, 0755, true);
-        }
-        
-        \Log::info('saveImages started', [
-            'profileRuangan_id' => $profileRuangan->id,
-            'upload_dir' => $uploadDir,
-            'dir_exists' => is_dir($uploadDir),
-            'dir_writable' => is_writable($uploadDir),
-        ]);
-        
-        for ($i = 1; $i <= 3; $i++) {
-            $slotName = "slot_{$i}_image";
-            
-            try {
-                if (!$request->hasFile($slotName)) {
-                    \Log::debug("No file for $slotName");
-                    continue;
-                }
-                
-                $file = $request->file($slotName);
-                
+        // Get the next available slot number
+        $lastSlot = (int) ($profileRuangan->images()->max('slot') ?? 0);
+
+        // Save multiple files from images[] input
+        if ($request->hasFile('images')) {
+            foreach ((array) $request->file('images') as $file) {
                 if (!$file || !$file->isValid()) {
-                    \Log::warning("Invalid file for $slotName", [
-                        'error' => $file ? $file->getErrorMessage() : 'File is null',
-                    ]);
                     continue;
                 }
-                
-                \Log::info("File valid for $slotName", [
-                    'name' => $file->getClientOriginalName(),
-                    'size' => $file->getSize(),
-                    'mime' => $file->getMimeType(),
-                ]);
-                
-                // Delete old image if replacing
-                if ($replace) {
-                    $oldImage = $profileRuangan->images()->where('slot', $i)->first();
-                    if ($oldImage && $oldImage->image_path) {
-                        $oldPath = storage_path('app/' . $oldImage->image_path);
-                        if (file_exists($oldPath)) {
-                            @unlink($oldPath);
-                            \Log::info("Deleted old image: {$oldPath}");
-                        }
-                        $oldImage->delete();
-                    }
-                }
-                
-                // Generate filename
-                $filename = uniqid('profile_' . $profileRuangan->id . '_slot_' . $i . '_', true) . '.' . $file->getClientOriginalExtension();
-                $fullPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
-                $relativePath = 'profile_ruangan_images/' . $filename;
-                
-                \Log::info("Attempting to move file", [
-                    'from' => $file->getRealPath(),
-                    'to' => $fullPath,
-                    'filename' => $filename,
-                ]);
-                
-                // Try to copy file first, then delete original
-                if (!copy($file->getRealPath(), $fullPath)) {
-                    \Log::error("Failed to copy file for $slotName");
-                    throw new \Exception("Failed to copy file for slot $i");
-                }
-                
-                \Log::info("File copied successfully", [
-                    'fullPath' => $fullPath,
-                    'exists' => file_exists($fullPath),
-                    'size' => filesize($fullPath),
-                ]);
-                
-                // Create database record
+
+                $lastSlot++;
+                $path = $file->store('profile_ruangan_images', 'public');
+
                 ProfileRuanganImage::create([
                     'profile_ruangan_id' => $profileRuangan->id,
-                    'slot'               => $i,
-                    'image_path'         => $relativePath,
+                    'slot' => $lastSlot,
+                    'image_path' => $path,
                 ]);
-                
-                \Log::info("Image record created for slot $i", [
-                    'image_path' => $relativePath,
-                ]);
-                
-            } catch (\Exception $e) {
-                \Log::error("Error saving image for $slotName: " . $e->getMessage(), [
-                    'trace' => $e->getTraceAsString(),
-                ]);
-                // Continue with next slot instead of throwing
             }
         }
-        
-        \Log::info('saveImages completed');
     }
 
     public function index(Request $request)
@@ -154,9 +79,7 @@ class ProfileRuanganController extends Controller
     {
         \Log::info('ProfileRuangan Create started', [
             'has_files' => [
-                'slot_1' => $request->hasFile('slot_1_image'),
-                'slot_2' => $request->hasFile('slot_2_image'),
-                'slot_3' => $request->hasFile('slot_3_image'),
+                'images' => $request->hasFile('images'),
             ]
         ]);
 
@@ -231,9 +154,7 @@ class ProfileRuanganController extends Controller
         \Log::info('ProfileRuangan Update started', [
             'id' => $profileRuangan->id,
             'has_files' => [
-                'slot_1' => $request->hasFile('slot_1_image'),
-                'slot_2' => $request->hasFile('slot_2_image'),
-                'slot_3' => $request->hasFile('slot_3_image'),
+                'images' => $request->hasFile('images'),
             ]
         ]);
 
@@ -247,7 +168,7 @@ class ProfileRuanganController extends Controller
             $profileRuangan->update($data);
             \Log::info('Profile ruangan data updated');
             
-            $this->saveImages($request, $profileRuangan, true);
+            $this->saveImages($request, $profileRuangan);
             \Log::info('Images saved successfully');
 
             // Return JSON for fetch API
@@ -297,10 +218,10 @@ class ProfileRuanganController extends Controller
     public function destroy(ProfileRuangan $profileRuangan)
     {
         foreach ($profileRuangan->images as $image) {
-            $imagePath = storage_path('app/' . $image->image_path);
-            if (file_exists($imagePath)) {
-                @unlink($imagePath);
-            }
+            Storage::disk('public')->delete($image->image_path);
+            Storage::disk('local')->delete($image->image_path);
+            @unlink(storage_path('app/' . $image->image_path));
+            @unlink(storage_path('app/private/' . $image->image_path));
             $image->delete();
         }
         $profileRuangan->delete();
@@ -328,12 +249,12 @@ class ProfileRuanganController extends Controller
     {
         $profileRuanganId = $image->profile_ruangan_id;
         
-        // Delete physical file
-        $imagePath = storage_path('app/' . $image->image_path);
-        if (file_exists($imagePath)) {
-            @unlink($imagePath);
-            \Log::info('Deleted image file: ' . $image->image_path);
-        }
+        // Delete physical file from all possible storage locations
+        Storage::disk('public')->delete($image->image_path);
+        Storage::disk('local')->delete($image->image_path);
+        @unlink(storage_path('app/' . $image->image_path));
+        @unlink(storage_path('app/private/' . $image->image_path));
+        \Log::info('Deleted image file: ' . $image->image_path);
         
         // Delete database record
         $image->delete();

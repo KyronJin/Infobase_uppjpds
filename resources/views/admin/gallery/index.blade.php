@@ -2,12 +2,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
             <div>
-                <h1 class="h2 text-gray-800">Kelola Galeri Foto</h1>
-                <p class="text-sm text-gray-500">Manage foto-foto perpustakaan di sini.</p>
+                <h1 class="h2 text-[#063A76]">Kelola Galeri Foto</h1>
+                <p class="text-sm text-slate-500">Manage foto-foto perpustakaan di sini.</p>
             </div>
             <div class="flex gap-3 mt-4 md:mt-0">
                 <x-button variant="secondary" size="lg" type="link" href="{{ route('home') }}" icon="arrow-left">Home</x-button>
@@ -21,10 +21,10 @@
             </div>
         @endif
 
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden text-sm">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden text-sm">
             
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 border-b border-gray-100 font-bold">
+                    <thead class="bg-slate-50 border-b border-slate-100 font-bold">
                         <tr>
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Foto</th>
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600">Info Foto</th>
@@ -53,11 +53,11 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($photo->location === 'home')
-                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 text-teal-700 rounded-md text-xs">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 text-[#063A76] rounded-md text-xs">
                                         <i class="fas fa-home text-[10px]"></i> Beranda
                                     </span>
                                 @elseif($photo->location === 'about')
-                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-[#063A76] rounded-md text-xs">
                                         <i class="fas fa-info-circle text-[10px]"></i> Tentang
                                     </span>
                                 @else
@@ -103,8 +103,8 @@
 <div id="editGalleryModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 overflow-y-auto hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 my-8">
         <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
-                <i class="fas fa-camera text-indigo-600 text-lg"></i>
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-camera text-[#063A76] text-lg"></i>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-gray-900">Edit Foto Galeri</h3>
@@ -121,22 +121,22 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Foto</label>
-                <input type="text" id="edit-title" name="title" placeholder="Masukkan judul foto" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                <input type="text" id="edit-title" name="title" placeholder="Masukkan judul foto" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors">
             </div>
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-                <textarea id="edit-description" name="description" rows="2" placeholder="Masukkan deskripsi singkat" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors"></textarea>
+                <textarea id="edit-description" name="description" rows="2" placeholder="Masukkan deskripsi singkat" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors"></textarea>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
-                    <input type="text" id="edit-category" name="category" placeholder="Contoh: Kegiatan" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                    <input type="text" id="edit-category" name="category" placeholder="Contoh: Kegiatan" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Lokasi Tampil</label>
-                    <select id="edit-location" name="location" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                    <select id="edit-location" name="location" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors">
                         <option value="home">Beranda</option>
                         <option value="about">Tentang Kami</option>
                         <option value="both">Keduanya</option>
@@ -147,7 +147,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🖼️ Ganti Foto (Opsional)</label>
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-indigo-400 transition-colors cursor-pointer relative">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-[#063A76] transition-colors cursor-pointer relative">
                     <input type="file" name="image" accept="image/*" class="w-full opacity-0 absolute inset-0 cursor-pointer" onchange="previewGalleryImage(event)">
                     <div class="text-center">
                         <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
@@ -162,7 +162,7 @@
 
             <div class="flex items-center gap-3">
                 <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-4 h-4 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500">
+                    <input type="checkbox" id="edit-is_active" name="is_active" value="1" class="w-4 h-4 text-[#063A76] rounded focus:ring-2 focus:ring-[#063A76]">
                     <span class="text-sm font-semibold text-gray-700">Tampilkan di Website</span>
                 </label>
             </div>

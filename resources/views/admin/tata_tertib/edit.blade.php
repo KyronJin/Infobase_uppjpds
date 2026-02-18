@@ -10,18 +10,18 @@
 @endpush
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-12 pt-28 font-cairo">
-    <div class="max-w-4xl mx-auto px-6">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8 font-cairo">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
         
         <!-- Standardized Header -->
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
             <div class="flex items-center gap-4">
-                <a href="{{ route('admin.tata_tertib.index') }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors">
+                <a href="{{ route('admin.tata_tertib.index') }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-[#063A76] hover:bg-slate-100 transition-colors">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
-                    <h1 class="h2 text-gray-800">Edit Tata Tertib</h1>
-                    <p class="text-sm text-gray-500">Sesuaikan aturan dan kebijakan operasional.</p>
+                    <h1 class="h2 text-[#063A76]">Edit Tata Tertib</h1>
+                    <p class="text-sm text-slate-500">Sesuaikan aturan dan kebijakan operasional.</p>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
         </div>
         @endif
 
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-10">
                 <form action="{{ route('admin.tata_tertib.update', $tata_tert_id ?? $tata_tertib) }}" method="POST">
                     @csrf
@@ -50,7 +50,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Jenis Tata Tertib</label>
-                            <select name="jenis_tata_tertib_id" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none" required>
+                            <select name="jenis_tata_tertib_id" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#063A76]/20 focus:border-[#063A76] transition-all outline-none" required>
                                 <option value="">Pilih Jenis</option>
                                 @foreach ($jenis as $item)
                                     <option value="{{ $item->id }}" {{ old('jenis_tata_tertib_id', $tata_tertib->jenis_tata_tertib_id) == $item->id ? 'selected' : '' }}>
@@ -61,7 +61,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Status</label>
-                            <select name="is_active" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none" required>
+                            <select name="is_active" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#063A76]/20 focus:border-[#063A76] transition-all outline-none" required>
                                 <option value="1" {{ old('is_active', $tata_tertib->is_active) == 1 ? 'selected' : '' }}>✓ Aktif</option>
                                 <option value="0" {{ old('is_active', $tata_tertib->is_active) == 0 ? 'selected' : '' }}>✗ Tidak Aktif</option>
                             </select>
