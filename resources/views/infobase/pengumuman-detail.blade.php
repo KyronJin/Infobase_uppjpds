@@ -57,6 +57,112 @@
                             object-fit: contain;
                             border-radius: 8px;
                         }
+
+                        /* Excel Table Styles - Direct targeting */
+                        table, table.excel-table {
+                            width: 100% !important;
+                            border-collapse: collapse !important;
+                            margin: 1.5rem 0 !important;
+                            border: 1px solid #d1d5db !important;
+                            font-size: 14px !important;
+                            table-layout: auto !important;
+                            display: table !important;
+                        }
+
+                        table th, table.excel-table th, .excel-table th {
+                            background-color: #3b82f6 !important;
+                            color: white !important;
+                            padding: 0.75rem !important;
+                            text-align: center !important;
+                            font-weight: 700 !important;
+                            border: 1px solid #d1d5db !important;
+                            white-space: normal !important;
+                            word-wrap: break-word !important;
+                            word-break: break-word !important;
+                        }
+
+                        table td, table.excel-table td, .excel-table td {
+                            padding: 0.75rem !important;
+                            text-align: left !important;
+                            border: 1px solid #d1d5db !important;
+                            color: #374151 !important;
+                            font-weight: 400 !important;
+                            white-space: normal !important;
+                            word-wrap: break-word !important;
+                            word-break: break-word !important;
+                        }
+
+                        table tr:nth-child(odd), .excel-table tr:nth-child(odd) {
+                            background-color: #ffffff !important;
+                        }
+
+                        table tr:nth-child(even), .excel-table tr:nth-child(even) {
+                            background-color: #f0f4f8 !important;
+                        }
+
+                        table tr:hover, .excel-table tr:hover {
+                            background-color: #e0e7ff !important;
+                        }
+
+                        .excel-table {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        }
+
+                        /* Prose compatibility */
+                        .prose table {
+                            width: 100% !important;
+                            border-collapse: collapse !important;
+                            margin: 1.5rem 0 !important;
+                            border: 1px solid #d1d5db !important;
+                            font-size: 14px !important;
+                            table-layout: auto !important;
+                            display: table !important;
+                        }
+
+                        .prose table th {
+                            background-color: #3b82f6 !important;
+                            color: white !important;
+                            padding: 0.75rem !important;
+                            text-align: center !important;
+                            font-weight: 700 !important;
+                            border: 1px solid #d1d5db !important;
+                        }
+
+                        .prose table td {
+                            padding: 0.75rem !important;
+                            text-align: left !important;
+                            border: 1px solid #d1d5db !important;
+                            color: #374151 !important;
+                        }
+
+                        .prose table tr:nth-child(odd) {
+                            background-color: #ffffff !important;
+                        }
+
+                        .prose table tr:nth-child(even) {
+                            background-color: #f0f4f8 !important;
+                        }
+
+                        .prose table tr:hover {
+                            background-color: #e0e7ff !important;
+                        }
+
+                        /* Mobile responsiveness */
+                        @media (max-width: 768px) {
+                            table, table.excel-table, .prose table {
+                                font-size: 12px !important;
+                            }
+                            
+                            table td, table th, .excel-table td, .excel-table th, .prose table td, .prose table th {
+                                padding: 0.5rem !important;
+                            }
+
+                            table {
+                                display: block !important;
+                                overflow-x: auto !important;
+                                white-space: nowrap !important;
+                            }
+                        }
                     </style>
                     <div class="prose prose-slate max-w-none text-slate-700 text-lg leading-relaxed">
                         {!! $pengumuman->description !!}

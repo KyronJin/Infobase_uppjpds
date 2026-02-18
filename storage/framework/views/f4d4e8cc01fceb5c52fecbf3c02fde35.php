@@ -236,8 +236,8 @@
     .slider input[type="radio"]:nth-of-type(3):checked ~ .slider-dots .slider-dot:nth-child(3),
     .slider input[type="radio"]:nth-of-type(4):checked ~ .slider-dots .slider-dot:nth-child(4),
     .slider input[type="radio"]:nth-of-type(5):checked ~ .slider-dots .slider-dot:nth-child(5) {
-        background: #0052CC;
-        border-color: #0052CC;
+        background: #063A76;
+        border-color: #063A76;
         transform: scale(1.3);
     }
 
@@ -270,7 +270,7 @@
         font-weight: 700;
         color: #1f2937;
         margin-bottom: 0.5rem;
-        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
+        background: linear-gradient(135deg, #063A76 0%, #063A76 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -289,12 +289,12 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.35rem 0.7rem;
-        background: linear-gradient(135deg, #0052CC 0%, #003A99 100%);
+        background: linear-gradient(135deg, #063A76 0%, #063A76 100%);
         color: white;
         border-radius: 0.4rem;
         font-size: 0.7rem;
         font-weight: 600;
-        box-shadow: 0 2px 8px rgba(0, 82, 204, 0.25);
+        box-shadow: 0 2px 8px rgba(6, 58, 118, 0.25);
         transition: all 0.3s ease;
     }
 
@@ -308,121 +308,14 @@
     }
 
     .room-description {
-        background: linear-gradient(135deg, #E0EAFF 0%, rgba(0, 82, 204, 0.05) 100%);
-        border-left: 3px solid #0052CC;
+        background: linear-gradient(135deg, #E0F0FF 0%, rgba(6, 58, 118, 0.05) 100%);
+        border-left: 3px solid #063A76;
         padding: 0.7rem;
         border-radius: 0.4rem;
         color: #374151;
         line-height: 1.5;
         font-size: 0.8rem;
         margin-top: 0.6rem;
-    }
-
-    /* Modal */
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.92);
-        z-index: 1000;
-        backdrop-filter: blur(8px);
-    }
-
-    .modal-overlay.active {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .modal-content {
-        position: relative;
-        max-width: 90vw;
-        max-height: 90vh;
-        animation: slideUp 0.3s ease;
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .modal-content img {
-        max-width: 90%;
-        max-height: 80vh;
-        object-fit: contain;
-        border-radius: 0.75rem;
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        font-size: 28px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        z-index: 1001;
-        backdrop-filter: blur(10px);
-    }
-
-    .modal-close:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: scale(1.1);
-    }
-
-    .modal-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        z-index: 1001;
-        backdrop-filter: blur(10px);
-    }
-
-    .modal-nav:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: translateY(-50%) scale(1.1);
-    }
-
-    .modal-nav.prev {
-        left: 20px;
-    }
-
-    .modal-nav.next {
-        right: 20px;
     }
 
     /* Container */
@@ -502,6 +395,362 @@
         justify-content: space-between;
         align-items: center;
     }
+
+    /* Detail Profile Modal */
+    .detail-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
+        backdrop-filter: blur(8px);
+        overflow-y: auto;
+        padding: 2rem 1rem;
+    }
+
+    .detail-modal-overlay.active {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .detail-modal-wrapper {
+        background: white;
+        border-radius: 16px;
+        max-width: 900px;
+        width: 100%;
+        overflow: hidden;
+        animation: slideUp 0.3s ease;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        margin: auto;
+    }
+
+    .detail-modal-header {
+        position: relative;
+        background: linear-gradient(135deg, #063A76 0%, #063A76 100%);
+        padding: 2rem;
+        color: white;
+    }
+
+    .detail-modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        backdrop-filter: blur(10px);
+    }
+
+    .detail-modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .detail-modal-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        margin-bottom: 0.5rem;
+        color: white;
+    }
+
+    .detail-modal-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .detail-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .detail-badge i {
+        font-size: 1rem;
+    }
+
+    /* Image Slider in Detail Modal */
+    .detail-image-carousel {
+        position: relative;
+        background: #1f2937;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .detail-image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .detail-image {
+        max-width: 90%;
+        max-height: 100%;
+        object-fit: contain;
+        animation: imageZoom 0.4s ease;
+    }
+
+    @keyframes imageZoom {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .detail-image-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        z-index: 10;
+    }
+
+    .detail-image-nav:hover {
+        background: rgba(0, 0, 0, 0.7);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .detail-image-nav.prev {
+        left: 15px;
+    }
+
+    .detail-image-nav.next {
+        right: 15px;
+    }
+
+    .detail-image-counter {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        z-index: 10;
+    }
+
+    .detail-image-dots {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+    }
+
+    .detail-image-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .detail-image-dot.active {
+        background: white;
+        transform: scale(1.3);
+    }
+
+    .detail-image-dot:hover {
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Content Area */
+    .detail-modal-content {
+        padding: 2rem;
+    }
+
+    .detail-description-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #063A76;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .detail-description-title i {
+        font-size: 1.25rem;
+    }
+
+    .detail-description-text {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%);
+        border-left: 4px solid #063A76;
+        padding: 1.5rem;
+        border-radius: 8px;
+        color: #374151;
+        line-height: 1.7;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    .detail-description-text:empty {
+        display: none;
+    }
+
+    .detail-description-text:empty + .detail-description-empty {
+        display: block;
+    }
+
+    .detail-description-empty {
+        display: none;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        border-left: 4px solid #9ca3af;
+        padding: 1.5rem;
+        border-radius: 8px;
+        color: #6b7280;
+        font-style: italic;
+        text-align: center;
+    }
+
+    /* Image Thumbnails */
+    .detail-image-thumbnails {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .detail-thumbnails-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+
+    .detail-thumbnails-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .detail-thumbnail {
+        cursor: pointer;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 3px solid transparent;
+        transition: all 0.2s;
+        height: 80px;
+        background: #f3f4f6;
+    }
+
+    .detail-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.2s;
+    }
+
+    .detail-thumbnail:hover img {
+        transform: scale(1.05);
+    }
+
+    .detail-thumbnail.active {
+        border-color: #063A76;
+        box-shadow: 0 0 0 2px white, 0 0 0 4px #063A76;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .detail-modal-wrapper {
+            border-radius: 12px;
+            max-width: 100%;
+        }
+
+        .detail-image-carousel {
+            height: 300px;
+        }
+
+        .detail-modal-content {
+            padding: 1.5rem;
+        }
+
+        .detail-modal-header {
+            padding: 1.5rem;
+        }
+
+        .detail-modal-title {
+            font-size: 1.4rem;
+        }
+
+        .detail-badges {
+            flex-direction: column;
+        }
+
+        .detail-image-nav {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+
+        .detail-image-nav.prev {
+            left: 10px;
+        }
+
+        .detail-image-nav.next {
+            right: 10px;
+        }
+
+        .detail-thumbnails-grid {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .detail-thumbnail {
+            height: 70px;
+        }
+    }
 </style>
 
 <div class="page-header simple-header">
@@ -527,7 +776,7 @@
     <?php if($items->isNotEmpty()): ?>
         <div class="rooms-grid">
             <?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="room-card">
+                <div class="room-card" onclick="openDetailModal(<?php echo e($item->id); ?>, this)">
                     <!-- Compact Slider -->
                     <?php if($item->images->count() > 0): ?>
                         <div class="slider-wrapper">
@@ -540,7 +789,7 @@
                                         <?php echo e($index === 0 ? 'checked' : ''); ?>
 
                                     >
-                                    <figure class="slider-figure" onclick="openImageModal('<?php echo e(route('profile-ruangan.image', ['filename' => basename($image->image_path)])); ?>', <?php echo e($item->id); ?>, <?php echo e($index); ?>)">
+                                    <figure class="slider-figure">
                                         <img src="<?php echo e(route('profile-ruangan.image', ['filename' => basename($image->image_path)])); ?>" alt="<?php echo e($item->room_name); ?>" loading="lazy">
                                     </figure>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -615,23 +864,188 @@
     <?php endif; ?>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="imageModal" onclick="closeImageModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeImageModal()">
-            <i class="fas fa-times"></i>
-        </button>
-        <img id="modalImage" src="" alt="Full Image">
-        <button class="modal-nav prev" id="modalPrev" onclick="prevImageModal()" style="display:none;">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="modal-nav next" id="modalNext" onclick="nextImageModal()" style="display:none;">
-            <i class="fas fa-chevron-right"></i>
-        </button>
+<!-- Detail Profile Modal -->
+<div class="detail-modal-overlay" id="detailModal" onclick="closeDetailModal(event)">
+    <div class="detail-modal-wrapper" onclick="event.stopPropagation()">
+        <div class="detail-modal-header">
+            <button class="detail-modal-close" onclick="closeDetailModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="detail-modal-title" id="detailRoomName"></h2>
+            <div class="detail-modal-badges" id="detailBadges"></div>
+        </div>
+        
+        <div class="detail-image-carousel" id="detailImageCarousel">
+            <div class="detail-image-wrapper">
+                <img id="detailImage" class="detail-image" src="" alt="Room image">
+            </div>
+            <button class="detail-image-nav prev" id="detailPrev" onclick="detailPrevImage()" style="display:none;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="detail-image-nav next" id="detailNext" onclick="detailNextImage()" style="display:none;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="detail-image-dots" id="detailDots"></div>
+            <div class="detail-image-counter" id="detailCounter" style="display:none;"></div>
+        </div>
+
+        <div class="detail-modal-content">
+            <div class="detail-image-thumbnails" id="detailThumbnails">
+                <div class="detail-thumbnails-title">Foto-foto Ruangan</div>
+                <div class="detail-thumbnails-grid" id="detailThumbnailsGrid"></div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <h3 class="detail-description-title">
+                    <i class="fas fa-align-left"></i> Deskripsi Ruangan
+                </h3>
+                <div class="detail-description-text" id="detailDescriptionText"></div>
+                <div class="detail-description-empty">Tidak ada deskripsi untuk ruangan ini</div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    // Detail Modal Data
+    const detailModalData = {
+        <?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            "<?php echo e($item->id); ?>": {
+                name: "<?php echo e($item->room_name); ?>",
+                floor: "<?php echo e($item->floor ?? ''); ?>",
+                capacity: "<?php echo e($item->capacity ?? ''); ?>",
+                description: `<?php echo e(str_replace('`', '\`', e($item->description))); ?>`,
+                images: [
+                    <?php $__currentLoopData = $item->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        "<?php echo e(route('profile-ruangan.image', ['filename' => basename($image->image_path)])); ?>"<?php echo e(!$loop->last ? ',' : ''); ?>
+
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                ]
+            }<?php echo e(!$loop->last ? ',' : ''); ?>
+
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    };
+
+    let currentDetailRoomId = null;
+    let currentDetailImageIndex = 0;
+
+    function openDetailModal(roomId, element) {
+        const data = detailModalData[roomId];
+        if (!data) return;
+
+        currentDetailRoomId = roomId;
+        currentDetailImageIndex = 0;
+
+        // Set content
+        document.getElementById('detailRoomName').textContent = data.name;
+        
+        // Set badges
+        const badgesHtml = `
+            ${data.floor ? `<div class="detail-badge"><i class="fas fa-layer-group"></i> Lantai ${data.floor}</div>` : ''}
+            ${data.capacity ? `<div class="detail-badge"><i class="fas fa-users"></i> Kapasitas ${data.capacity} Orang</div>` : ''}
+        `;
+        document.getElementById('detailBadges').innerHTML = badgesHtml;
+
+        // Set image
+        updateDetailImage();
+
+        // Set thumbnails
+        if (data.images.length > 0) {
+            const thumbnailsHtml = data.images.map((img, idx) => `
+                <div class="detail-thumbnail ${idx === 0 ? 'active' : ''}" onclick="selectDetailImage(${idx})">
+                    <img src="${img}" alt="Foto ${idx + 1}">
+                </div>
+            `).join('');
+            document.getElementById('detailThumbnailsGrid').innerHTML = thumbnailsHtml;
+
+            // Hide thumbnails if only one image
+            document.getElementById('detailThumbnails').style.display = data.images.length > 1 ? 'block' : 'none';
+        }
+
+        // Set description
+        const descText = document.getElementById('detailDescriptionText');
+        if (data.description && data.description.trim()) {
+            descText.textContent = data.description;
+            descText.style.display = 'block';
+        } else {
+            descText.style.display = 'none';
+        }
+
+        // Show/hide navigation
+        const showNav = data.images.length > 1;
+        document.getElementById('detailPrev').style.display = showNav ? 'flex' : 'none';
+        document.getElementById('detailNext').style.display = showNav ? 'flex' : 'none';
+        document.getElementById('detailCounter').style.display = showNav ? 'block' : 'none';
+
+        // Update dots
+        updateDetailDots();
+
+        // Show modal
+        document.getElementById('detailModal').classList.add('active');
+    }
+
+    function updateDetailImage() {
+        const data = detailModalData[currentDetailRoomId];
+        if (!data || !data.images[currentDetailImageIndex]) return;
+
+        document.getElementById('detailImage').src = data.images[currentDetailImageIndex];
+        document.getElementById('detailCounter').textContent = `${currentDetailImageIndex + 1} / ${data.images.length}`;
+
+        // Update thumbnails
+        const thumbnails = document.querySelectorAll('.detail-thumbnail');
+        thumbnails.forEach((thumb, idx) => {
+            thumb.classList.toggle('active', idx === currentDetailImageIndex);
+        });
+    }
+
+    function updateDetailDots() {
+        const data = detailModalData[currentDetailRoomId];
+        if (!data) return;
+
+        const dotsHtml = data.images.map((_, idx) => `
+            <div class="detail-image-dot ${idx === currentDetailImageIndex ? 'active' : ''}" onclick="selectDetailImage(${idx})"></div>
+        `).join('');
+        document.getElementById('detailDots').innerHTML = dotsHtml;
+    }
+
+    function selectDetailImage(index) {
+        currentDetailImageIndex = index;
+        updateDetailImage();
+        updateDetailDots();
+    }
+
+    function detailPrevImage() {
+        const data = detailModalData[currentDetailRoomId];
+        if (!data) return;
+        currentDetailImageIndex = (currentDetailImageIndex - 1 + data.images.length) % data.images.length;
+        updateDetailImage();
+        updateDetailDots();
+    }
+
+    function detailNextImage() {
+        const data = detailModalData[currentDetailRoomId];
+        if (!data) return;
+        currentDetailImageIndex = (currentDetailImageIndex + 1) % data.images.length;
+        updateDetailImage();
+        updateDetailDots();
+    }
+
+    function closeDetailModal(event) {
+        if (!event || event.target.id === 'detailModal') {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+    }
+
+    // Keyboard navigation for detail modal
+    document.addEventListener('keydown', (e) => {
+        if (document.getElementById('detailModal').classList.contains('active')) {
+            if (e.key === 'ArrowLeft') detailPrevImage();
+            if (e.key === 'ArrowRight') detailNextImage();
+            if (e.key === 'Escape') closeDetailModal();
+        }
+    });
+
+    // Prevent image modal from opening when clicking on card
     function slidePrev(roomId) {
         const slider = document.getElementById(`slider-${roomId}`);
         const inputs = slider.querySelectorAll('input[type="radio"]');
@@ -671,53 +1085,7 @@
         if (counter) counter.textContent = index + 1;
     }
 
-    // Modal
-    let currentModalRoomId = null;
-    let currentModalImageIndex = 0;
-    let currentModalImages = [];
-
-    function openImageModal(imageSrc, roomId, imageIndex) {
-        const slider = document.querySelector(`[id="slider-${roomId}"]`);
-        const images = slider.querySelectorAll('.slider-figure img');
-        currentModalImages = Array.from(images).map(img => img.src);
-        currentModalRoomId = roomId;
-        currentModalImageIndex = imageIndex;
-
-        document.getElementById('modalImage').src = imageSrc;
-        document.getElementById('imageModal').classList.add('active');
-        updateModalNav();
-    }
-
-    function closeImageModal(event) {
-        if (!event || event.target.id === 'imageModal') {
-            document.getElementById('imageModal').classList.remove('active');
-        }
-    }
-
-    function prevImageModal() {
-        currentModalImageIndex = (currentModalImageIndex - 1 + currentModalImages.length) % currentModalImages.length;
-        document.getElementById('modalImage').src = currentModalImages[currentModalImageIndex];
-    }
-
-    function nextImageModal() {
-        currentModalImageIndex = (currentModalImageIndex + 1) % currentModalImages.length;
-        document.getElementById('modalImage').src = currentModalImages[currentModalImageIndex];
-    }
-
-    function updateModalNav() {
-        const prev = document.getElementById('modalPrev');
-        const next = document.getElementById('modalNext');
-        prev.style.display = currentModalImages.length > 1 ? 'flex' : 'none';
-        next.style.display = currentModalImages.length > 1 ? 'flex' : 'none';
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if (document.getElementById('imageModal').classList.contains('active')) {
-            if (e.key === 'ArrowLeft') prevImageModal();
-            if (e.key === 'ArrowRight') nextImageModal();
-            if (e.key === 'Escape') closeImageModal();
-        }
-    });
+    // Modal functions removed
 </script>
 
 <?php $__env->stopSection(); ?>

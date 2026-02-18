@@ -510,13 +510,15 @@
 
               <?php if(Route::has('admin.profile.index')): ?>
               <a href="<?php echo e(route('admin.profile.index')); ?>" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Profile Ruangan
+                <?php echo e(__('messages.room_profiles')); ?>
+
               </a>
               <?php endif; ?>
 
               <?php if(Route::has('admin.tata_tertib.index')): ?>
               <a href="<?php echo e(route('admin.tata_tertib.index')); ?>" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Tata Tertib
+                <?php echo e(__('messages.rules')); ?>
+
               </a>
               <?php endif; ?>
 
@@ -528,20 +530,23 @@
 
               <?php if(Route::has('admin.profil_pegawai.index')): ?>
               <a href="<?php echo e(route('admin.profil_pegawai.index')); ?>" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Profil Pegawai
+                <?php echo e(__('messages.staff_profiles')); ?>
+
               </a>
               <?php endif; ?>
 
               <?php if(Route::has('admin.gallery.index')): ?>
               <a href="<?php echo e(route('admin.gallery.index')); ?>" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Galeri
+                <?php echo e(__('messages.gallery')); ?>
+
               </a>
               <?php endif; ?>
 
               <form action="<?php echo e(route('admin.logout')); ?>" method="POST" class="mt-1">
                 <?php echo csrf_field(); ?>
                 <button type="submit" class="w-full text-left px-5 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-200 font-medium text-sm border-t border-gray-100">
-                  Keluar
+                  <?php echo e(__('messages.logout')); ?>
+
                 </button>
               </form>
             </div>
@@ -652,13 +657,13 @@
 
               <?php if(Route::has('admin.profile.index')): ?>
               <a href="<?php echo e(route('admin.profile.index')); ?>" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Profile Ruangan</span>
+                <span class="text-sm font-semibold"><?php echo e(__('messages.room_profiles')); ?></span>
               </a>
               <?php endif; ?>
 
               <?php if(Route::has('admin.tata_tertib.index')): ?>
               <a href="<?php echo e(route('admin.tata_tertib.index')); ?>" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Tata Tertib</span>
+                <span class="text-sm font-semibold"><?php echo e(__('messages.rules')); ?></span>
               </a>
               <?php endif; ?>
 
@@ -670,20 +675,21 @@
 
               <?php if(Route::has('admin.profil_pegawai.index')): ?>
               <a href="<?php echo e(route('admin.profil_pegawai.index')); ?>" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Profil Pegawai</span>
+                <span class="text-sm font-semibold"><?php echo e(__('messages.staff_profiles')); ?></span>
               </a>
               <?php endif; ?>
 
               <?php if(Route::has('admin.gallery.index')): ?>
               <a href="<?php echo e(route('admin.gallery.index')); ?>" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Galeri</span>
+                <span class="text-sm font-semibold"><?php echo e(__('messages.gallery')); ?></span>
               </a>
               <?php endif; ?>
 
               <form action="<?php echo e(route('admin.logout')); ?>" method="POST" class="pt-2 border-t border-gray-200">
                 <?php echo csrf_field(); ?>
                 <button type="submit" class="w-full text-left px-4 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-300 font-semibold text-sm">
-                  Keluar
+                  <?php echo e(__('messages.logout')); ?>
+
                 </button>
               </form>
             </div>

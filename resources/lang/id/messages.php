@@ -14,6 +14,7 @@ return [
     'rules' => 'Tata Tertib',
     'staff_of_month' => 'Pegawai Bulan Ini',
     'staff_profiles' => 'Profil Pegawai',
+    'gallery' => 'Galeri',
     
     // Descriptions
     'view_announcements' => 'Lihat pengumuman',

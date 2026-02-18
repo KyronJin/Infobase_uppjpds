@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Excel Upload</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .dropzone { border: 2px dashed #999; padding: 40px; text-align: center; margin: 20px 0; cursor: pointer; }
+        .dropzone:hover { background: #f0f0f0; }
+        #result { margin-top: 20px; padding: 10px; background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h1>Test Excel Upload</h1>
+    
+    <div id="dropzone" class="dropzone">
+        Click or drag Excel file here (.xlsx, .xls, .csv)
+    </div>
+    
+    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
+    
+    <div id="result"></div>
+    
+    <script src="http://localhost:8000/js/xlsx.min.js"></script>
+    
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const result = document.getElementById('result');
+        
+        console.log('Page loaded');
+        console.log('XLSX available?', typeof XLSX !== 'undefined');
+        
+        setTimeout(() => {
+            console.log('After 2s - XLSX available?', typeof XLSX !== 'undefined');
+            if (typeof XLSX !== 'undefined') {
+                result.innerHTML = '<p style="color:green">✓ XLSX Library loaded successfully</p>';
+            } else {
+                result.innerHTML = '<p style="color:red">✗ XLSX Library NOT loaded</p>';
+            }
+        }, 2000);
+        
+        dropzone.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.background = '#e0f2fe';
+        });
+        
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.background = '';
+        });
+        
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.background = '';
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        function handleFiles(files) {
+            console.log('Files received:', files.length);
+            
+            if (typeof XLSX === 'undefined') {
+                result.innerHTML = '<p style="color:red">✗ XLSX not available yet!</p>';
+                return;
+            }
+            
+            const file = files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const csv = XLSX.utils.sheet_to_csv(sheet);
+                    const lines = csv.trim().split('\n');
+                    
+                    result.innerHTML = `
+                        <p style="color:green"><strong>✓ File parsed successfully!</strong></p>
+                        <p>File: ${file.name}</p>
+                        <p>Rows: ${lines.length}</p>
+                        <pre>${csv}</pre>
+                    `;
+                } catch (error) {
+                    result.innerHTML = `<p style="color:red">✗ Error: ${error.message}</p>`;
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>

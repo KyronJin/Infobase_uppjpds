@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Excel Parsing</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 900px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        input[type="file"] { cursor: pointer; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .result { margin-top: 20px; padding: 15px; background: #f0f0f0; border: 1px solid #ccc; max-height: 400px; overflow-y: auto; white-space: pre-wrap; font-size: 12px; }
+        table { border-collapse: collapse; margin: 10px 0; }
+        table, th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #3b82f6; color: white; }
+    </style>
+</head>
+<body>
+
+<h1>Test: Excel File Parsing</h1>
+
+<div class="section">
+    <h3>Upload CSV or Excel File</h3>
+    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+    <button onclick="clearResults()">Clear</button>
+</div>
+
+<div class="section">
+    <h3>Parsing Results:</h3>
+    <div id="result" class="result">Upload file to test...</div>
+</div>
+
+<script src="http://localhost:8000/js/xlsx.min.js"></script>
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const resultDiv = document.getElementById('result');
+    
+    console.log('Page loaded. XLSX available?', typeof XLSX !== 'undefined');
+    
+    setTimeout(() => {
+        if (typeof XLSX !== 'undefined') {
+            console.log('✓ XLSX library loaded');
+            resultDiv.innerHTML = '✓ XLSX library ready. Choose file to test...';
+        } else {
+            resultDiv.innerHTML = 'Notice: Waiting for XLSX library...';
+        }
+    }, 2000);
+    
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        console.log('File selected:', file.name);
+        testParsing(file);
+    });
+    
+    function testParsing(file) {
+        if (typeof XLSX === 'undefined') {
+            resultDiv.innerHTML = '✗ XLSX library not available!';
+            return;
+        }
+        
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            try {
+                console.log('File read, parsing...');
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                let output = `✓ FILE: ${file.name}\n`;
+                output += `✓ SHEETS: ${workbook.SheetNames.length}\n`;
+                output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                
+                // Parse as CSV
+                const csvData = XLSX.utils.sheet_to_csv(sheet, { blankrows: true });
+                const csvLines = csvData.trim().split('\n');
+                
+                output += `SHEET: "${sheetName}"\n`;
+                output += `CSV LINES: ${csvLines.length}\n`;
+                output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                
+                // Parse rows
+                const rows = csvLines.map(line => {
+                    const cells = [];
+                    let current = '';
+                    let inQuotes = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            cells.push(current.replace(/^"|"$/g, ''));
+                            current = '';
+                        } else {
+                            current += char;
+                        }
+                    }
+                    cells.push(current.replace(/^"|"$/g, ''));
+                    return cells;
+                });
+                
+                output += `PARSED ROWS: ${rows.length}\n`;
+                output += `COLUMNS: ${rows.length > 0 ? rows[0].length : 0}\n`;
+                output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                
+                // Show as table
+                output += `TABLE PREVIEW:\n`;
+                output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                
+                let tableHtml = '<table><tr>';
+                // Headers
+                if (rows.length > 0) {
+                    rows[0].forEach(cell => {
+                        tableHtml += `<th>${escapeHtml(cell)}</th>`;
+                    });
+                }
+                tableHtml += '</tr>';
+                
+                // Data
+                for (let i = 1; i < rows.length && i < 6; i++) {
+                    tableHtml += '<tr>';
+                    rows[i].forEach(cell => {
+                        tableHtml += `<td>${escapeHtml(cell)}</td>`;
+                    });
+                    tableHtml += '</tr>';
+                }
+                tableHtml += '</table>';
+                
+                if (rows.length > 6) {
+                    output += `(Showing first 5 data rows of ${rows.length - 1} total)\n\n`;
+                }
+                
+                resultDiv.innerHTML = output + '\n\n✓ Parsing successful!' + tableHtml;
+                console.log('Rows parsed:', rows);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `✗ Error: ${error.message}`;
+                console.error('Error:', error);
+            }
+        };
+        
+        reader.onerror = () => {
+            resultDiv.innerHTML = '✗ Error reading file';
+        };
+        
+        reader.readAsArrayBuffer(file);
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function clearResults() {
+        fileInput.value = '';
+        resultDiv.innerHTML = 'Ready for new file...';
+    }
+</script>
+
+</body>
+</html>

@@ -215,8 +215,6 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">Galeri Perpustakaan</h2>
-                <div class="h-1 w-16 bg-orange-500 mx-auto rounded-full mb-6"></div>
-                <p class="text-lg text-gray-600">Jelajahi keindahan fasilitas dan koleksi kami</p>
             </div>
 
             <?php if(($homePhotos ?? collect())->count()): ?>
@@ -355,11 +353,6 @@
                         <div class="swiper-slide">
                             <div class="gallery-slide-content">
                                 <img src="<?php echo e(asset($photo->image_path)); ?>" alt="<?php echo e($photo->title); ?>">
-                                <div class="gallery-overlay"></div>
-                                <div class="gallery-content">
-                                    <h3 class="gallery-title"><?php echo e($photo->title); ?></h3>
-                                    <div class="gallery-divider"></div>
-                                </div>
                             </div>
                         </div>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

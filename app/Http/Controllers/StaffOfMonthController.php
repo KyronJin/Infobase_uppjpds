@@ -127,10 +127,8 @@ class StaffOfMonthController extends Controller
         $jabatans = Jabatan::orderBy('name', 'asc')->get();
 
         if (request()->expectsJson()) {
-            return response()->json([
-                'staff' => $staffOfMonth,
-                'jabatans' => $jabatans
-            ]);
+            // Return staff data directly with all properties
+            return response()->json($staffOfMonth);
         }
 
         return view('admin.staff.edit', [

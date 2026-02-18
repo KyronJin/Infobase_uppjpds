@@ -44,13 +44,26 @@
                 class="w-full h-full object-cover cursor-grab active:cursor-grabbing transition-transform duration-300"
                 draggable="false"
               >
-              <!-- Overlay with title/desc -->
+              <!-- Title Overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 pointer-events-none">
                 <div class="text-white">
                   <p id="carouselTitle" class="font-bold text-lg"><?php echo e($aboutPhotos->first()->title); ?></p>
-                  <p id="carouselDesc" class="text-sm text-gray-200"><?php echo e($aboutPhotos->first()->description); ?></p>
                 </div>
               </div>
+
+              <!-- Prev Button -->
+              <?php if(count($aboutPhotos) > 1): ?>
+              <button onclick="prevGallery()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <?php endif; ?>
+
+              <!-- Next Button -->
+              <?php if(count($aboutPhotos) > 1): ?>
+              <button onclick="nextGallery()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+              <?php endif; ?>
             </div>
           </div>
 
@@ -61,19 +74,7 @@
           </div>
           <?php endif; ?>
 
-          <!-- Thumbnail Gallery -->
-          <?php if(count($aboutPhotos) > 1): ?>
-          <div class="mt-4 flex gap-2 overflow-x-auto pb-2">
-            <?php $__currentLoopData = $aboutPhotos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $photo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <img 
-              src="<?php echo e(asset($photo->image_path)); ?>" 
-              alt="<?php echo e($photo->title); ?>" 
-              class="w-16 h-16 object-cover rounded border-2 cursor-pointer flex-shrink-0 transition-all hover:border-[#f85e38] hover:scale-110 <?php if($index === 0): ?> border-[#f85e38] <?php else: ?> border-gray-300 <?php endif; ?>"
-              onclick="openGalleryAtIndex(<?php echo e($index); ?>)"
-            >
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-          </div>
-          <?php endif; ?>
+
         </div>
         <?php endif; ?>
       </div>
@@ -141,33 +142,24 @@
               <i class="fas fa-check-circle text-[#F85E38] text-lg mt-1 flex-shrink-0"></i>
               <div>
                 <h3 class="font-semibold text-gray-900">Belajar</h3>
-                <p class="text-gray-600 text-sm">Kami adalah pusat gudang ilmu dengan ragam koleksi literature dan referensi</p>
+                <p class="text-gray-600 text-sm">Pusat gudang ilmu dengan ragam koleksi bukudan arsip, menjadikan Perpustakaan Jakarta sebagai sumber belajar.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <i class="fas fa-check-circle text-[#F85E38] text-lg mt-1 flex-shrink-0"></i>
               <div>
                 <h3 class="font-semibold text-gray-900">Berkarya</h3>
-                <p class="text-gray-600 text-sm">Wadah untuk berkarya dan berinovasi dalam mengembangkan pengetahuan</p>
+                <p class="text-gray-600 text-sm">Tak hanya membaca, perpustakaan juga menjadi wadah untuk berkarya dengan penyediaan ruang-ruang eksploratif.</p>
               </div>
             </li>
             <li class="flex items-start gap-3">
               <i class="fas fa-check-circle text-[#F85E38] text-lg mt-1 flex-shrink-0"></i>
               <div>
                 <h3 class="font-semibold text-gray-900">Bertumbuh</h3>
-                <p class="text-gray-600 text-sm">Tumbuh bersama melalui edukasi dan pengembangan berkelanjutan</p>
+                <p class="text-gray-600 text-sm">Wawasan yang diperoleh dari membaca, kreatifitas dari berkarya, menjadi bekal untuk membuat kota Jakarta, baik warga maupun kotanya tumbuh bersama.</p>
               </div>
             </li>
-            <li class="flex items-start gap-3">
-              <i class="fas fa-check-circle text-[#F85E38] text-lg mt-1 flex-shrink-0"></i>
-              <div>
-                <h3 class="font-semibold text-gray-900">Kepercayaan</h3>
-                <p class="text-gray-600 text-sm">Lembaga yang dapat diandalkan dan dipercaya oleh masyarakat</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-
+          
         <!-- Hubungi Kami (Right) -->
         <div>
           <h2 class="text-3xl font-bold text-gray-900 mb-6">Hubungi Kami</h2>

@@ -97,12 +97,39 @@
         line-height: 1.35;
         margin-bottom: 0.3rem;
         font-size: 0.78rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: block;
         flex: 1;
+        max-height: 400px;
+        overflow: auto;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .pengumuman-description p {
+        margin: 0.5rem 0;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .pengumuman-description table {
+        display: table !important;
+        width: 100% !important;
+        margin: 0.5rem 0 !important;
+        font-size: 0.7rem !important;
+        border-collapse: collapse !important;
+    }
+
+    .pengumuman-description table th,
+    .pengumuman-description table td {
+        padding: 0.3rem !important;
+        border: 1px solid #d1d5db !important;
+        font-size: 0.7rem !important;
+    }
+
+    .pengumuman-description table th {
+        background-color: #3b82f6 !important;
+        color: white !important;
+        font-weight: 700 !important;
     }
 
     .pengumuman-footer {
@@ -240,6 +267,65 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    /* Excel Table Styles for List Page */
+    table, table.excel-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 1.5rem 0 !important;
+        border: 1px solid #d1d5db !important;
+        font-size: 13px !important;
+        table-layout: auto !important;
+        display: table !important;
+    }
+
+    table th, table.excel-table th, .excel-table th {
+        background-color: #3b82f6 !important;
+        color: white !important;
+        padding: 0.75rem !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        border: 1px solid #d1d5db !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+
+    table td, table.excel-table td, .excel-table td {
+        padding: 0.75rem !important;
+        text-align: left !important;
+        border: 1px solid #d1d5db !important;
+        color: #374151 !important;
+        font-weight: 400 !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+
+    table tr:nth-child(odd), .excel-table tr:nth-child(odd) {
+        background-color: #ffffff !important;
+    }
+
+    table tr:nth-child(even), .excel-table tr:nth-child(even) {
+        background-color: #f0f4f8 !important;
+    }
+
+    table tr:hover, .excel-table tr:hover {
+        background-color: #e0e7ff !important;
+    }
+
+    @media (max-width: 768px) {
+        table, table.excel-table, .excel-table {
+            font-size: 12px !important;
+        }
+        
+        table td, table th, .excel-table td, .excel-table th {
+            padding: 0.5rem !important;
+        }
+
+        table {
+            display: block !important;
+            overflow-x: auto !important;
+        }
     }
 </style>
 

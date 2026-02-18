@@ -188,7 +188,7 @@
 
     .rule-text {
         color: #374151;
-        line-height: 1.7;
+        line-height: 1.8;
         font-size: 1rem;
         margin: 0;
         word-wrap: break-word;
@@ -198,6 +198,92 @@
         flex: 1;
     }
 
+    /* Headings */
+    .rule-text h1,
+    .rule-text h2,
+    .rule-text h3,
+    .rule-text h4,
+    .rule-text h5,
+    .rule-text h6 {
+        font-weight: 700;
+        color: #1f2937;
+        margin-top: 1.25rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .rule-text h1 { font-size: 1.75rem; }
+    .rule-text h2 { font-size: 1.5rem; }
+    .rule-text h3 { font-size: 1.25rem; }
+    .rule-text h4 { font-size: 1.125rem; }
+
+    /* Paragraphs */
+    .rule-text p {
+        margin: 1rem 0;
+        color: #374151;
+    }
+
+    /* Lists - Fixed to work properly */
+    .rule-text ul,
+    .rule-text ol {
+        margin: 1rem 0 1rem 2rem;
+        padding-left: 0;
+        line-height: 1.8;
+    }
+
+    .rule-text ul {
+        list-style-type: disc;
+    }
+
+    .rule-text ol {
+        list-style-type: decimal;
+    }
+
+    .rule-text li {
+        margin-bottom: 0.75rem;
+        color: #374151;
+        text-align: left;
+    }
+
+    .rule-text li strong,
+    .rule-text li b {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    /* Nested Lists */
+    .rule-text ol ol,
+    .rule-text ul ul,
+    .rule-text ol ul,
+    .rule-text ul ol {
+        margin: 0.5rem 0 0.5rem 2rem;
+    }
+
+    /* Emphasis */
+    .rule-text strong,
+    .rule-text b {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .rule-text em,
+    .rule-text i {
+        font-style: italic;
+        color: #4b5563;
+    }
+
+    /* Links */
+    .rule-text a {
+        color: #2563eb;
+        text-decoration: underline;
+        transition: color 0.2s ease;
+    }
+
+    .rule-text a:hover {
+        color: #1d4ed8;
+    }
+
+    /* Images */
     .rule-text img {
         max-width: 100%;
         width: 100%;
@@ -206,18 +292,81 @@
         display: block;
         object-fit: contain;
         border-radius: 6px;
-        margin: 1rem 0 0 0;
+        margin: 1.5rem 0;
         border: 1px solid #e5e7eb;
     }
 
-    .rule-text ul,
-    .rule-text ol {
-        margin-left: 1.5rem;
-        margin-top: 0.75rem;
+    /* Tables */
+    .rule-text table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        border: 1px solid #e5e7eb;
+        background: white;
     }
 
-    .rule-text li {
-        margin-bottom: 0.5rem;
+    .rule-text th,
+    .rule-text td {
+        border: 1px solid #e5e7eb;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .rule-text th {
+        background: #f3f4f6;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .rule-text tr:hover {
+        background: #f9fafb;
+    }
+
+    /* Blockquotes */
+    .rule-text blockquote {
+        border-left: 4px solid #2563eb;
+        padding: 0 0 0 1rem;
+        margin: 1rem 0;
+        color: #4b5563;
+        font-style: italic;
+        background: #f0f9ff;
+        padding: 1rem;
+        padding-left: 1rem;
+        border-radius: 0 4px 4px 0;
+    }
+
+    /* Code */
+    .rule-text code {
+        background: #f3f4f6;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.9em;
+        color: #7c3aed;
+    }
+
+    .rule-text pre {
+        background: #1f2937;
+        color: #f3f4f6;
+        padding: 1.25rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1rem 0;
+        font-size: 0.9em;
+        line-height: 1.5;
+    }
+
+    .rule-text pre code {
+        background: none;
+        color: #f3f4f6;
+        padding: 0;
+    }
+
+    /* Horizontal Rule */
+    .rule-text hr {
+        border: none;
+        border-top: 2px solid #e5e7eb;
+        margin: 1.5rem 0;
     }
 
     /* Empty State */
@@ -362,7 +511,7 @@
                 <?php $__empty_2 = true; $__currentLoopData = $j->tataTertibs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_2 = false; ?>
                 <div class="rule-card">
                     <div class="rule-number"><?php echo e($index + 1); ?></div>
-                    <p class="rule-text"><?php echo $t->content; ?></p>
+                    <div class="rule-text"><?php echo $t->content; ?></div>
                 </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_2): ?>
                 <div class="empty-state">

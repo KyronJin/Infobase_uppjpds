@@ -4,6 +4,128 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
 <style>
     .font-cairo { font-family: 'Cairo', sans-serif; }
+    
+    /* Preview Content Styling */
+    #preview-content {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1rem;
+        line-height: 1.75;
+        color: #2d3748;
+    }
+
+    #preview-content h1,
+    #preview-content h2,
+    #preview-content h3,
+    #preview-content h4,
+    #preview-content h5,
+    #preview-content h6 {
+        font-weight: 700;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #1a202c;
+    }
+
+    #preview-content h1 { font-size: 1.875rem; }
+    #preview-content h2 { font-size: 1.5rem; }
+    #preview-content h3 { font-size: 1.25rem; }
+    #preview-content h4 { font-size: 1.125rem; }
+
+    #preview-content p {
+        margin-bottom: 1rem;
+    }
+
+    #preview-content strong,
+    #preview-content b {
+        font-weight: 700;
+        color: #1a202c;
+    }
+
+    #preview-content em,
+    #preview-content i {
+        font-style: italic;
+        color: #374151;
+    }
+
+    #preview-content ul,
+    #preview-content ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    #preview-content li {
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+
+    #preview-content ol {
+        list-style-type: decimal;
+    }
+
+    #preview-content ul {
+        list-style-type: disc;
+    }
+
+    #preview-content blockquote {
+        border-left: 4px solid #3b82f6;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #4b5563;
+        background: #eff6ff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+    }
+
+    #preview-content code {
+        background: #f3f4f6;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.9rem;
+        color: #7c3aed;
+    }
+
+    #preview-content pre {
+        background: #1f2937;
+        color: #f3f4f6;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        margin: 1rem 0;
+    }
+
+    #preview-content pre code {
+        background: none;
+        color: #f3f4f6;
+        padding: 0;
+    }
+
+    #preview-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+
+    #preview-content th,
+    #preview-content td {
+        border: 1px solid #d1d5db;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    #preview-content th {
+        background: #f3f4f6;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    #preview-content a {
+        color: #3b82f6;
+        text-decoration: underline;
+    }
+
+    #preview-content a:hover {
+        color: #2563eb;
+    }
 </style>
 <?php $__env->stopPush(); ?>
 
@@ -127,6 +249,50 @@
                             <p class="text-center text-gray-400 text-sm py-4">Belum ada jenis tata tertib</p>
                         <?php endif; ?>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Modal -->
+        <div id="previewTataTertibModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
+                <!-- Header -->
+                <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-100 border-b border-blue-200 p-6 flex items-center justify-between z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-file-alt text-blue-700 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Deskripsi Tata Tertib</h3>
+                            <p id="preview-jenis" class="text-sm text-blue-600 font-semibold mt-1"></p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeModal('previewTataTertibModal')" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white rounded-lg transition-all">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Content -->
+                <div class="overflow-y-auto flex-1 p-8">
+                    <div id="preview-content" class="bg-white p-6 rounded-lg border border-gray-200 shadow-inner"></div>
+                </div>
+
+                <!-- Footer -->
+                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex justify-between items-center gap-3">
+                    <div class="flex gap-2">
+                        <button type="button" onclick="copyPreviewContent()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-200 gap-2 group">
+                            <i class="fas fa-copy group-hover:scale-110 transition-transform"></i>
+                            <span>Salin Teks</span>
+                        </button>
+                        <button type="button" onclick="printPreview()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-200 gap-2 group">
+                            <i class="fas fa-print group-hover:scale-110 transition-transform"></i>
+                            <span>Cetak</span>
+                        </button>
+                    </div>
+                    <button type="button" onclick="closeModal('previewTataTertibModal')" class="inline-flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 gap-2 group shadow-md hover:shadow-lg">
+                        <i class="fas fa-check group-hover:scale-110 transition-transform"></i>
+                        <span>Tutup</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -305,13 +471,19 @@
                                 <span class="text-sm font-medium text-gray-700"><?php echo e($item->jenisTataTertib->name); ?></span>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="text-sm text-gray-700"><?php echo e(Str::limit(strip_tags($item->content), 60)); ?></span>
+                                <button type="button" onclick="previewTataTertib(<?php echo e($item->id); ?>)" class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 text-sm font-semibold rounded-lg border border-blue-200 hover:bg-blue-100 transition-all duration-200 gap-2 group">
+                                    <i class="fas fa-file-alt group-hover:scale-110 transition-transform"></i>
+                                    <span>Lihat Deskripsi</span>
+                                    <?php if(strlen(strip_tags($item->content)) > 100): ?>
+                                    <span class="text-blue-400">→</span>
+                                    <?php endif; ?>
+                                </button>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <?php if($item->is_active): ?>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ Aktif</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Non-Aktif</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">✕ Non-Aktif</span>
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4">
@@ -410,6 +582,91 @@
         .catch(error => console.error('Error:', error));
     }
     
+    // Preview Tata Tertib Function
+    function previewTataTertib(id) {
+        fetch(`/admin/tata-tertib/${id}/edit`, {
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('preview-jenis').textContent = data.jenisTataTertib?.name || 'Tata Tertib';
+            document.getElementById('preview-content').innerHTML = data.content || 'Tidak ada konten';
+            document.getElementById('previewTataTertibModal').classList.remove('hidden');
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Copy Preview Content
+    function copyPreviewContent() {
+        const content = document.getElementById('preview-content');
+        const text = content.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const copyBtn = event.target.closest('button');
+            const originalContent = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i><span>Tersalin!</span>';
+            copyBtn.style.background = '#10b981';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalContent;
+                copyBtn.style.background = '';
+            }, 2000);
+        }).catch(() => {
+            alert('✗ Gagal menyalin konten');
+        });
+    }
+
+    // Print Preview Content
+    function printPreview() {
+        const content = document.getElementById('preview-content');
+        const jenis = document.getElementById('preview-jenis').textContent;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Tata Tertib - ${jenis}</title>
+                <style>
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                        line-height: 1.75;
+                        color: #2d3748;
+                        padding: 2rem;
+                        max-width: 8.5in;
+                        margin: 0 auto;
+                    }
+                    h1, h2, h3, h4, h5, h6 { color: #1a202c; font-weight: 700; }
+                    h1 { font-size: 1.875rem; }
+                    h2 { font-size: 1.5rem; }
+                    h3 { font-size: 1.25rem; }
+                    .header { border-bottom: 3px solid #3b82f6; padding-bottom: 1rem; margin-bottom: 2rem; }
+                    .jenis { font-size: 0.9rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; }
+                    strong, b { font-weight: 700; }
+                    ul, ol { margin: 1rem 0; padding-left: 2rem; }
+                    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+                    th, td { border: 1px solid #d1d5db; padding: 0.75rem; text-align: left; }
+                    th { background: #f3f4f6; font-weight: 600; }
+                    blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; margin: 1rem 0; background: #f0f9ff; padding: 1rem; }
+                    .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; font-size: 0.85rem; color: #6b7280; text-align: center; }
+                    @media print { body { padding: 0; } }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="jenis">${jenis}</div>
+                    <h1>Tata Tertib Perpustakaan</h1>
+                </div>
+                ${content.innerHTML}
+                <div class="footer">
+                    <p>Dicetak pada: ${new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
     document.getElementById('dropdownButton').addEventListener('click', function(e) {
         e.stopPropagation();
         document.getElementById('dropdownMenu').classList.toggle('hidden');
@@ -423,11 +680,15 @@
     window.onclick = function(event) {
         const jenisModal = document.getElementById('jenisModal');
         const editTataTertibModal = document.getElementById('editTataTertibModal');
+        const previewTataTertibModal = document.getElementById('previewTataTertibModal');
         if (event.target == jenisModal) {
             jenisModal.classList.add('hidden');
         }
         if (event.target == editTataTertibModal) {
             editTataTertibModal.classList.add('hidden');
+        }
+        if (event.target == previewTataTertibModal) {
+            previewTataTertibModal.classList.add('hidden');
         }
     }
 

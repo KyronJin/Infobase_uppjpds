@@ -14,6 +14,7 @@ return [
     'rules' => 'Rules & Regulations',
     'staff_of_month' => 'Staff of the Month',
     'staff_profiles' => 'Staff Profiles',
+    'gallery' => 'Gallery',
     
     // Descriptions
     'view_announcements' => 'View announcements',

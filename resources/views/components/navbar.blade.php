@@ -499,13 +499,13 @@
 
               @if(Route::has('admin.profile.index'))
               <a href="{{ route('admin.profile.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Profile Ruangan
+                {{ __('messages.room_profiles') }}
               </a>
               @endif
 
               @if(Route::has('admin.tata_tertib.index'))
               <a href="{{ route('admin.tata_tertib.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Tata Tertib
+                {{ __('messages.rules') }}
               </a>
               @endif
 
@@ -517,20 +517,20 @@
 
               @if(Route::has('admin.profil_pegawai.index'))
               <a href="{{ route('admin.profil_pegawai.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Profil Pegawai
+                {{ __('messages.staff_profiles') }}
               </a>
               @endif
 
               @if(Route::has('admin.gallery.index'))
               <a href="{{ route('admin.gallery.index') }}" class="block px-5 py-3 text-gray-700 hover:text-[#f97316] hover:bg-gray-50 border-t border-gray-100 transition duration-200 text-sm font-medium">
-                Galeri
+                {{ __('messages.gallery') }}
               </a>
               @endif
 
               <form action="{{ route('admin.logout') }}" method="POST" class="mt-1">
                 @csrf
                 <button type="submit" class="w-full text-left px-5 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-200 font-medium text-sm border-t border-gray-100">
-                  Keluar
+                  {{ __('messages.logout') }}
                 </button>
               </form>
             </div>
@@ -639,13 +639,13 @@
 
               @if(Route::has('admin.profile.index'))
               <a href="{{ route('admin.profile.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Profile Ruangan</span>
+                <span class="text-sm font-semibold">{{ __('messages.room_profiles') }}</span>
               </a>
               @endif
 
               @if(Route::has('admin.tata_tertib.index'))
               <a href="{{ route('admin.tata_tertib.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Tata Tertib</span>
+                <span class="text-sm font-semibold">{{ __('messages.rules') }}</span>
               </a>
               @endif
 
@@ -657,20 +657,20 @@
 
               @if(Route::has('admin.profil_pegawai.index'))
               <a href="{{ route('admin.profil_pegawai.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Profil Pegawai</span>
+                <span class="text-sm font-semibold">{{ __('messages.staff_profiles') }}</span>
               </a>
               @endif
 
               @if(Route::has('admin.gallery.index'))
               <a href="{{ route('admin.gallery.index') }}" class="block px-4 py-3 text-gray-700 hover:text-[#f85e38] hover:bg-white transition duration-300 border-t border-gray-200">
-                <span class="text-sm font-semibold">Galeri</span>
+                <span class="text-sm font-semibold">{{ __('messages.gallery') }}</span>
               </a>
               @endif
 
               <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-gray-200">
                 @csrf
                 <button type="submit" class="w-full text-left px-4 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition duration-300 font-semibold text-sm">
-                  Keluar
+                  {{ __('messages.logout') }}
                 </button>
               </form>
             </div>
