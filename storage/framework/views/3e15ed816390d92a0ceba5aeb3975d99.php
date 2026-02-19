@@ -1,29 +1,27 @@
-
-
 <?php $__env->startPush('styles'); ?>
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <?php $__env->stopPush(); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="bg-gray-50 min-h-screen py-12 pt-28">
-    <div class="max-w-6xl mx-auto px-6">
+<div class="bg-[#f8fafc] min-h-screen py-6 sm:py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
         <!-- Header dengan Navigation -->
-        <div class="mb-8">
+        <div class="mb-6 sm:mb-8">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                    <a href="<?php echo e(route('admin.pengumuman.index')); ?>" class="inline-flex items-center justify-center w-10 h-10 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors" title="Kembali">
+                    <a href="<?php echo e(route('admin.pengumuman.index')); ?>" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-[#063A76] rounded-xl hover:bg-slate-50 transition-colors" title="Kembali">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </a>
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Buat Pengumuman Baru</h1>
-                        <p class="text-sm text-gray-600 mt-1">Tambahkan pengumuman baru untuk tampil di halaman utama</p>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-[#063A76]">Buat Pengumuman Baru</h1>
+                        <p class="text-sm text-slate-600 mt-1">Tambahkan pengumuman baru untuk tampil di halaman utama</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Form Card -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
             <?php if($errors->any()): ?>
                 <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mb-6">
                     <h3 class="font-semibold mb-2">Terjadi Kesalahan:</h3>
@@ -41,7 +39,7 @@
                 <!-- Judul Pengumuman -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Pengumuman *</label>
-                    <input type="text" name="title" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent <?php $__errorArgs = ['title'];
+                    <input type="text" name="title" class="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76] <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -64,7 +62,7 @@ unset($__errorArgs, $__bag); ?>
                 <!-- Isi Pengumuman dengan Quill Editor -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Isi Pengumuman *</label>
-                    <div id="editor-description" class="border border-gray-300 rounded-lg shadow-sm" style="border-radius: 0.5rem; overflow: hidden; min-height: 300px;"></div>
+                    <div id="editor-description" class="border border-slate-300 rounded-xl shadow-sm" style="border-radius: 0.75rem; overflow: hidden; min-height: 300px;"></div>
                     <textarea name="description" id="description" class="editor hidden" placeholder="Ketik isi pengumuman di sini..."><?php echo e(old('description')); ?></textarea>
                     <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -95,7 +93,7 @@ unset($__errorArgs, $__bag); ?>
                 <!-- Gambar Pengumuman -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-4">Gambar Pengumuman (Maksimal 1)</label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400 transition" onclick="document.getElementById('image-input').click()">
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center cursor-pointer hover:border-[#063A76] transition" onclick="document.getElementById('image-input').click()">
                         <div id="image-preview" class="hidden">
                             <img id="image-img" src="" alt="Gambar" class="w-full h-48 object-cover rounded mb-2">
                             <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
@@ -138,33 +136,101 @@ unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <!-- Tanggal Publikasi -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Publikasi</label>
-                        <input type="datetime-local" name="published_at" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="<?php echo e(old('published_at')); ?>">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Publikasi *</label>
+                        <input type="datetime-local" name="published_at" required class="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76] <?php $__errorArgs = ['published_at'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('published_at')); ?>">
+                        <?php $__errorArgs = ['published_at'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-red-500 text-sm mt-1 block"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Unpublikasi</label>
-                        <input type="datetime-local" name="unpublished_at" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="<?php echo e(old('unpublished_at')); ?>">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Unpublikasi *</label>
+                        <input type="datetime-local" name="unpublished_at" required class="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76] <?php $__errorArgs = ['unpublished_at'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('unpublished_at')); ?>">
+                        <?php $__errorArgs = ['unpublished_at'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-red-500 text-sm mt-1 block"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
                 <!-- Tanggal Berlaku -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Mulai Berlaku</label>
-                        <input type="date" name="valid_from" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="<?php echo e(old('valid_from')); ?>">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Mulai Berlaku *</label>
+                        <input type="date" name="valid_from" required class="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76] <?php $__errorArgs = ['valid_from'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('valid_from')); ?>">
+                        <?php $__errorArgs = ['valid_from'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-red-500 text-sm mt-1 block"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Berakhir Berlaku</label>
-                        <input type="date" name="valid_until" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="<?php echo e(old('valid_until')); ?>">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Berakhir Berlaku *</label>
+                        <input type="date" name="valid_until" required class="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76] <?php $__errorArgs = ['valid_until'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('valid_until')); ?>">
+                        <?php $__errorArgs = ['valid_until'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-red-500 text-sm mt-1 block"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
                 <!-- Status -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Status *</label>
-                    <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent <?php $__errorArgs = ['status'];
+                    <select name="status" class="w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#063A76] focus:border-[#063A76] <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -277,21 +343,109 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Handle form submit
-        document.querySelector('form').addEventListener('submit', function() {
-            // Cek apakah ada Excel data yang belum di-insert dari localStorage
-            const pendingExcelData = localStorage.getItem('excelPreviewData');
-            if (pendingExcelData) {
-                try {
-                    const excelData = JSON.parse(pendingExcelData);
-                    insertExcelTable(excelData);
-                    localStorage.removeItem('excelPreviewData');
-                } catch (error) {
-                    console.warn('Could not insert pending Excel data:', error);
-                }
+        let isFormSubmitting = false;
+        let isInsertingExcel = false;
+        
+        // CRITICAL: Always sync Quill to textarea before submitting
+        function syncQuillToTextarea() {
+            const content = quillInstance.root.innerHTML;
+            const textarea = document.getElementById('description');
+            
+            console.log('=== SYNC QUILL TO TEXTAREA ===');
+            console.log('Quill innerHTML length:', content.length);
+            console.log('Current textarea value length:', textarea.value.length);
+            console.log('Content includes <table>:', content.includes('<table'));
+            console.log('Content includes <th>:', content.includes('<th'));
+            
+            textarea.value = content;
+            
+            console.log('AFTER SYNC:');
+            console.log('Textarea value length:', textarea.value.length);
+            console.log('Textarea value includes <table>:', textarea.value.includes('<table'));
+            console.log('====  END SYNC ====');
+            
+            return content;
+        }
+        
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // Prevent double submit
+            if (isFormSubmitting) {
+                e.preventDefault();
+                console.log('⚠️ Form already submitting, preventing double submit');
+                return;
             }
             
-            const content = quillInstance.root.innerHTML;
-            document.getElementById('description').value = content;
+            console.log('\n🚀 FORM SUBMIT TRIGGERED');
+            isFormSubmitting = true;
+            
+            // Jika sedang insert Excel, jangan process lagi
+            if (isInsertingExcel) {
+                e.preventDefault();
+                isFormSubmitting = false;
+                console.log('⚠️ Excel insert in progress, waiting...');
+                return;
+            }
+            
+            // Immediately sync Quill content ke textarea
+            console.log('📝 Syncing Quill content to textarea FIRST...');
+            const initialContent = syncQuillToTextarea();
+            
+            // Cek apakah ada Excel data yang belum di-insert dari localStorage
+            const pendingExcelData = localStorage.getItem('excelPreviewData');
+            console.log('📦 Checking localStorage for pending Excel data...');
+            console.log('pendingExcelData found:', pendingExcelData ? '✓ YES' : '✗ NO');
+            
+            if (pendingExcelData) {
+                console.log('⏳ Found pending Excel data, inserting now...');
+                e.preventDefault();
+                isInsertingExcel = true;
+                
+                try {
+                    const excelData = JSON.parse(pendingExcelData);
+                    console.log('📊 Inserting table with', excelData.rows.length, 'rows');
+                    insertExcelTable(excelData);
+                    console.log('✓ insertExcelTable() completed');
+                    localStorage.removeItem('excelPreviewData');
+                    console.log('🗑️ Cleared localStorage');
+                } catch (error) {
+                    console.error('❌ Error inserting pending data:', error);
+                    isInsertingExcel = false;
+                    isFormSubmitting = false;
+                    return;
+                }
+                
+                // Wait for Quill content to finish rendering
+                setTimeout(() => {
+                    console.log('⏱️ 300ms timeout completed, syncing final content...');
+                    const finalContent = syncQuillToTextarea();
+                    
+                    if (!finalContent.includes('<table')) {
+                        console.warn('⚠️ WARNING: Final content does NOT contain <table>');
+                    } else {
+                        console.log('✓ Final content verified to contain <table>');
+                    }
+                    
+                    // Now actually submit the form
+                    console.log('📤 Submitting form now...');
+                    isFormSubmitting = false;
+                    isInsertingExcel = false;
+                    
+                    // Double-check textarea value before submit
+                    const finalValue = document.getElementById('description').value;
+                    console.log('Final textarea value length:', finalValue.length);
+                    console.log('Final textarea contains <table>:', finalValue.includes('<table'));
+                    
+                    document.querySelector('form').submit();
+                }, 300);
+            } else {
+                // No pending data, form will submit normally
+                console.log('✓ No pending Excel data, form will submit normally');
+                console.log('💾 Final description textarea length:', document.getElementById('description').value.length);
+                console.log('📋 Final description contains <table>:', document.getElementById('description').value.includes('<table'));
+                
+                isFormSubmitting = false;
+                // Form will submit naturally
+            }
         });
 
         // Excel Dropzone Handler
@@ -488,12 +642,15 @@ function processExcelFile(file) {
             previewWindow.focus();
 
             // Store data for later insertion using localStorage (more reliable cross-window)
-            localStorage.setItem('excelPreviewData', JSON.stringify({
+            const dataToStore = {
                 rows: normalizedRows,
                 colWidths: [],
                 maxCol: maxCol,
                 fileName: file.name
-            }));
+            };
+            console.log('Storing Excel data to localStorage:', dataToStore.rows.length, 'rows');
+            localStorage.setItem('excelPreviewData', JSON.stringify(dataToStore));
+            console.log('Data stored, verification:',  localStorage.getItem('excelPreviewData') ? 'OK' : 'FAILED');
             
             // Reset input
         } catch (error) {
@@ -513,31 +670,135 @@ function processExcelFile(file) {
 // Insert Excel table after user confirms in preview
 // Handle Excel insertion from popup window
 function insertExcelTableFromPopup() {
+    console.log('insertExcelTableFromPopup called from popup');
     const data = localStorage.getItem('excelPreviewData');
-    if (!data) return;
+    console.log('Retrieved from localStorage:', data ? 'Found (' + data.length + ' bytes)' : 'NOT FOUND');
+    
+    if (!data) {
+        console.error('No data in localStorage!');
+        alert('❌ Data tidak ditemukan. Silakan coba lagi.');
+        return;
+    }
     
     try {
         const excelData = JSON.parse(data);
+        console.log('Parsed data:', excelData.rows.length, 'rows');
         insertExcelTable(excelData);
+        console.log('insertExcelTable completed');
         localStorage.removeItem('excelPreviewData');
+        console.log('Data cleared from localStorage');
     } catch (error) {
-        console.error('Error parsing Excel data:', error);
-        alert('❌ Error inserting table: ' + error.message);
+        console.error('Error parsing or inserting Excel data:', error);
+        alert('❌ Error: ' + error.message);
     }
 }
 
-// Insert Excel table into Quill editor
+// Insert Excel table into Quill editor - DIRECT DOM INSERTION
 function insertExcelTable(excelData) {
-    if (!excelData || !quillInstance) return;
+    console.log('=== BEGIN insertExcelTable ===');
+    console.log('Data received:', excelData);
     
-    const { rows, colWidths, maxCol, fileName } = excelData;
-    const htmlTable = convertToHtmlTable(rows, colWidths, maxCol);
+    if (!excelData) {
+        console.error('No excelData provided');
+        return;
+    }
     
-    const index = quillInstance.getLength() - 1;
-    quillInstance.insertText(index, '\n');
-    quillInstance.clipboard.dangerouslyPasteHTML(index + 1, htmlTable);
+    if (!quillInstance) {
+        console.error('quillInstance not available');
+        return;
+    }
     
-    showExcelSuccess(fileName, rows.length - 1);
+    const { rows, fileName } = excelData;
+    console.log('Row count:', rows.length);
+    
+    // Generate clean HTML table
+    const htmlTable = convertToHtmlTable(rows, [], rows[0].length);
+    console.log('✓ Table HTML generated, size:', htmlTable.length, 'bytes');
+    
+    try {
+        // Create temporary container to hold the table HTML
+        console.log('Creating temporary container...');
+        const tempContainer = document.createElement('div');
+        tempContainer.style.display = 'none';
+        tempContainer.innerHTML = htmlTable;
+        document.body.appendChild(tempContainer);
+        console.log('✓ Temporary container created');
+        
+        // Verify table was actually created
+        const tableElement = tempContainer.querySelector('table');
+        if (!tableElement) {
+            throw new Error('Table element not found in temporary container');
+        }
+        console.log('✓ Table element verified in container');
+        console.log('  - Table rows: ' + tableElement.querySelectorAll('tr').length);
+        
+        // Clone the table - this is CRITICAL
+        const clonedTable = tableElement.cloneNode(true);
+        console.log('✓ Table element cloned');
+        
+        // Insert directly into Quill's root DOM - BYPASSES SANITIZATION
+        console.log('Inserting table directly into Quill root...');
+        
+        // Add spacing paragraph first if content exists
+        const quillLength = quillInstance.getLength();
+        if (quillLength > 1) {
+            quillInstance.insertText(quillLength - 1, '\n');
+        }
+        
+        // Insert the cloned table directly as DOM element
+        quillInstance.root.appendChild(clonedTable);
+        console.log('✓ Table inserted into DOM');
+        
+        // Force Quill to rebuild its internal state
+        // This is important - we modified the DOM, now we need Quill to know about it
+        console.log('Updating Quill state...');
+        quillInstance.update('user');  // 'user' source means we're doing explicit updates
+        console.log('✓ Quill state updated');
+        
+        // Give browser time to render
+        setTimeout(() => {
+            const resultHTML = quillInstance.root.innerHTML;
+            console.log('\n=== VERIFICATION ===');
+            console.log('Final HTML size:', resultHTML.length);
+            console.log('Has <table>:', resultHTML.includes('<table') ? '✓ YES' : '✗ NO');
+            console.log('Has <tr>:', resultHTML.includes('<tr') ? '✓ YES' : '✗ NO');
+            console.log('Has <td>:', resultHTML.includes('<td') ? '✓ YES' : '✗ NO');
+            console.log('Table elements found:', resultHTML.match(/<table[^>]*>/g) ? resultHTML.match(/<table[^>]*>/g).length : 0);
+            console.log('HTML preview:', resultHTML.substring(0, 300));
+           
+            // CRITICAL: Immediately backup table HTML to textarea
+            // This ensures table is saved even if Quill cleans it up later
+            console.log('\n🔐 BACKING UP TABLE HTML TO TEXTAREA...');
+            const textarea = document.getElementById('description');
+            textarea.value = resultHTML;
+            console.log('✓ Textarea updated with table HTML');
+            console.log('  Textarea length:', textarea.value.length);
+            console.log('  Contains table:', textarea.value.includes('<table'));
+            
+            // Clean up
+            document.body.removeChild(tempContainer);
+            console.log('✓ Temporary container removed');
+            
+            // Success
+            console.log('✓✓✓ TABLE INSERTION COMPLETE!');
+            showExcelSuccess(fileName, rows.length - 1);
+            
+        }, 100);
+        
+    } catch (error) {
+        console.error('❌ ERROR:', error.message);
+        console.error('Full error:', error);
+        
+        // Clean up temp container if it exists
+        try {
+            const temp = document.querySelector('div[style*="display"]');
+            if (temp && temp.parentNode) {
+                document.body.removeChild(temp);
+            }
+        } catch(e) {}
+        
+        alert('❌ Error inserting table: ' + error.message);
+    }
 }
 
 // Get CSS for table preview
@@ -545,44 +806,34 @@ function getCssForTable() {
     return 'table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; font-size: 13px; } th { background: #3b82f6; color: white; padding: 8px; text-align: center; font-weight: 700; border: 1px solid #d1d5db; } td { padding: 8px; border: 1px solid #d1d5db; } tr:nth-child(even) { background: #f0f4f8; } tr:hover { background: #e0e7ff; }';
 }
 
-// Convert Array to HTML Table with Column Width Support
+// Convert Array to HTML Table - SIMPLIFIED VERSION
 function convertToHtmlTable(data, colWidths, maxCol) {
-    // Calculate column widths (Excel uses character width, convert to approximate pixels)
-    const getColWidth = (colIndex) => {
-        if (colWidths && colWidths[colIndex]) {
-            const excelWidth = colWidths[colIndex].wch || colWidths[colIndex].width || 10;
-            return Math.max(excelWidth * 8, 60); // ~8px per character unit, min 60px
-        }
-        return 'auto';
-    };
-
-    let html = '<table class="excel-table" style="width:100%; border-collapse: collapse; margin: 1rem 0; border: 1px solid #d1d5db; font-size: 14px; table-layout: auto;">';
+    if (!data || data.length === 0) return '';
+    
+    console.log('Converting to HTML table. Rows:', data.length);
+    
+    let html = '<table style="width:100%; border-collapse: collapse; margin: 1rem 0; border: 1px solid #ccc;">';
     
     data.forEach((row, rowIndex) => {
         const isHeader = rowIndex === 0;
-        html += '<tr style="background-color: ' + (isHeader ? '#3b82f6' : (rowIndex % 2 === 0 ? '#ffffff' : '#f0f4f8')) + '; border-bottom: 1px solid #d1d5db;">';
+        const bgColor = isHeader ? '#3b82f6' : (rowIndex % 2 === 0 ? '#fff' : '#f9f9f9');
         
-        // Ensure we have enough cells (handle cases where rows have different lengths)
-        const rowLength = Math.max(row.length, maxCol);
+        html += '<tr>';
         
-        for (let cellIndex = 0; cellIndex < rowLength; cellIndex++) {
-            const cell = row[cellIndex] !== undefined ? row[cellIndex] : '';
+        row.forEach((cell, cellIndex) => {
             const tag = isHeader ? 'th' : 'td';
-            const cellText = escapeHtml(String(cell || ''));
-            const colWidth = getColWidth(cellIndex);
-            const widthStyle = colWidth !== 'auto' ? 'min-width: ' + colWidth + 'px;' : '';
+            const cellValue = String(cell || '').replace(/"/g, '&quot;');
             
-            const style = isHeader 
-                ? 'style="border: 1px solid #d1d5db; padding: 0.75rem; text-align: center; font-weight: 700; color: white; background-color: #3b82f6; white-space: normal; word-wrap: break-word; ' + widthStyle + '"'
-                : 'style="border: 1px solid #d1d5db; padding: 0.75rem; text-align: left; font-weight: 400; color: #374151; white-space: normal; word-wrap: break-word; word-break: break-word; ' + widthStyle + '"';
-            
-            html += '<' + tag + ' ' + style + '>' + cellText + '</' + tag + '>';
-        }
+            html += `<${tag} style="border: 1px solid #ccc; padding: 8px; background-color: ${bgColor}; color: ${isHeader ? '#fff' : '#000'}; font-weight: ${isHeader ? 'bold' : 'normal'};">`;
+            html += cellValue;
+            html += `</${tag}>`;
+        });
         
         html += '</tr>';
     });
     
     html += '</table>';
+    console.log('HTML table generated:', html.substring(0, 100) + '...');
     return html;
 }
 

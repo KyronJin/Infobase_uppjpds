@@ -192,6 +192,7 @@ class InfobaseController extends Controller
     public function profilPegawai(Request $request): View
     {
         $search = $request->query('search', '');
+        $jabatanFilter = $request->query('jabatan_id', '');
         
         $query = ProfilPegawai::with('jabatan');
 
@@ -200,16 +201,21 @@ class InfobaseController extends Controller
             $query->search($search);
         }
 
+        // Apply jabatan filter if provided
+        if (!empty($jabatanFilter)) {
+            $query->where('jabatan_id', $jabatanFilter);
+        }
+
         $allPegawai = $query->orderBy('nama', 'asc')->get();
         
         // Chunk into groups of 5 for slides
         $slides = $allPegawai->chunk(5);
         
-        // Get all jabatans for org chart
+        // Get all jabatans for org chart and filter dropdown
         $jabatans = Jabatan::orderBy('order')->get();
         
         $title = 'Profil Pegawai';
 
-        return view('infobase.profil-pegawai', compact('slides', 'allPegawai', 'jabatans', 'title', 'search'));
+        return view('infobase.profil-pegawai', compact('slides', 'allPegawai', 'jabatans', 'title', 'search', 'jabatanFilter'));
     }
 }

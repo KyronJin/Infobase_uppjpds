@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pengumuman Page Debug</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f0f0f0; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #333; }
+        .section { margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #007bff; }
+        .section h2 { margin-top: 0; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: #0066cc; }
+        pre { background: #f0f0f0; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .code { font-family: monospace; background: #fff3cd; padding: 10px; border-left: 3px solid #ffc107; }
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 10px; text-align: left; }
+        th { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Pengumuman Page Debug Tool</h1>
+        
+        <div class="section">
+            <h2>Quick Actions</h2>
+            <button onclick="testPage()">Test Pengumuman Page</button>
+            <button onclick="testPageWithSearch()">Test With Search: 'Excel'</button>
+            <button onclick="testPagePage2()">Test Page 2 (Pagination)</button>
+            <button onclick="clearCache()">Clear Browser Cache & Reload</button>
+            <button onclick="showDevTools()">Open DevTools (F12)</button>
+        </div>
+
+        <div class="section">
+            <h2>📊 Current Page Info</h2>
+            <table>
+                <tr>
+                    <td>Current URL:</td>
+                    <td><code id="currentUrl"></code></td>
+                </tr>
+                <tr>
+                    <td>Query Parameters:</td>
+                    <td><code id="queryParams"></code></td>
+                </tr>
+                <tr>
+                    <td>Browser Cache Size:</td>
+                    <td><span id="cacheSize" class="info">Checking...</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>✅ Checklist</h2>
+            <ul>
+                <li>
+                    <input type="checkbox"> Halaman dibuka tanpa parameter (base URL)
+                    <div class="code">http://localhost:13000/infobase/pengumuman</div>
+                </li>
+                <li>
+                    <input type="checkbox"> Browser di-refresh dengan CTRL+F5 (hard refresh)
+                </li>
+                <li>
+                    <input type="checkbox"> Tidak ada `?search=` atau `?page=2` di URL
+                </li>
+                <li>
+                    <input type="checkbox"> Buka DevTools (F12) → Console tab
+                </li>
+                <li>
+                    <input type="checkbox"> Tidak ada error message di console
+                </li>
+                <li>
+                    <input type="checkbox"> Pengumuman cards TIDAK untuk tampil
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Manual Tests</h2>
+            <h3>Test 1: Database Check</h3>
+            <p>Buka link ini untuk lihat pengumuman di database:</p>
+            <button onclick="window.open('/test-pengumuman-check.php', '_blank');">📊 Check Database</button>
+            <p style="color: #666; font-size: 12px;">Akan menampilkan status pengumuman terbaru dan apakah punya table</p>
+
+            <h3>Test 2: Page Render Test</h3>
+            <p>Test halaman pengumuman rendering:</p>
+            <div id="pageTestResult"></div>
+            <button onclick="testPageRender()">Run Page Test</button>
+
+            <h3>Test 3: Search Test</h3>
+            <p>Test pengumuman dengan search 'Excel':</p>
+            <button onclick="testSearchResult()">Test Search Excel</button>
+            <div id="searchTestResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Troubleshooting Guide</h2>
+            <table>
+                <tr>
+                    <th>Problem</th>
+                    <th>Solution</th>
+                </tr>
+                <tr>
+                    <td>Halaman kosong tanpa pesan apapun</td>
+                    <td>
+                        1. Buka DevTools (F12)<br>
+                        2. Lihat Console tab - ada error?<br>
+                        3. Lihat Network tab - request /infobase/pengumuman status 200?<br>
+                        4. Coba hard refresh: CTRL+F5
+                    </td>
+                </tr>
+                <tr>
+                    <td>Halaman "Belum ada pengumuman"</td>
+                    <td>
+                        1. Check URL - sudah base URL tanpa parameter?<br>
+                        2. Check pagination - apakah di page 2+?<br>
+                        3. Check search - apakah ada ?search= parameter?<br>
+                        4. Database ada pengumuman? Cek: Database Check link
+                    </td>
+                </tr>
+                <tr>
+                    <td>Halaman blank (bukan "Belum ada")</td>
+                    <td>
+                        1. DevTools F12 → Console - cari error<br>
+                        2. JavaScript error menyebabkan page tidak render<br>
+                        3. Coba di browser lain<br>
+                        4. Coba incognito mode (bypass cache)
+                    </td>
+                </tr>
+                <tr>
+                    <td>Excel table tidak terlihat</td>
+                    <td>
+                        1. Buka detail pengumuman<br>
+                        2. Check source (right-click → View Page Source)<br>
+                        3. Cari &lt;table&gt; - apakah ada?<br>
+                        4. Kalau ada: CSS issue<br>
+                        5. Kalau tidak ada: Database issue
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>📱 Direct Links</h2>
+            <ul>
+                <li><a href="/infobase/pengumuman" target="_blank">→ Pengumuman List (base)</a></li>
+                <li><a href="/infobase/pengumuman?search=excel" target="_blank">→ Cari 'Excel'</a></li>
+                <li><a href="/infobase/pengumuman?page=2" target="_blank">→ Page 2</a></li>
+                <li><a href="/test-pengumuman-check.php" target="_blank">→ Database Check</a></li>
+                <li><a href="/admin/pengumuman/create" target="_blank">→ Create Pengumuman</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentUrl').textContent = window.location.href;
+        
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('queryParams').textContent = params.size > 0 ? 
+            Array.from(params.entries()).map(([k,v]) => `${k}=${v}`).join(', ') :
+            '(none)';
+
+        function testPage() {
+            window.location.href = '/infobase/pengumuman';
+        }
+
+        function testPageWithSearch() {
+            window.location.href = '/infobase/pengumuman?search=excel';
+        }
+
+        function testPagePage2() {
+            window.location.href = '/infobase/pengumuman?page=2';
+        }
+
+        function clearCache() {
+            if (confirm('Hard refresh will clear all caches and reload page?')) {
+                location.reload(true);
+            }
+        }
+
+        function showDevTools() {
+            alert('DevTools akan terbuka.\n\n1. Klik F12\n2. Atau Right-click → Inspect\n\nCara debug:\n- Console tab: lihat error\n- Network tab: check request status\n- Elements tab: check HTML structure');
+        }
+
+        async function testPageRender() {
+            const result = document.getElementById('pageTestResult');
+            result.innerHTML = '<p class="info">Testing...</p>';
+            
+            try {
+                const response = await fetch('/test-pengumuman-check.php');
+                const html = await response.text();
+                
+                if (html.includes('HAS TABLE')) {
+                    result.innerHTML = '<p class="success">✓ Database punya pengumuman dengan table!</p>';
+                } else if (html.includes('has') && html.includes('NO')) {
+                    result.innerHTML = '<p class="error">✗ Database punya pengumuman tapi TANPA table!</p>';
+                } else {
+                    result.innerHTML = '<p class="error">✗ Tidak bisa akses database check</p>';
+                }
+            } catch (e) {
+                result.innerHTML = '<p class="error">Error: ' + e.message + '</p>';
+            }
+        }
+
+        async function testSearchResult() {
+            const result = document.getElementById('searchTestResult');
+            result.innerHTML = '<p class="info">Testing search dengan "Excel"...</p>';
+            
+            try {
+                const response = await fetch('/infobase/pengumuman?search=excel');
+                const html = await response.text();
+                
+                if (html.includes('pengumuman-card')) {
+                    const matches = html.match(/pengumuman-card/g);
+                    result.innerHTML = `<p class="success">✓ Search found: ${matches.length} pengumuman dengan keyword 'Excel'</p>`;
+                } else if (html.includes('Belum ada')) {
+                    result.innerHTML = '<p class="error">✗ Search tidak menemukan hasil dengan keyword "Excel"</p>';
+                } else {
+                    result.innerHTML = '<p class="info">? Tidak bisa determine hasil search</p>';
+                }
+            } catch (e) {
+                result.innerHTML = '<p class="error">Error: ' + e.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

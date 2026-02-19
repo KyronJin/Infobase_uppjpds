@@ -194,48 +194,121 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Handle form submit
         let isFormSubmitting = false;
+        let isInsertingExcel = false;
+        
+        // CRITICAL: Always sync Quill to textarea before submitting
+        function syncQuillToTextarea() {
+            const content = quillInstance.root.innerHTML;
+            const textarea = document.getElementById('description');
+            
+            console.log('=== SYNC QUILL TO TEXTAREA ===');
+            console.log('Quill innerHTML length:', content.length);
+            console.log('Current textarea value length:', textarea.value.length);
+            console.log('Content includes <table>:', content.includes('<table'));
+            console.log('Content includes <th>:', content.includes('<th'));
+            
+            textarea.value = content;
+            
+            console.log('AFTER SYNC:');
+            console.log('Textarea value length:', textarea.value.length);
+            console.log('Textarea value includes <table>:', textarea.value.includes('<table'));
+            console.log('====  END SYNC ====');
+            
+            return content;
+        }
+        
         document.querySelector('form').addEventListener('submit', function(e) {
             // Prevent double submit
             if (isFormSubmitting) {
                 e.preventDefault();
-                console.log('Form already submitting, preventing double submit');
+                console.log('⚠️ Form already submitting, preventing double submit');
                 return;
             }
             
-            console.log('Form submit triggered');
+            console.log('\n🚀 FORM SUBMIT TRIGGERED');
+            isFormSubmitting = true;
+            
+            // Jika sedang insert Excel, jangan process lagi
+            if (isInsertingExcel) {
+                e.preventDefault();
+                isFormSubmitting = false;
+                console.log('⚠️ Excel insert in progress, waiting...');
+                return;
+            }
+            
+            // Immediately sync Quill content ke textarea
+            console.log('📝 Syncing Quill content to textarea FIRST...');
+            const initialContent = syncQuillToTextarea();
             
             // Cek apakah ada Excel data yang belum di-insert dari localStorage
             const pendingExcelData = localStorage.getItem('excelPreviewData');
+            console.log('📦 Checking localStorage for pending Excel data...');
+            console.log('pendingExcelData found:', pendingExcelData ? '✓ YES' : '✗ NO');
+            
             if (pendingExcelData) {
-                console.log('Found pending Excel data, preventing submit to insert first');
+                console.log('⏳ Found pending Excel data, inserting now...');
                 e.preventDefault();
-                isFormSubmitting = true;
+                isInsertingExcel = true;
                 
                 try {
                     const excelData = JSON.parse(pendingExcelData);
-                    console.log('Inserting pending table...');
+                    console.log('📊 Inserting table with', excelData.rows.length, 'rows');
                     insertExcelTable(excelData);
+                    console.log('✓ insertExcelTable() completed');
                     localStorage.removeItem('excelPreviewData');
+                    console.log('🗑️ Cleared localStorage');
                 } catch (error) {
-                    console.error('Error inserting pending data:', error);
+                    console.error('❌ Error inserting pending data:', error);
+                    isInsertingExcel = false;
+                    isFormSubmitting = false;
+                    return;
                 }
                 
-                // Wait for Quill to update, then sync and submit
+                // Wait for Quill content to finish rendering
                 setTimeout(() => {
-                    console.log('Syncing Quill content...');
-                    const content = quillInstance.root.innerHTML;
-                    console.log('Content length:', content.length, 'Has table:', content.includes('<table'));
-                    document.getElementById('description').value = content;
-                    console.log('Content synced, submitting form now...');
+                    console.log('⏱️ 300ms timeout completed, syncing final content...');
+                    const finalContent = syncQuillToTextarea();
+                    
+                    if (!finalContent.includes('<table')) {
+                        console.warn('⚠️ WARNING: Final content does NOT contain <table>');
+                    } else {
+                        console.log('✓ Final content verified to contain <table>');
+                    }
+                    
+                    // Now actually submit the form
+                    console.log('📤 Submitting form now...');
                     isFormSubmitting = false;
+                    isInsertingExcel = false;
+                    
+                    // Double-check textarea value before submit
+                    const finalValue = document.getElementById('description').value;
+                    console.log('Final textarea value length:', finalValue.length);
+                    console.log('Final textarea contains <table>:', finalValue.includes('<table'));
+                    
                     document.querySelector('form').submit();
-                }, 200);
+                }, 300);
             } else {
-                // No pending data, sync and allow normal submission
-                console.log('No pending Excel data, syncing content normally');
-                const content = quillInstance.root.innerHTML;
-                document.getElementById('description').value = content;
-                console.log('Content synced');
+                // No pending data, form will submit normally
+                console.log('✓ No pending Excel data, form will submit normally');
+                
+                // Make sure to sync Quill to textarea even if no pending data
+                const descValue = document.getElementById('description').value;
+                console.log('Final textarea check:');
+                console.log('  Length:', descValue.length);
+                console.log('  Contains <table>:', descValue.includes('<table'));
+                console.log('  First 300 chars:', descValue.substring(0, 300));
+                
+                // If textarea is empty but Quill has content, sync it
+                if (descValue.length === 0 && quillInstance.getLength() > 1) {
+                    console.log('⚠️ Textarea empty but Quill has content - syncing now');
+                    syncQuillToTextarea();
+                }
+                
+                console.log('💾 FINAL description textarea length:', document.getElementById('description').value.length);
+                console.log('📋 FINAL description contains <table>:', document.getElementById('description').value.includes('<table'));
+                
+                isFormSubmitting = false;
+                // Form will submit naturally
             }
         });
 
@@ -484,9 +557,10 @@ function insertExcelTableFromPopup() {
     }
 }
 
-// Insert Excel table into Quill editor
+// Insert Excel table into Quill editor - DIRECT DOM INSERTION
 function insertExcelTable(excelData) {
-    console.log('insertExcelTable called with data:', excelData);
+    console.log('=== BEGIN insertExcelTable ===');
+    console.log('Data received:', excelData);
     
     if (!excelData) {
         console.error('No excelData provided');
@@ -499,27 +573,104 @@ function insertExcelTable(excelData) {
     }
     
     const { rows, fileName } = excelData;
-    console.log('Rows to insert:', rows.length);
+    console.log('Row count:', rows.length);
     
+    // Generate clean HTML table
     const htmlTable = convertToHtmlTable(rows, [], rows[0].length);
-    console.log('HTML table created, length:', htmlTable.length);
+    console.log('✓ Table HTML generated, size:', htmlTable.length, 'bytes');
     
     try {
-        // Get current position in Quill
-        const index = quillInstance.getLength() - 1;
-        console.log('Inserting at index:', index);
+        // Create temporary container to hold the table HTML
+        console.log('Creating temporary container...');
+        const tempContainer = document.createElement('div');
+        tempContainer.style.display = 'none';
+        tempContainer.innerHTML = htmlTable;
+        document.body.appendChild(tempContainer);
+        console.log('✓ Temporary container created');
         
-        // Insert a newline first
-        quillInstance.insertText(index, '\n');
+        // Verify table was actually created
+        const tableElement = tempContainer.querySelector('table');
+        if (!tableElement) {
+            throw new Error('Table element not found in temporary container');
+        }
+        console.log('✓ Table element verified in container');
+        console.log('  - Table rows: ' + tableElement.querySelectorAll('tr').length);
         
-        // Insert the HTML table
-        quillInstance.clipboard.dangerouslyPasteHTML(index + 1, htmlTable);
+        // Clone the table - this is CRITICAL
+        const clonedTable = tableElement.cloneNode(true);
+        console.log('✓ Table element cloned');
         
-        console.log('Table inserted successfully');
-        showExcelSuccess(fileName, rows.length - 1);
+        // Insert directly into Quill's root DOM - BYPASSES SANITIZATION
+        console.log('Inserting table directly into Quill root...');
+        
+        // Add spacing paragraph first if content exists
+        const quillLength = quillInstance.getLength();
+        if (quillLength > 1) {
+            quillInstance.insertText(quillLength - 1, '\n');
+        }
+        
+        // Insert the cloned table directly as DOM element
+        quillInstance.root.appendChild(clonedTable);
+        console.log('✓ Table inserted into DOM');
+        
+        // Check immediately after insert
+        let checkHTML = quillInstance.root.innerHTML;
+        console.log('CHECK 1 - Right after appendChild:');
+        console.log('  HTML length:', checkHTML.length);
+        console.log('  Has <table>:', checkHTML.includes('<table'));
+        
+        // NOTE: We do NOT call update() because that rebuilds from delta
+        // and Quill might not recognize the table element properly
+        // Instead, we just verify the DOM was modified and sync to textarea
+        
+        // CRITICAL: Immediately backup table HTML to textarea
+        // This is the ONLY place we can reliably capture the table
+        console.log('\n🔐 BACKING UP TABLE HTML TO TEXTAREA (IMMEDIATE)...');
+        const textarea = document.getElementById('description');
+        
+        // Get the HTML right now, before anything else happens
+        const tableHTML = quillInstance.root.innerHTML;
+        console.log('Capturing from quill.root.innerHTML:');
+        console.log('  Length:', tableHTML.length);
+        console.log('  Has table:', tableHTML.includes('<table'));
+        console.log('  Preview:', tableHTML.substring(0, 200));
+        
+        // Set textarea immediately
+        textarea.value = tableHTML;
+        console.log('✓ Textarea.value set immediately');
+        console.log('  Textarea length:', textarea.value.length);
+        console.log('  Textarea has table:', textarea.value.includes('<table'));
+        
+        // Clean up temp container immediately
+        document.body.removeChild(tempContainer);
+        console.log('✓ Temporary container removed');
+        
+        // Give browser time to render display
+        setTimeout(() => {
+            const verifyHTML = quillInstance.root.innerHTML;
+            console.log('\n=== VERIFICATION (after timeout) ===');
+            console.log('Quill root HTML length:', verifyHTML.length);
+            console.log('Has <table>:', verifyHTML.includes('<table') ? '✓ YES' : '✗ NO');
+            console.log('Textarea still has <table>:', textarea.value.includes('<table') ? '✓ YES' : '✗ NO');
+            
+            // Success
+            console.log('✓✓✓ TABLE INSERTION COMPLETE!');
+            showExcelSuccess(fileName, rows.length - 1);
+            
+        }, 100);
         
     } catch (error) {
-        console.error('Error inserting table:', error);
+        console.error('❌ ERROR:', error.message);
+        console.error('Full error:', error);
+        
+        // Clean up temp container if it exists
+        try {
+            const temp = document.querySelector('div[style*="display"]');
+            if (temp && temp.parentNode) {
+                document.body.removeChild(temp);
+            }
+        } catch(e) {}
+        
         alert('❌ Error inserting table: ' + error.message);
     }
 }
@@ -558,7 +709,6 @@ function convertToHtmlTable(data, colWidths, maxCol) {
     html += '</table>';
     console.log('HTML table generated:', html.substring(0, 100) + '...');
     return html;
-}
 }
 
 // Escape HTML to prevent injection

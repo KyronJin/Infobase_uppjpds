@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Import - Complete Testing Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 { color: #333; margin-bottom: 10px; }
+        .header p { color: #666; font-size: 16px; }
+        .content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .step {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-num {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+        .step p { margin: 5px 0; color: #333; line-height: 1.5; }
+        .code-block {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-left: 4px solid #0f0;
+        }
+        .success { color: #0f0; font-weight: bold; }
+        .error { color: #f00; font-weight: bold; }
+        .warning { color: #ff9800; font-weight: bold; }
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link:hover { text-decoration: underline; }
+        .checklist {
+            list-style: none;
+            margin: 10px 0;
+        }
+        .checklist li {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f9f9f9;
+            border-left: 3px solid #667eea;
+            color: #333;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 5px;
+        }
+        @media (max-width: 768px) {
+            .content { grid-template-columns: 1fr; }
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #45a049;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 15px 0;
+            color: #333;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Excel Import Feature - Complete Testing Guide</h1>
+            <p>Step-by-step guide to test the Excel table import feature from upload to display on user page</p>
+        </div>
+
+        <div class="content">
+            <!-- SECTION 1: PREPARE TEST DATA -->
+            <div class="section">
+                <h2><i class="fas fa-file-excel"></i> Step 1: Prepare Test Excel File</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>Create a test Excel file (`.xlsx`) with sample data</div>
+                    <p>Example content:</p>
+                    <div class="code-block">
+Nama Ruangan | Lantai | Kapasitas
+─────────────┼────────┼──────────
+Ruang Rapat A│   1    │    20
+Ruang Rapat B│   2    │    25
+Perpustakaan │   3    │    50
+                    </div>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>Save the file with a clear name like `test-data.xlsx`</div>
+                </div>
+                <div class="note">
+                    ⚠️ <strong>Important:</strong> Excel file must have headers in the first row
+                </div>
+            </div>
+
+            <!-- SECTION 2: UPLOAD & CREATE -->
+            <div class="section">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Step 2: Upload & Create Pengumuman</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>Go to Admin Panel → Create Pengumuman</div>
+                    <p><a href="/admin/pengumuman/create" class="link" target="_blank">→ Open Create Pengumuman</a></p>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>Fill in basic info:</div>
+                    <ul class="checklist">
+                        <li>Title: "Test Excel Table Import"</li>
+                        <li>Content: (leave empty for now)</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">3</span>Upload Excel file:</div>
+                    <p>Drag & drop or click to upload your test Excel file</p>
+                </div>
+            </div>
+
+            <!-- SECTION 3: PREVIEW -->
+            <div class="section">
+                <h2><i class="fas fa-eye"></i> Step 3: Preview & Insert</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>Preview popup will appear with your table</div>
+                    <p>Check that:</p>
+                    <ul class="checklist">
+                        <li>Table structure is correct</li>
+                        <li>Headers match your Excel</li>
+                        <li>Data rows display properly</li>
+                        <li>Styling looks good</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>Click "INSERT KE EDITOR" button</div>
+                    <p>Table should appear in the editor above</p>
+                </div>
+                <div class="note">
+                    💡 <strong>Pro Tip:</strong> You should see the table appear in the rich text editor immediately after clicking insert
+                </div>
+            </div>
+
+            <!-- SECTION 4: BROWSER CONSOLE -->
+            <div class="section">
+                <h2><i class="fas fa-terminal"></i> Step 4: Check Browser Console</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>Open Browser DevTools: <strong>F12</strong> or <strong>Right-click → Inspect → Console tab</strong></div>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>Look for these console logs when you insert table:</div>
+                    <div class="code-block">
+✓ insertExcelTable called with data:
+📊 Rows to insert: [number]
+✓ Table inserted successfully
+                    </div>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">3</span>Look for these logs when you submit form:</div>
+                    <div class="code-block">
+🚀 FORM SUBMIT TRIGGERED
+📝 Syncing Quill content to textarea FIRST...
+Content includes &lt;table&gt;: true ← THIS IS CRITICAL!
+📤 Submitting form now...
+                    </div>
+                </div>
+                <div class="note">
+                    ⚠️ <strong>CRITICAL CHECK:</strong> If you see "Content includes &lt;table&gt;: false", the table wasn't inserted!
+                </div>
+            </div>
+
+            <!-- SECTION 5: SUBMIT -->
+            <div class="section">
+                <h2><i class="fas fa-paper-plane"></i> Step 5: Submit Form</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>Click "SIMPAN PENGUMUMAN" button</div>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>Watch the console logs (don't close DevTools):</div>
+                    <p>You should see detailed logs about syncing and submission</p>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">3</span>Wait for redirect to pengumuman list</div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: DATABASE VERIFICATION -->
+            <div class="section">
+                <h2><i class="fas fa-database"></i> Step 6: Verify in Database</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>After form submits, go check database:</div>
+                    <p><a href="/test-pengumuman-check.php" class="link" target="_blank">→ Check Latest Pengumuman in DB</a></p>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>You should see:</div>
+                    <div class="code-block">
+✓ LATEST PENGUMUMAN FOUND
+Has &lt;table&gt;: ✓ YES
+Has &lt;th&gt;: ✓ YES
+Has &lt;td&gt;: ✓ YES
+                    </div>
+                </div>
+                <div class="note">
+                    ❌ <strong>If you see "NO":</strong> The table was not saved to database. Check console logs for errors.
+                </div>
+            </div>
+
+            <!-- SECTION 7: USER PAGE DISPLAY -->
+            <div class="section">
+                <h2><i class="fas fa-users"></i> Step 7: Check User-Facing Page</h2>
+                <div class="step">
+                    <div><span class="step-num">1</span>Go to User Info Page - Pengumuman List:</div>
+                    <p><a href="/infobase/pengumuman" class="link" target="_blank">→ Open Pengumuman List</a></p>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">2</span>Look for your new pengumuman in the list</div>
+                    <p>The table should be visible in the preview/truncated view</p>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">3</span>Click "Selengkapnya" to open full detail page</div>
+                </div>
+                <div class="step">
+                    <div><span class="step-num">4</span>Verify the table displays correctly with:</div>
+                    <ul class="checklist">
+                        <li>Proper headers with blue background</li>
+                        <li>All data rows visible</li>
+                        <li>Proper borders and spacing</li>
+                        <li>Correct styling applied</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TROUBLESHOOTING -->
+            <div class="section full-width">
+                <h2><i class="fas fa-wrench"></i> Troubleshooting</h2>
+
+                <div class="step">
+                    <h3 style="color: #f00; margin-bottom: 10px;">Problem: Table not appearing in editor after clicking "INSERT KE EDITOR"</h3>
+                    <div class="code-block">
+SOLUTION:
+1. Check console for: "✓ insertExcelTable called"
+2. If NOT there: Popup might have closed before click
+3. Try again: Upload file → immediately click INSERT
+4. Check: Does popup show table preview correctly?
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3 style="color: #f00; margin-bottom: 10px;">Problem: Form submits but database shows NO table (just &lt;p&gt;&lt;br&gt;&lt;/p&gt;)</h3>
+                    <div class="code-block">
+SOLUTION:
+1. Open console and look for "FORM SUBMIT TRIGGERED"
+2. Check: "Content includes &lt;table&gt;: true/false"
+3. If FALSE: Table was not in Quill when form submitted
+4. Possible cause: Closing preview popup before clicking INSERT
+5. Solution: Always click "INSERT KE EDITOR" before closing popup
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3 style="color: #f00; margin-bottom: 10px;">Problem: Database has table, but not visible on user page</h3>
+                    <div class="code-block">
+SOLUTION:
+1. Check detail page: /pengumuman-detail/[ID]
+2. Open browser DevTools → Elements tab
+3. Search for &lt;table&gt; in HTML
+4. If found: CSS issue - check styling
+5. If NOT found: Check if different pengumuman ID is loading
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3 style="color: #f00; margin-bottom: 10px;">Problem: "data-description" attribute seems corrupted</h3>
+                    <div class="code-block">
+SOLUTION:
+This is expected and NOT a problem!
+- HTML attributes cannot hold full HTML with special chars
+- The table display uses {!! $item->description !!}
+- It does NOT use data-description attribute
+- The data-description is only for modal "Insert Table" button
+- Modal uses JavaScript to load fresh data from server
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK CHECKLIST -->
+            <div class="section full-width">
+                <h2><i class="fas fa-clipboard-check"></i> Quick Launch Checklist</h2>
+                <ul class="checklist">
+                    <li>Excel file prepared and ready ✓</li>
+                    <li>Browser console open (F12) ✓</li>
+                    <li>Create pengumuman page loaded ✓</li>
+                    <li>File uploaded, preview shows table ✓</li>
+                    <li>Clicked "INSERT KE EDITOR" ✓</li>
+                    <li>Table visible in editor ✓</li>
+                    <li>Watched console logs during submit ✓</li>
+                    <li>Form submitted successfully ✓</li>
+                    <li>Found table in database ✓</li>
+                    <li>Visible on user pengumuman page ✓</li>
+                </ul>
+            </div>
+
+            <!-- QUICK LINKS -->
+            <div class="section full-width">
+                <h2><i class="fas fa-link"></i> Quick Links</h2>
+                <div class="button-group">
+                    <a href="/admin/pengumuman/create" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-export"></i> Create Pengumuman
+                    </a>
+                    <a href="/infobase/pengumuman" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-list"></i> User Page - List
+                    </a>
+                    <a href="/test-pengumuman-check.php" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-database"></i> Check Database
+                    </a>
+                    <a href="/debug-excel-import.html" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-chart-bar"></i> Debug Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

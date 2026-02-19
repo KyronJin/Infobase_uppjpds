@@ -4,8 +4,53 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
     .font-cairo { font-family: 'Cairo', sans-serif; }
+    
+    /* Quill Editor Customization */
+    .ql-toolbar {
+        background-color: #f9fafb;
+        border: 2px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+    
+    .ql-container {
+        border: 2px solid #e5e7eb;
+        border-top: none;
+        border-radius: 0 0 0.5rem 0.5rem;
+        font-family: inherit;
+    }
+    
+    .ql-editor {
+        min-height: 250px;
+        padding: 1.25rem;
+        font-size: 1rem;
+        line-height: 1.75;
+    }
+    
+    .ql-editor.ql-blank::before {
+        color: #9ca3af;
+        font-style: italic;
+    }
+    
+    .ql-toolbar button:hover,
+    .ql-toolbar button.ql-active {
+        color: #063A76;
+    }
+    
+    .ql-toolbar.ql-snow .ql-formats {
+        margin-right: 1rem;
+    }
+    
+    .ql-toolbar.ql-snow .ql-stroke {
+        stroke: #6b7280;
+    }
+    
+    .ql-toolbar.ql-snow .ql-fill {
+        fill: #6b7280;
+    }
     
     /* Preview Content Styling */
     #preview-content {
@@ -249,29 +294,30 @@
         @component('components.delete-modal', ['id' => 'deleteJenisModal', 'title' => 'Hapus Jenis Tata Tertib?']) @endcomponent
         @component('components.delete-modal', ['id' => 'deleteTataTertibModal', 'title' => 'Hapus Tata Tertib?']) @endcomponent
 
-        <!-- Modal Edit Tata Tertib -->
+        <!-- Modal Edit Tata Tertib dengan Rich Text Editor -->
         <div id="editTataTertibModal" class="fixed inset-0 backdrop-blur-sm bg-black/40 overflow-y-auto hidden z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
+                <div class="flex items-center gap-3 p-6 bg-gradient-to-r from-blue-50 to-blue-100 border-b">
+                    <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center">
                         <i class="fas fa-edit text-[#063A76] text-lg"></i>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-gray-900">Edit Tata Tertib</h3>
-                        <p class="text-sm text-gray-500">Perbarui peraturan perpustakaan</p>
+                        <p class="text-sm text-gray-600">Perbarui peraturan perpustakaan dengan pemformatan</p>
                     </div>
-                    <button type="button" onclick="closeModal('editTataTertibModal')" class="ml-auto text-gray-400 hover:text-gray-600">
+                    <button type="button" onclick="closeModal('editTataTertibModal')" class="ml-auto text-gray-400 hover:text-gray-600 hover:bg-white w-10 h-10 rounded-lg transition-all">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
                 </div>
                 
-                <form id="editTataTertibForm" method="POST" class="space-y-4">
+                <form id="editTataTertibForm" method="POST" class="p-6 space-y-5">
                     @csrf
                     @method('PUT')
                     
+                    <!-- Jenis Tata Tertib -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Tata Tertib</label>
-                        <select id="edit-jenis_id" name="jenis_tata_tertib_id" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Tata Tertib *</label>
+                        <select id="edit-jenis_id" name="jenis_tata_tertib_id" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-[#063A76]/20 transition-all bg-slate-50">
                             <option value="">-- Pilih Jenis --</option>
                             @foreach($jenis as $j)
                                 <option value="{{ $j->id }}">{{ $j->name }}</option>
@@ -279,22 +325,27 @@
                         </select>
                     </div>
                     
+                    <!-- Rich Text Editor -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Konten</label>
-                        <textarea id="edit-content" name="content" rows="4" placeholder="Masukkan isi peraturan" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors"></textarea>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Konten Tata Tertib *</label>
+                        <div id="editQuillEditor" style="min-height: 300px;" class="bg-white border-2 border-slate-200 rounded-lg"></div>
+                        <input type="hidden" id="edit-content" name="content">
+                        <p class="text-xs text-gray-500 mt-2">Gunakan toolbar untuk formatting: header, bold, italic, underline, strikethrough, lists, dan clean</p>
                     </div>
                     
+                    <!-- Status -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                        <select id="edit-is_active" name="is_active" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-[#063A76] transition-colors">
-                            <option value="1">Aktif</option>
-                            <option value="0">Tidak Aktif</option>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Status *</label>
+                        <select id="edit-is_active" name="is_active" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-[#063A76] focus:ring-2 focus:ring-[#063A76]/20 transition-all bg-slate-50">
+                            <option value="1">✓ Aktif</option>
+                            <option value="0">✗ Tidak Aktif</option>
                         </select>
                     </div>
                     
-                    <div class="flex gap-3 pt-4">
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3 pt-4 border-t border-gray-100">
                         <x-button variant="secondary" size="md" class="flex-1 justify-center" type="button" onclick="closeModal('editTataTertibModal')">Batal</x-button>
-                        <x-button variant="primary" size="md" icon="check" class="flex-1 justify-center" type="submit">Simpan Perubahan</x-button>
+                        <x-button variant="primary" size="md" icon="save" class="flex-1 justify-center" type="submit">Simpan Perubahan</x-button>
                     </div>
                 </form>
             </div>
@@ -411,14 +462,20 @@
         .then(response => response.json())
         .then(data => {
             document.getElementById('edit-jenis_id').value = data.jenis_tata_tertib_id || '';
-            // Strip HTML tags dari content sebelum ditampilkan di textarea
-            const plainContent = data.content ? data.content.replace(/<[^>]*>/g, '') : '';
-            document.getElementById('edit-content').value = plainContent;
             document.getElementById('edit-is_active').value = data.is_active !== undefined ? data.is_active : '1';
             form.action = `/admin/tata-tertib/${id}`;
+            
+            // Set Quill editor content
+            if (editQuill) {
+                editQuill.root.innerHTML = data.content || '';
+            }
+            
             modal.classList.remove('hidden');
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            alert('✗ Gagal memuat data');
+        });
     }
     
     // Preview Tata Tertib Function
@@ -534,5 +591,67 @@
     // Setup delete modals for click outside
     setupDeleteModalClickOutside('deleteJenisModal');
     setupDeleteModalClickOutside('deleteTataTertibModal');
+</script>
+
+<!-- Quill Editor Script -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    // Initialize Quill editor for modal
+    let editQuill = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize edit modal Quill editor dengan toolbar yang sama seperti edit.blade.php
+        editQuill = new Quill('#editQuillEditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Handle form submission
+        const form = document.getElementById('editTataTertibForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get Quill content
+                const content = editQuill.root.innerHTML;
+                document.getElementById('edit-content').value = content;
+                
+                // Submit form
+                const formData = new FormData(form);
+                const action = form.getAttribute('action');
+                
+                fetch(action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'X-HTTP-Method-Override': 'PUT'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✓ Perubahan berhasil disimpan');
+                        document.getElementById('editTataTertibModal').classList.add('hidden');
+                        location.reload();
+                    } else {
+                        alert('✗ Gagal menyimpan: ' + (data.message || 'Error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('✗ Gagal menyimpan perubahan');
+                });
+            });
+        }
+    });
 </script>
 @endsection

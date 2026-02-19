@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Import End-to-End Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: #2d2d2d;
+            border: 2px solid #0f0;
+            border-radius: 4px;
+            padding: 15px;
+            height: 600px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .panel h2 {
+            color: #0f0;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 5px;
+            position: sticky;
+            top: 0;
+            background: #2d2d2d;
+        }
+        .log-entry {
+            font-size: 11px;
+            margin: 3px 0;
+            padding: 2px 4px;
+        }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff9800; }
+        .info { color: #0ff; }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0d0;
+            transform: scale(1.05);
+        }
+        .controls {
+            grid-column: 1 / -1;
+            background: #2d2d2d;
+            border: 2px solid #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .controls h2 {
+            color: #0f0;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        input[type="file"] {
+            padding: 5px;
+            background: #1e1e1e;
+            border: 1px solid #0f0;
+            color: #0f0;
+            border-radius: 4px;
+        }
+        .status {
+            color: #0ff;
+            font-size: 12px;
+            padding: 5px;
+            background: #1e1e1e;
+            border-left: 2px solid #0ff;
+            margin: 10px 0;
+            border-radius: 2px;
+        }
+        .summary {
+            grid-column: 1 / -1;
+            background: #2d2d2d;
+            border: 2px solid #0f0;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #0f0;
+            padding: 3px;
+            text-align: left;
+        }
+        table th {
+            background: #1e1e1e;
+            color: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>🔬 Excel Import End-to-End Test</h2>
+        <p>This page simulates the entire Excel import process to help debug issues.</p>
+        <p style="color: #ff9800; margin-top: 10px;">
+            <strong>Instructions:</strong> Upload an Excel file and watch the step-by-step process in the panels below
+        </p>
+        <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" style="margin-top: 10px; width: 100%;">
+        <div style="margin-top: 10px;">
+            <button onclick="clearLogs()">🗑️ Clear All Logs</button>
+            <button onclick="testDatabase()">📊 Test Database Check</button>
+            <button onclick="openUserPage()">👥 Open User Page</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2>📁 File Processing</h2>
+            <div id="fileLog"></div>
+        </div>
+        <div class="panel">
+            <h2>📊 Data Parsing</h2>
+            <div id="parseLog"></div>
+        </div>
+        <div class="panel">
+            <h2>💾 Storage</h2>
+            <div id="storageLog"></div>
+        </div>
+    </div>
+
+    <div class="summary">
+        <h2>📋 Summary Report</h2>
+        <div id="summaryReport"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <script>
+        const fileLog = document.getElementById('fileLog');
+        const parseLog = document.getElementById('parseLog');
+        const storageLog = document.getElementById('storageLog');
+        const summary = document.getElementById('summaryReport');
+        
+        let testState = {
+            fileName: '',
+            fileSize: 0,
+            rowCount: 0,
+            hasTable: false,
+            storedSize: 0,
+            errors: []
+        };
+
+        function log(target, message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const time = new Date().toLocaleTimeString();
+            entry.textContent = `[${time}] ${message}`;
+            target.appendChild(entry);
+            target.scrollTop = target.scrollHeight;
+            console.log(message);
+        }
+
+        document.getElementById('excelFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            clearLogs();
+            testState = {
+                fileName: file.name,
+                fileSize: file.size,
+                rowCount: 0,
+                hasTable: false,
+                storedSize: 0,
+                errors: []
+            };
+
+            log(fileLog, `📥 File selected: ${file.name}`, 'info');
+            log(fileLog, `📏 File size: ${(file.size / 1024).toFixed(2)} KB`, 'info');
+            log(fileLog, `⏱️ Starting upload at ${new Date().toLocaleTimeString()}`, 'info');
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    log(fileLog, `✓ File loaded into memory`, 'success');
+                    
+                    const data = evt.target.result;
+                    log(parseLog, `📖 Parsing data...`, 'info');
+                    
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    log(parseLog, `✓ Workbook parsed`, 'success');
+                    log(parseLog, `📄 Sheets found: ${workbook.SheetNames.length}`, 'info');
+                    
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    
+                    testState.rowCount = rows.length;
+                    log(parseLog, `✓ Rows extracted: ${rows.length}`, 'success');
+                    log(parseLog, `📊 Columns per row: ${rows[0] ? rows[0].length : 0}`, 'info');
+                    
+                    // Test HTML generation
+                    let htmlTable = '<table style="width:100%; border-collapse: collapse; margin: 1rem 0; border: 1px solid #ccc;">';
+                    
+                    if (rows.length > 0) {
+                        // Headers
+                        htmlTable += '<tr>';
+                        for (let i = 0; i < rows[0].length; i++) {
+                            htmlTable += `<th style="border: 1px solid #ccc; padding: 8px; background-color: #3b82f6; color: #fff; font-weight: bold;">${rows[0][i]}</th>`;
+                        }
+                        htmlTable += '</tr>';
+                        
+                        // Data rows
+                        for (let j = 1; j < rows.length; j++) {
+                            htmlTable += '<tr>';
+                            for (let k = 0; k < rows[j].length; k++) {
+                                htmlTable += `<td style="border: 1px solid #ccc; padding: 8px; background-color: #fff; color: #000;">${rows[j][k]}</td>`;
+                            }
+                            htmlTable += '</tr>';
+                        }
+                    }
+                    
+                    htmlTable += '</table>';
+                    
+                    log(parseLog, `✓ HTML table generated`, 'success');
+                    log(parseLog, `📈 HTML size: ${(htmlTable.length / 1024).toFixed(2)} KB`, 'info');
+                    
+                    testState.hasTable = htmlTable.includes('<table');
+                    
+                    // Test localStorage
+                    log(storageLog, `💾 Storing to localStorage...`, 'info');
+                    
+                    const excelData = {
+                        rows: rows,
+                        fileName: file.name,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    const jsonData = JSON.stringify(excelData);
+                    localStorage.setItem('excelPreviewData', jsonData);
+                    
+                    testState.storedSize = jsonData.length;
+                    log(storageLog, `✓ Data stored to localStorage`, 'success');
+                    log(storageLog, `💾 Stored size: ${(jsonData.length / 1024).toFixed(2)} KB`, 'info');
+                    
+                    // Verify retrieval
+                    const retrieved = localStorage.getItem('excelPreviewData');
+                    if (retrieved && retrieved === jsonData) {
+                        log(storageLog, `✓ localStorage verification: PASSED`, 'success');
+                    } else {
+                        log(storageLog, `❌ localStorage verification: FAILED`, 'error');
+                        testState.errors.push('localStorage data mismatch');
+                    }
+                    
+                    // Generate summary
+                    updateSummary();
+                    
+                } catch (error) {
+                    log(parseLog, `❌ Error: ${error.message}`, 'error');
+                    log(parseLog, `📍 Stack: ${error.stack.substring(0, 100)}...`, 'error');
+                    testState.errors.push(`Parsing error: ${error.message}`);
+                    updateSummary();
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        });
+
+        function updateSummary() {
+            const status = testState.errors.length === 0 ? '✅ READY' : '❌ ERRORS FOUND';
+            const statusColor = testState.errors.length === 0 ? 'success' : 'error';
+            
+            summary.innerHTML = `
+                <div class="status ${statusColor}">Status: ${status}</div>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr>
+                        <td>File Name</td>
+                        <td>${testState.fileName || 'N/A'}</td>
+                        <td>${testState.fileName ? '✓' : '✗'}</td>
+                    </tr>
+                    <tr>
+                        <td>File Size</td>
+                        <td>${(testState.fileSize / 1024).toFixed(2)} KB</td>
+                        <td>${testState.fileSize > 0 ? '✓' : '✗'}</td>
+                    </tr>
+                    <tr>
+                        <td>Rows Parsed</td>
+                        <td>${testState.rowCount}</td>
+                        <td>${testState.rowCount > 0 ? '✓' : '✗'}</td>
+                    </tr>
+                    <tr>
+                        <td>HTML Table Generated</td>
+                        <td>Yes</td>
+                        <td>${testState.hasTable ? '✓' : '✗'}</td>
+                    </tr>
+                    <tr>
+                        <td>localStorage Size</td>
+                        <td>${(testState.storedSize / 1024).toFixed(2)} KB</td>
+                        <td>${testState.storedSize > 0 ? '✓' : '✗'}</td>
+                    </tr>
+                </table>
+                ${testState.errors.length > 0 ? `
+                    <div class="status error" style="margin-top: 10px;">
+                        ⚠️ Errors Found:
+                        <ul style="margin: 5px 0 0 20px; list-style: disc;">
+                            ${testState.errors.map(e => `<li>${e}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : `
+                    <div class="status success" style="margin-top: 10px;">
+                        ✓ All checks passed! Ready to test in admin form.
+                    </div>
+                `}
+                <div style="margin-top: 15px;">
+                    <button onclick="openCreateForm()">📝 Open Create Form</button>
+                    <button onclick="testDatabase()">📊 Test Database</button>
+                </div>
+            `;
+        }
+
+        function clearLogs() {
+            fileLog.innerHTML = '';
+            parseLog.innerHTML = '';
+            storageLog.innerHTML = '';
+            summary.innerHTML = '<p style="color: #666;">Upload an Excel file to start testing</p>';
+            localStorage.removeItem('excelPreviewData');
+            testState = {
+                fileName: '',
+                fileSize: 0,
+                rowCount: 0,
+                hasTable: false,
+                storedSize: 0,
+                errors: []
+            };
+        }
+
+        function openCreateForm() {
+            window.open('/admin/pengumuman/create', '_blank');
+        }
+
+        function openUserPage() {
+            window.open('/infobase/pengumuman', '_blank');
+        }
+
+        function testDatabase() {
+            window.open('/test-pengumuman-check.php', '_blank');
+        }
+    </script>
+</body>
+</html>

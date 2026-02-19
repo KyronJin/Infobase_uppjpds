@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Excel Insert - Real Time</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: #1a1a1a;
+            border: 2px solid #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            height: 500px;
+            overflow-y: auto;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        .panel h2 {
+            color: #0f0;
+            font-size: 13px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 5px;
+            position: sticky;
+            top: 0;
+            background: #1a1a1a;
+        }
+        .log-line {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff9800; }
+        .info { color: #0ff; }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        button:hover { background: #0d0; }
+        .header {
+            background: #1a1a1a;
+            border: 2px solid #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .code-block {
+            background: #000;
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            word-break: break-all;
+        }
+        input[type="file"] {
+            padding: 5px;
+            background: #1a1a1a;
+            border: 1px solid #0f0;
+            color: #0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔬 Debug: Excel Insert to Quill - Real-Time Monitor</h1>
+        <p>Monitor exactly apa yang happen ketika insert table ke Quill</p>
+        <p style="color: #ff9800; margin-top: 10px;">
+            <strong>Instructions:</strong>
+        </p>
+        <ol style="margin-left: 20px; color: #0ff;">
+            <li>Upload file Excel di admin form</li>
+            <li>Klik "INSERT KE EDITOR" di preview popup</li>
+            <li>Lihat real-time logs di halaman ini</li>
+        </ol>
+        <div style="margin-top: 15px;">
+            <button onclick="clearLogs()">🗑️ Clear Logs</button>
+            <button onclick="checkFormState()">📋 Check Admin Form State</button>
+            <button onclick="window.location.reload()">🔄 Reload Page</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2>📝 Quill Editor State</h2>
+            <div id="quillPanel"></div>
+        </div>
+        <div class="panel">
+            <h2>📤 Textarea Value</h2>
+            <div id="textareaPanel"></div>
+        </div>
+        <div class="panel">
+            <h2>🔍 Raw HTML Inspection</h2>
+            <div id="htmlPanel"></div>
+        </div>
+        <div class="panel">
+            <h2>📊 Insert Tracking</h2>
+            <div id="trackPanel"></div>
+        </div>
+    </div>
+
+    <script>
+        const quillPanel = document.getElementById('quillPanel');
+        const textareaPanel = document.getElementById('textareaPanel');
+        const htmlPanel = document.getElementById('htmlPanel');
+        const trackPanel = document.getElementById('trackPanel');
+
+        // Inject monitoring script into localStorage
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'excelInsertDebug') {
+                const data = JSON.parse(e.newValue || '{}');
+                updatePanels(data);
+            }
+        });
+
+        // Check admin form periodically
+        let checkInterval;
+        function checksAdminForm() {
+            checkInterval = setInterval(() => {
+                // Try to communicate with parent frame/window
+                try {
+                    // Send message to any open admin window
+                    if (window.opener) {
+                        window.opener.postMessage({
+                            type: 'DEBUG_CHECK',
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                    }
+                    
+                    // Also check localStorage for updates
+                    const debug = localStorage.getItem('excelInsertDebug');
+                    if (debug) {
+                        const data = JSON.parse(debug);
+                        updatePanels(data);
+                    }
+                } catch (e) {
+                    console.log('Check failed:', e.message);
+                }
+            }, 1000);
+        }
+
+        function updatePanels(data) {
+            if (data.quillHTML) {
+                quillPanel.innerHTML = '';
+                const log = document.createElement('div');
+                log.className = 'log-line success';
+                log.innerHTML = `<strong>✓ Quill innerHTML detected:</strong>`;
+                quillPanel.appendChild(log);
+                
+                const code = document.createElement('div');
+                code.className = 'code-block';
+                code.textContent = data.quillHTML.substring(0, 500);
+                if (data.quillHTML.length > 500) {
+                    code.textContent += `\n\n... (${data.quillHTML.length - 500} more chars)`;
+                }
+                quillPanel.appendChild(code);
+                
+                const hasTable = data.quillHTML.includes('<table') ? '✓ YES' : '✗ NO';
+                const tableLog = document.createElement('div');
+                tableLog.className = data.quillHTML.includes('<table') ? 'log-line success' : 'log-line error';
+                tableLog.textContent = `Contains <table>: ${hasTable}`;
+                quillPanel.appendChild(tableLog);
+            }
+
+            if (data.textareaValue) {
+                textareaPanel.innerHTML = '';
+                const log = document.createElement('div');
+                log.className = 'log-line success';
+                log.innerHTML = `<strong>✓ Textarea value detected:</strong>`;
+                textareaPanel.appendChild(log);
+                
+                const code = document.createElement('div');
+                code.className = 'code-block';
+                code.textContent = data.textareaValue.substring(0, 500);
+                if (data.textareaValue.length > 500) {
+                    code.textContent += `\n\n... (${data.textareaValue.length - 500} more chars)`;
+                }
+                textareaPanel.appendChild(code);
+
+                const hasTable = data.textareaValue.includes('<table') ? '✓ YES' : '✗ NO';
+                const tableLog = document.createElement('div');
+                tableLog.className = data.textareaValue.includes('<table') ? 'log-line success' : 'log-line error';
+                tableLog.textContent = `Contains <table>: ${hasTable}`;
+                textareaPanel.appendChild(tableLog);
+            }
+
+            if (data.htmlTable) {
+                htmlPanel.innerHTML = '';
+                const log = document.createElement('div');
+                log.className = 'log-line info';
+                log.innerHTML = `<strong>📊 Generated HTML Table:</strong>`;
+                htmlPanel.appendChild(log);
+                
+                const code = document.createElement('div');
+                code.className = 'code-block';
+                code.textContent = data.htmlTable.substring(0, 300);
+                if (data.htmlTable.length > 300) {
+                    code.textContent += `\n\n... (${data.htmlTable.length - 300} more chars)`;
+                }
+                htmlPanel.appendChild(code);
+            }
+
+            if (data.insertMethod) {
+                trackPanel.innerHTML = '';
+                const logs = [
+                    { label: 'Method Used', value: data.insertMethod, type: 'info' },
+                    { label: 'Timestamp', value: data.timestamp, type: 'info' },
+                    { label: 'Quill Length', value: data.quillLength, type: 'info' },
+                    { label: 'HTML Table Size', value: data.htmlTableSize + ' bytes', type: 'info' },
+                    { label: 'Success', value: data.success ? '✓ YES' : '✗ NO', type: data.success ? 'success' : 'error' }
+                ];
+                
+                logs.forEach(log => {
+                    const line = document.createElement('div');
+                    line.className = `log-line ${log.type}`;
+                    line.textContent = `${log.label}: ${log.value}`;
+                    trackPanel.appendChild(line);
+                });
+            }
+        }
+
+        function clearLogs() {
+            localStorage.removeItem('excelInsertDebug');
+            quillPanel.innerHTML = '<div class="log-line info">Waiting for insert event...</div>';
+            textareaPanel.innerHTML = '<div class="log-line info">Waiting for data...</div>';
+            htmlPanel.innerHTML = '<div class="log-line info">Waiting for data...</div>';
+            trackPanel.innerHTML = '<div class="log-line info">Waiting for data...</div>';
+        }
+
+        function checkFormState() {
+            alert('Open admin form and click INSERT KE EDITOR, then come back here to see the debug logs');
+        }
+
+        // Start monitoring
+        checksAdminForm();
+        clearLogs();
+    </script>
+</body>
+</html>

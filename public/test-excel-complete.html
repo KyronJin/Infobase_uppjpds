@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Excel Import Complete Flow</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #063A76; }
+        .test-section { margin: 30px 0; padding: 20px; background: #f9f9f9; border-left: 4px solid #3b82f6; }
+        .log { background: #000; color: #0f0; padding: 15px; font-family: monospace; font-size: 12px; height: 400px; overflow-y: auto; border-radius: 4px; }
+        .log-entry { margin: 5px 0; }
+        .log-success { color: #0f0; }
+        .log-error { color: #f00; }
+        .log-info { color: #0ff; }
+        button { padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        button:hover { background: #2563eb; }
+        .status { margin: 15px 0; padding: 10px; border-radius: 4px; font-weight: bold; }
+        .status.success { background: #d1fae5; color: #065f46; }
+        .status.error { background: #fee2e2; color: #991b1b; }
+        .status.pending { background: #fef3c7; color: #92400e; }
+        #editor-container { min-height: 300px; margin: 20px 0; }
+        .ql-toolbar.ql-snow { border: 1px solid #d1d5db; border-radius: 0.5rem 0.5rem 0 0; }
+        .ql-container.ql-snow { border: 1px solid #d1d5db; border-radius: 0 0 0.5rem 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Excel Import - Complete Flow</h1>
+        
+        <div class="test-section">
+            <h2>Step 1: Initialize Libraries & Quill</h2>
+            <button onclick="testInitialize()">Start Test</button>
+            <div id="status-init" class="status" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 2: Simulate File Upload & Parse Excel</h2>
+            <button onclick="testParseExcel()">Parse Excel Data</button>
+            <div id="status-parse" class="status" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 3: Generate HTML Table</h2>
+            <button onclick="testGenerateTable()">Generate Table</button>
+            <div id="status-table" class="status" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 4: Insert Table to Quill Editor</h2>
+            <div id="editor-container">
+                <div id="editor"></div>
+            </div>
+            <button onclick="testInsertTable()">Insert to Quill</button>
+            <div id="status-insert" class="status" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 5: Verify Content & localStorage</h2>
+            <button onclick="testVerify()">Verify All</button>
+            <div id="status-verify" class="status" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Test Log Output</h2>
+            <div class="log" id="log"></div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="/js/xlsx.min.js"></script>
+
+    <script>
+        let quillInstance = null;
+        let testExcelData = null;
+        let generatedTable = null;
+
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        function setStatus(elementId, message, type) {
+            const status = document.getElementById(elementId);
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        function testInitialize() {
+            log('Initializing libraries...', 'info');
+            
+            // Check XLSX
+            if (typeof XLSX === 'undefined') {
+                log('❌ XLSX library not loaded!', 'error');
+                setStatus('status-init', '❌ XLSX library failed to load', 'error');
+                return;
+            }
+            log(`✓ XLSX loaded. Version: ${XLSX.version}`, 'success');
+
+            // Check Quill
+            if (typeof Quill === 'undefined') {
+                log('❌ Quill library not loaded!', 'error');
+                setStatus('status-init', '❌ Quill library failed to load', 'error');
+                return;
+            }
+            log('✓ Quill library loaded', 'success');
+
+            // Initialize Quill
+            try {
+                quillInstance = new Quill('#editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            ['link']
+                        ]
+                    }
+                });
+                log('✓ Quill editor initialized', 'success');
+                setStatus('status-init', '✓ All libraries loaded and initialized', 'success');
+            } catch (error) {
+                log(`❌ Quill initialization failed: ${error.message}`, 'error');
+                setStatus('status-init', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testParseExcel() {
+            log('Parsing Excel data...', 'info');
+            
+            if (!quillInstance) {
+                log('❌ Quill not initialized!', 'error');
+                setStatus('status-parse', '❌ Initialize first!', 'error');
+                return;
+            }
+
+            try {
+                // Simulate CSV data from Excel
+                const csvData = `Nama Ruangan,Lantai,Kapasitas
+Ruang Rapat A,1,20
+Ruang Rapat B,2,15
+Ruang Komputer,3,50`;
+                
+                log(`CSV data length: ${csvData.length} bytes`, 'info');
+                
+                const csvLines = csvData.trim().split('\n');
+                log(`CSV lines: ${csvLines.length}`, 'info');
+
+                // Parse CSV to rows
+                const rows = csvLines.map(line => {
+                    const cells = [];
+                    let current = '';
+                    let inQuotes = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            cells.push(current.replace(/^"|"$/g, '').trim());
+                            current = '';
+                        } else {
+                            current += char;
+                        }
+                    }
+                    cells.push(current.replace(/^"|"$/g, '').trim());
+                    return cells;
+                });
+
+                log(`Rows parsed: ${rows.length}`, 'info');
+                const maxCol = Math.max(...rows.map(r => r.length));
+                log(`Max columns: ${maxCol}`, 'info');
+
+                // Normalize rows
+                const normalizedRows = rows.map(row => {
+                    const normalized = [...row];
+                    while (normalized.length < maxCol) {
+                        normalized.push('');
+                    }
+                    return normalized.slice(0, maxCol);
+                });
+
+                testExcelData = {
+                    rows: normalizedRows,
+                    colWidths: [],
+                    maxCol: maxCol,
+                    fileName: 'test-data.csv'
+                };
+
+                log(`✓ Data normalized. Structure:`, 'success');
+                normalizedRows.forEach((row, idx) => {
+                    log(`  Row ${idx}: ${row.join(' | ')}`, 'info');
+                });
+
+                setStatus('status-parse', `✓ Excel parsed: ${normalizedRows.length} rows × ${maxCol} columns`, 'success');
+            } catch (error) {
+                log(`❌ Parse error: ${error.message}`, 'error');
+                setStatus('status-parse', `❌ Parse error: ${error.message}`, 'error');
+            }
+        }
+
+        function testGenerateTable() {
+            log('Generating HTML table...', 'info');
+
+            if (!testExcelData) {
+                log('❌ No parsed data! Run parse test first.', 'error');
+                setStatus('status-table', '❌ Parse data first!', 'error');
+                return;
+            }
+
+            try {
+                const { rows, maxCol } = testExcelData;
+                let html = '<table style="width:100%; border-collapse: collapse; margin: 1rem 0; border: 1px solid #ccc;">';
+
+                rows.forEach((row, rowIndex) => {
+                    const isHeader = rowIndex === 0;
+                    const bgColor = isHeader ? '#3b82f6' : (rowIndex % 2 === 0 ? '#fff' : '#f9f9f9');
+
+                    html += '<tr>';
+                    row.forEach((cell, cellIndex) => {
+                        const tag = isHeader ? 'th' : 'td';
+                        const cellValue = String(cell || '').replace(/"/g, '&quot;');
+                        html += `<${tag} style="border: 1px solid #ccc; padding: 8px; background-color: ${bgColor}; color: ${isHeader ? '#fff' : '#000'}; font-weight: ${isHeader ? 'bold' : 'normal'};">`;
+                        html += cellValue;
+                        html += `</${tag}>`;
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</table>';
+
+                generatedTable = html;
+                log(`✓ HTML table generated. Length: ${html.length} chars`, 'success');
+                log(`First 200 chars: ${html.substring(0, 200)}...`, 'info');
+
+                setStatus('status-table', `✓ Table generated: ${html.length} characters`, 'success');
+            } catch (error) {
+                log(`❌ Table generation error: ${error.message}`, 'error');
+                setStatus('status-table', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testInsertTable() {
+            log('Inserting table to Quill...', 'info');
+
+            if (!quillInstance) {
+                log('❌ Quill not initialized!', 'error');
+                setStatus('status-insert', '❌ Initialize first!', 'error');
+                return;
+            }
+
+            if (!generatedTable) {
+                log('❌ No generated table! Generate table first.', 'error');
+                setStatus('status-insert', '❌ Generate table first!', 'error');
+                return;
+            }
+
+            try {
+                const index = quillInstance.getLength() - 1;
+                log(`Inserting at index: ${index}`, 'info');
+
+                quillInstance.insertText(index, '\n');
+                quillInstance.clipboard.dangerouslyPasteHTML(index + 1, generatedTable);
+
+                log('✓ Table inserted to Quill editor', 'success');
+
+                const content = quillInstance.root.innerHTML;
+                log(`Editor content length: ${content.length} chars`, 'info');
+                log(`Contains <table>: ${content.includes('<table') ? 'YES ✓' : 'NO ✗'}`, 'info');
+                log(`Contains <th>: ${content.includes('<th') ? 'YES ✓' : 'NO ✗'}`, 'info');
+                log(`Contains <td>: ${content.includes('<td') ? 'YES ✓' : 'NO ✗'}`, 'info');
+
+                setStatus('status-insert', '✓ Table inserted successfully to Quill', 'success');
+            } catch (error) {
+                log(`❌ Insert error: ${error.message}`, 'error');
+                setStatus('status-insert', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testVerify() {
+            log('Verifying complete flow...', 'info');
+
+            if (!quillInstance) {
+                log('❌ Quill not initialized!', 'error');
+                setStatus('status-verify', '❌ Initialize first!', 'error');
+                return;
+            }
+
+            try {
+                // Check Quill content
+                const quillContent = quillInstance.root.innerHTML;
+                const hasTable = quillContent.includes('<table');
+                const hasHeader = quillContent.includes('<th');
+                const hasData = quillContent.includes('<td');
+
+                log(`Quill editor content:`, 'info');
+                log(`  - Has <table>: ${hasTable ? '✓' : '✗'}`, hasTable ? 'success' : 'error');
+                log(`  - Has <th>: ${hasHeader ? '✓' : '✗'}`, hasHeader ? 'success' : 'error');
+                log(`  - Has <td>: ${hasData ? '✓' : '✗'}`, hasData ? 'success' : 'error');
+                log(`  - Content length: ${quillContent.length} chars`, 'info');
+
+                // Test localStorage
+                localStorage.setItem('excelPreviewData', JSON.stringify(testExcelData));
+                const retrieved = localStorage.getItem('excelPreviewData');
+                const localStorageOK = retrieved !== null;
+
+                log(`localStorage test:`, 'info');
+                log(`  - Store data: ${localStorageOK ? '✓' : '✗'}`, localStorageOK ? 'success' : 'error');
+                log(`  - Retrieved size: ${retrieved ? retrieved.length : 0} bytes`, 'info');
+
+                // Overall result
+                const allOK = hasTable && hasHeader && hasData && localStorageOK;
+                
+                if (allOK) {
+                    log('✓✓✓ ALL TESTS PASSED! ✓✓✓', 'success');
+                    setStatus('status-verify', '✓ Complete flow verified successfully!', 'success');
+                } else {
+                    log('⚠ Some tests failed', 'error');
+                    setStatus('status-verify', '⚠ Some tests failed. Check log.', 'error');
+                }
+            } catch (error) {
+                log(`❌ Verification error: ${error.message}`, 'error');
+                setStatus('status-verify', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-initialize when page loads
+        window.addEventListener('load', () => {
+            log('Page loaded. Ready to test!', 'info');
+        });
+    </script>
+</body>
+</html>

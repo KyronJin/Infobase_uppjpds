@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Excel Import - Testing & Debugging Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #063A76;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        h2 {
+            color: #063A76;
+            margin: 25px 0 15px 0;
+            font-size: 24px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #333;
+            margin: 20px 0 10px 0;
+            font-size: 18px;
+        }
+        p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .step {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #c7254e;
+        }
+        .url {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            display: inline-block;
+            text-decoration: none;
+            margin: 10px 0;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .url:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+        .checklist li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #333;
+        }
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        a.btn {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        a.btn:hover {
+            background: #5567d8;
+            transform: translateY(-2px);
+        }
+        a.btn.secondary {
+            background: #6c757d;
+        }
+        a.btn.secondary:hover {
+            background: #5a6268;
+        }
+        .flow-diagram {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .flow-step {
+            display: inline-block;
+            background: white;
+            border: 2px solid #667eea;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin: 5px;
+            font-weight: bold;
+        }
+        .flow-arrow {
+            display: inline-block;
+            margin: 5px;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📊 Excel Import - Testing & Debugging Guide</h1>
+            <p style="font-size: 16px; color: #667eea; margin-bottom: 0;">Panduan lengkap untuk test dan debug feature Excel import</p>
+        </div>
+
+        <div class="card">
+            <h2>🔍 Apa yang Sudah Diperbaiki</h2>
+            
+            <h3>1. Form Submission Logic Enhancement</h3>
+            <ul class="checklist">
+                <li>Added <code>isInsertingExcel</code> flag untuk track Excel insert progress</li>
+                <li>Improved content sync timing (300ms instead of 200ms)</li>
+                <li>Better logging at each step for debugging</li>
+                <li>Guaranteed Quill content synced SEBELUM form submit</li>
+            </ul>
+
+            <h3>2. Table Insert Verification</h3>
+            <ul class="checklist">
+                <li>Added verification checks setelah table insert</li>
+                <li>Check <code>&lt;table&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code> presence</li>
+                <li>Log final content length untuk confirm data ada</li>
+                <li>Better error handling dengan stack trace</li>
+            </ul>
+
+            <h3>3. Debugging Support</h3>
+            <ul class="checklist">
+                <li>Comprehensive console logging di setiap step</li>
+                <li>Debug dashboard untuk monitor real-time progress</li>
+                <li>localStorage inspection tools</li>
+                <li>Editor state monitoring</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🧪 Cara Test Feature</h2>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Buka Admin Create Form</strong>
+                <p style="margin-top: 10px;">
+                    <a href="/admin/pengumuman/create" class="btn">→ Go to Create Form</a>
+                </p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Persiapkan File Excel</strong>
+                <ul class="checklist">
+                    <li>Gunakan file Excel punya Anda sendiri (.xlsx, .xls, .csv)</li>
+                    <li>Pastikan memiliki headers di baris pertama</li>
+                    <li>Pastikan ada data di baris-baris berikutnya</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Upload Excel File</strong>
+                <p style="margin-top: 10px;">
+                    Di section "📊 Insert Tabel dari Excel":
+                </p>
+                <ul class="checklist">
+                    <li>Drag & drop file ATAU klik untuk select</li>
+                    <li>File akan diproses otomatis</li>
+                    <li>Preview popup akan muncul</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Lihat Preview & Click "Lanjutkan Insert"</strong>
+                <ul class="checklist">
+                    <li>Preview window menampilkan tabel dengan styling</li>
+                    <li>Klik tombol "Lanjutkan Insert"</li>
+                    <li>Popup akan close dan tabel akan muncul di editor</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">5</span>
+                <strong>Verifikasi Tabel di Editor</strong>
+                <ul class="checklist">
+                    <li>Table harus terlihat di Quill editor dengan styling</li>
+                    <li>Headers berwarna biru</li>
+                    <li>Rows berganti warna (putih & abu-abu)</li>
+                    <li>Borders dan padding terlihat jelas</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">6</span>
+                <strong>Isi Field yang Diperlukan</strong>
+                <ul class="checklist">
+                    <li>Judul Pengumuman: <code>required</code></li>
+                    <li>Tanggal Publikasi: <code>required</code></li>
+                    <li>Gambar Pengumuman: optional</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">7</span>
+                <strong>Submit Form</strong>
+                <ul class="checklist">
+                    <li>Click tombol "Buat Pengumuman"</li>
+                    <li>Form akan submit dengan table data</li>
+                    <li>Tunggu redirect ke halaman list</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">8</span>
+                <strong>Verifikasi di Halaman User</strong>
+                <ul class="checklist">
+                    <li>Buka <a href="/infobase/pengumuman">/infobase/pengumuman</a></li>
+                    <li>Cari pengumuman yang baru dibuat</li>
+                    <li>Klik untuk buka detail</li>
+                    <li>Table harus terlihat dengan styling lengkap</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 Debugging Dengan DevTools</h2>
+
+            <h3>Buka Browser Console (F12)</h3>
+            <p>Console akan menampilkan detailed logs untuk setiap step:</p>
+
+            <div class="flow-diagram" style="text-align: center;">
+                <div class="flow-step">📤 File Upload</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">📊 Parse CSV</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">📝 Generate HTML</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">✏️ Insert to Quill</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">💾 localStorage</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">📤 Form Submit</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">✓ Database</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">📄 Display</div>
+            </div>
+
+            <h3>Console Log Messages Expect:</h3>
+            <div style="background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 12px; overflow-x: auto;">
+                ✓ XLSX loaded. Version: ...<br>
+                ✓ Both libraries loaded!<br>
+                Processing Excel file: filename.xlsx<br>
+                File read completed, parsing workbook...<br>
+                Data parsed. Rows: X<br>
+                Storing Excel data to localStorage...<br>
+                <strong>insertExcelTableFromPopup called from popup</strong><br>
+                <strong>insertExcelTable called with data...</strong><br>
+                Starting table insert...<br>
+                After table insert, Quill length: XXX<br>
+                Has &lt;table&gt;: true<br>
+                <strong>✓ Table inserted successfully</strong><br>
+            </div>
+
+            <h3>Untuk Setiap Step, Check:</h3>
+            <ul class="checklist">
+                <li><strong>File Upload:</strong> Look for "Processing Excel file" logs</li>
+                <li><strong>CSV Parsing:</strong> Check "Data parsed" message dengan row count</li>
+                <li><strong>Table Generation:</strong> Verify HTML length di console</li>
+                <li><strong>Editor Insert:</strong> Check "Has &lt;table&gt;: true"</li>
+                <li><strong>Form Submit:</strong> Verify "Syncing Quill content" and form submit logs</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Jika Masih Ada Masalah</h2>
+
+            <div class="warning">
+                <strong>Jika preview popup tidak muncul:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Check apakah browser memblok pop-ups</li>
+                    <li>Allow pop-ups untuk halaman ini</li>
+                    <li>Lihat console untuk error messages</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>Jika table tidak terlihat di editor:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Cek console untuk "Table inserted successfully" message</li>
+                    <li>Verifikasi "Has &lt;table&gt;: true" di console</li>
+                    <li>Check apakah data ada di localStorage (lihat debug dashboard)</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>Jika table tidak tersimpan ke database:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Buka Network tab di DevTools</li>
+                    <li>Cek POST request ke /admin/pengumuman/store</li>
+                    <li>Verifikasi request payload include "description" dengan table HTML</li>
+                    <li>Check server response untuk error messages</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>Jika table tidak muncul di halaman user:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Check database direktly (tinker atau query)</li>
+                    <li>Verifikasi description column punya HTML table</li>
+                    <li>Check CSS di pengumuman-detail.blade.php</li>
+                    <li>Verifikasi table tidak di-hide oleh CSS line-clamp</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Debug Tools Available</h2>
+
+            <div class="button-group" style="display: grid; gap: 15px;">
+                <a href="/debug-excel-import.html" class="btn" style="display: block; text-align: center;">
+                    🔍 Debug Dashboard - Monitor Excel Import Real-Time
+                </a>
+                
+                <a href="/test-excel-complete.html" class="btn secondary" style="display: block; text-align: center;">
+                    🧪 Component Test - Test Individual Parts
+                </a>
+                
+                <a href="/test-excel-import" class="btn secondary" style="display: block; text-align: center;">
+                    💾 Database Test - Verify Database Operations
+                </a>
+                
+                <a href="/admin/pengumuman/create" class="btn secondary" style="display: block; text-align: center;">
+                    ✏️ Live Create Form - Test Feature Live
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>✓ Complete Flow Verification Checklist</h2>
+
+            <div style="background: #f8f9ff; padding: 20px; border-radius: 8px;">
+                <h3>Pre-Test</h3>
+                <ul class="checklist">
+                    <li>Browser console clear (F12)</li>
+                    <li>localStorage empty (or checked)</li>
+                    <li>Admin form loaded correctly</li>
+                </ul>
+
+                <h3>Upload & Parse</h3>
+                <ul class="checklist">
+                    <li>Excel file selected/dropped</li>
+                    <li>Console shows "Data parsed" message</li>
+                    <li>Row count correct in logs</li>
+                </ul>
+
+                <h3>Editor Insert</h3>
+                <ul class="checklist">
+                    <li>Preview popup appears</li>
+                    <li>Table visible in popup dengan correct styling</li>
+                    <li>Click "Lanjutkan Insert"</li>
+                    <li>Table appears in editor</li>
+                </ul>
+
+                <h3>Form Submit</h3>
+                <ul class="checklist">
+                    <li>Fill all required fields</li>
+                    <li>Click "Buat Pengumuman"</li>
+                    <li>Console shows "Syncing Quill content"</li>
+                    <li>Form submits successfully</li>
+                </ul>
+
+                <h3>Database & Display</h3>
+                <ul class="checklist">
+                    <li>Redirect to pengumuman list</li>
+                    <li>New item appears in list</li>
+                    <li>Click detail to open</li>
+                    <li>Table displays with full styling</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2 style="color: white; border-bottom: 2px solid rgba(255,255,255,0.3);">Ready to Test!</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">Gunakan debug tools & guides di atas untuk test feature secara komprehensif</p>
+            <a href="/admin/pengumuman/create" class="btn" style="background: white; color: #667eea;">Start Testing Now →</a>
+        </div>
+    </div>
+</body>
+</html>

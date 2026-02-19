@@ -53,17 +53,22 @@
 
               <!-- Prev Button -->
               @if(count($aboutPhotos) > 1)
-              <button onclick="prevGallery()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10">
+              <button onclick="prevCarouselPhoto()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10 hover:scale-110">
                 <i class="fas fa-chevron-left"></i>
               </button>
               @endif
 
               <!-- Next Button -->
               @if(count($aboutPhotos) > 1)
-              <button onclick="nextGallery()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10">
+              <button onclick="nextCarouselPhoto()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all z-10 hover:scale-110">
                 <i class="fas fa-chevron-right"></i>
               </button>
               @endif
+
+              <!-- Click to expand button -->
+              <button onclick="openGalleryFromCarousel()" class="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 text-white text-xs px-3 py-1 rounded-full transition-all z-10 hover:scale-105">
+                <i class="fas fa-expand"></i>
+              </button>
             </div>
           </div>
 
@@ -74,6 +79,14 @@
           </div>
           @endif
 
+          <!-- Photo Description -->
+          @if($aboutPhotos->first()->description)
+          <div class="mt-4 p-4 bg-blue-50 rounded-lg border-l-4 border-[#F85E38]">
+            <p id="carouselDesc" class="text-gray-700 text-sm leading-relaxed italic">
+              {{ $aboutPhotos->first()->description }}
+            </p>
+          </div>
+          @endif
 
         </div>
         @endif
@@ -298,114 +311,123 @@ let animationFrame = null;
 const carouselContainer = document.getElementById('galleryCarousel');
 const carouselImage = document.getElementById('carouselImage');
 
-if(carouselContainer && galleryItems.length > 1) {
-  carouselContainer.addEventListener('mousedown', (e) => {
-    if(animationFrame) {
-      cancelAnimationFrame(animationFrame);
-      animationFrame = null;
-    }
-    isDragging = true;
-    dragStartX = e.clientX;
-    dragCurrentX = e.clientX;
-    dragPrevX = e.clientX;
-    dragStartTime = Date.now();
-    carouselImage.style.cursor = 'grabbing';
-    carouselImage.style.transition = 'none';
-  });
+// Initialize carousel setelah document ready
+document.addEventListener('DOMContentLoaded', function() {
+  if(carouselContainer && galleryItems.length > 1) {
+    carouselContainer.addEventListener('mousedown', (e) => {
+      if(animationFrame) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragCurrentX = e.clientX;
+      dragPrevX = e.clientX;
+      dragStartTime = Date.now();
+      if(carouselImage) carouselImage.style.cursor = 'grabbing';
+      if(carouselImage) carouselImage.style.transition = 'none';
+    });
 
-  document.addEventListener('mousemove', (e) => {
-    if(!isDragging || !carouselContainer) return;
-    
-    dragPrevX = dragCurrentX;
-    dragCurrentX = e.clientX;
-    dragVelocity = dragCurrentX - dragPrevX;
-  });
+    document.addEventListener('mousemove', (e) => {
+      if(!isDragging || !carouselContainer) return;
+      
+      dragPrevX = dragCurrentX;
+      dragCurrentX = e.clientX;
+      dragVelocity = dragCurrentX - dragPrevX;
+    });
 
-  document.addEventListener('mouseup', (e) => {
-    if(!isDragging) return;
-    
-    isDragging = false;
-    carouselImage.style.cursor = 'grab';
-    
-    const dragDistance = dragCurrentX - dragStartX;
-    const dragTime = Date.now() - dragStartTime;
-    const baseVelocity = dragVelocity;
-    
-    // Threshold untuk swipe (minimal 20px)
-    const threshold = 20;
-    const velocityThreshold = 0.5; // pixel per millisecond
-    
-    // Calculate if swipe should trigger based on distance or velocity
-    const shouldSwipeRight = dragDistance > threshold || (dragDistance > 10 && baseVelocity > velocityThreshold);
-    const shouldSwipeLeft = dragDistance < -threshold || (dragDistance < -10 && baseVelocity < -velocityThreshold);
-    
-    // Momentum animation
-    let momentum = Math.abs(baseVelocity);
-    momentum = Math.min(momentum, 5); // Cap momentum
-    
-    if(shouldSwipeRight || shouldSwipeLeft) {
-      // Perform swipe
+    document.addEventListener('mouseup', (e) => {
+      if(!isDragging) return;
+      
+      isDragging = false;
+      if(carouselImage) carouselImage.style.cursor = 'grab';
+      
+      const dragDistance = dragCurrentX - dragStartX;
+      const dragTime = Date.now() - dragStartTime;
+      const baseVelocity = dragVelocity;
+      
+      // Threshold untuk swipe (minimal 20px)
+      const threshold = 20;
+      const velocityThreshold = 0.5; // pixel per millisecond
+      
+      // Calculate if swipe should trigger based on distance or velocity
+      const shouldSwipeRight = dragDistance > threshold || (dragDistance > 10 && baseVelocity > velocityThreshold);
+      const shouldSwipeLeft = dragDistance < -threshold || (dragDistance < -10 && baseVelocity < -velocityThreshold);
+      
+      // Momentum animation
+      let momentum = Math.abs(baseVelocity);
+      momentum = Math.min(momentum, 5); // Cap momentum
+      
+      if(shouldSwipeRight || shouldSwipeLeft) {
+        // Perform swipe
+        if(shouldSwipeRight) {
+          performCarouselSwipe('prev');
+        } else if(shouldSwipeLeft) {
+          performCarouselSwipe('next');
+        }
+      } else {
+        // Snap back - just reset opacity
+        if(carouselImage) {
+          carouselImage.style.transition = 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)';
+          carouselImage.style.opacity = '1';
+        }
+      }
+    });
+
+    // Touch events untuk mobile
+    carouselContainer.addEventListener('touchstart', (e) => {
+      if(animationFrame) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
+      isDragging = true;
+      dragStartX = e.touches[0].clientX;
+      dragCurrentX = e.touches[0].clientX;
+      dragPrevX = e.touches[0].clientX;
+      dragStartTime = Date.now();
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if(!isDragging) return;
+      dragPrevX = dragCurrentX;
+      dragCurrentX = e.touches[0].clientX;
+      dragVelocity = dragCurrentX - dragPrevX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if(!isDragging) return;
+      isDragging = false;
+      
+      const dragDistance = dragCurrentX - dragStartX;
+      const threshold = 50;
+      const velocityThreshold = 1;
+      
+      const shouldSwipeRight = dragDistance > threshold || (dragDistance > 25 && Math.abs(dragVelocity) > velocityThreshold);
+      const shouldSwipeLeft = dragDistance < -threshold || (dragDistance < -25 && Math.abs(dragVelocity) > velocityThreshold);
+      
       if(shouldSwipeRight) {
         performCarouselSwipe('prev');
       } else if(shouldSwipeLeft) {
         performCarouselSwipe('next');
+      } else {
+        if(carouselImage) {
+          carouselImage.style.transition = 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)';
+          carouselImage.style.opacity = '1';
+        }
       }
-    } else {
-      // Snap back - just reset opacity
-      carouselImage.style.transition = 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)';
-      carouselImage.style.opacity = '1';
-    }
-  });
+    });
 
-  // Touch events untuk mobile
-  carouselContainer.addEventListener('touchstart', (e) => {
-    if(animationFrame) {
-      cancelAnimationFrame(animationFrame);
-      animationFrame = null;
-    }
-    isDragging = true;
-    dragStartX = e.touches[0].clientX;
-    dragCurrentX = e.touches[0].clientX;
-    dragPrevX = e.touches[0].clientX;
-    dragStartTime = Date.now();
-  });
-
-  document.addEventListener('touchmove', (e) => {
-    if(!isDragging) return;
-    dragPrevX = dragCurrentX;
-    dragCurrentX = e.touches[0].clientX;
-    dragVelocity = dragCurrentX - dragPrevX;
-  }, { passive: true });
-
-  document.addEventListener('touchend', (e) => {
-    if(!isDragging) return;
-    isDragging = false;
-    
-    const dragDistance = dragCurrentX - dragStartX;
-    const threshold = 50;
-    const velocityThreshold = 1;
-    
-    const shouldSwipeRight = dragDistance > threshold || (dragDistance > 25 && Math.abs(dragVelocity) > velocityThreshold);
-    const shouldSwipeLeft = dragDistance < -threshold || (dragDistance < -25 && Math.abs(dragVelocity) > velocityThreshold);
-    
-    if(shouldSwipeRight) {
-      performCarouselSwipe('prev');
-    } else if(shouldSwipeLeft) {
-      performCarouselSwipe('next');
-    } else {
-      carouselImage.style.transition = 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)';
-      carouselImage.style.opacity = '1';
-    }
-  });
-
-  // Prevent text selection during drag
-  carouselContainer.addEventListener('selectstart', (e) => {
-    if(isDragging) e.preventDefault();
-  });
-}
+    // Prevent text selection during drag
+    carouselContainer.addEventListener('selectstart', (e) => {
+      if(isDragging) e.preventDefault();
+    });
+  }
+});
 
 // Perform carousel swipe dengan smooth transition
 function performCarouselSwipe(direction) {
+  if(!carouselImage) return;
+  
   carouselImage.style.transition = 'opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)';
   carouselImage.style.opacity = '0';
   
@@ -415,7 +437,9 @@ function performCarouselSwipe(direction) {
     } else if(direction === 'prev') {
       prevCarouselPhoto();
     }
-    carouselImage.style.opacity = '1';
+    if(carouselImage) {
+      carouselImage.style.opacity = '1';
+    }
   }, 150);
 }
 
@@ -438,10 +462,27 @@ function updateCarouselPhoto() {
   const item = galleryItems[carouselPhotoIndex];
   
   // Update image src
-  carouselImage.src = item.image;
-  document.getElementById('carouselTitle').textContent = item.title;
-  document.getElementById('carouselDesc').textContent = item.description;
-  document.getElementById('currentPhotoNum').textContent = carouselPhotoIndex + 1;
+  if(carouselImage) {
+    carouselImage.src = item.image;
+  }
+  
+  // Update title
+  const titleEl = document.getElementById('carouselTitle');
+  if(titleEl) {
+    titleEl.textContent = item.title;
+  }
+  
+  // Update description
+  const descEl = document.getElementById('carouselDesc');
+  if(descEl) {
+    descEl.textContent = item.description || 'Tidak ada deskripsi';
+  }
+  
+  // Update current photo number
+  const currentNumEl = document.getElementById('currentPhotoNum');
+  if(currentNumEl) {
+    currentNumEl.textContent = carouselPhotoIndex + 1;
+  }
   
   // Update thumbnail border
   const thumbnails = document.querySelectorAll('[onclick^="openGalleryAtIndex"]');

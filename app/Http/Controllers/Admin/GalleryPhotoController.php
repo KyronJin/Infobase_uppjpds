@@ -168,16 +168,28 @@ class GalleryPhotoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(GalleryPhoto $gallery)
+    public function destroy($id)
     {
-        // Delete image file
-        if ($gallery->image_path && Storage::disk('public')->exists(str_replace('storage/', '', $gallery->image_path))) {
-            Storage::disk('public')->delete(str_replace('storage/', '', $gallery->image_path));
+        try {
+            $gallery = GalleryPhoto::find($id);
+
+            if (!$gallery) {
+                return redirect()->route('admin.gallery.index')
+                                ->with('error', 'Foto galeri tidak ditemukan');
+            }
+
+            // Delete image file
+            if ($gallery->image_path && Storage::disk('public')->exists(str_replace('storage/', '', $gallery->image_path))) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $gallery->image_path));
+            }
+
+            $gallery->delete();
+
+            return redirect()->route('admin.gallery.index')
+                            ->with('success', 'Foto galeri berhasil dihapus');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.gallery.index')
+                            ->with('error', 'Gagal menghapus foto: ' . $e->getMessage());
         }
-
-        $gallery->delete();
-
-        return redirect()->route('admin.gallery.index')
-                        ->with('success', 'Foto galeri berhasil dihapus');
     }
 }

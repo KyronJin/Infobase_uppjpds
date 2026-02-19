@@ -1,0 +1,188 @@
+<?php $__env->startSection('content'); ?>
+<div class="min-h-screen bg-[#f8fafc] pt-32 pb-24"> 
+    <div class="max-w-4xl mx-auto px-6">
+        
+        <header class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div class="space-y-2">
+                <nav class="flex items-center space-x-2 text-sm text-indigo-600 font-medium mb-4">
+                    <a href="<?php echo e(route('infobase.pengumuman')); ?>" class="hover:underline">Pengumuman</a>
+                    <span class="text-gray-400">/</span>
+                    <span class="text-gray-500">Detail</span>
+                </nav>
+                <h1 class="text-5xl font-black text-slate-900 tracking-tight">
+                    <?php echo e($pengumuman->title); ?>
+
+                </h1>
+            </div>
+            
+            <a href="<?php echo e(route('infobase.pengumuman')); ?>" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali
+            </a>
+        </header>
+
+        <article class="bg-white rounded-3xl p-8 md:p-10 border border-slate-100 shadow-sm">
+            <div class="flex flex-col md:flex-row gap-12">
+                
+                <div class="hidden md:block w-32 flex-shrink-0">
+                    <div class="sticky top-0">
+                        <div class="text-indigo-600 font-bold text-sm uppercase tracking-widest mb-1">
+                            <?php echo e($pengumuman->published_at?->format('M') ?? 'Jan'); ?>
+
+                        </div>
+                        <div class="text-3xl font-black text-slate-900">
+                            <?php echo e($pengumuman->published_at?->format('d') ?? '00'); ?>
+
+                        </div>
+                        <div class="text-slate-400 text-sm font-medium">
+                            <?php echo e($pengumuman->published_at?->format('Y') ?? '2024'); ?>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <div class="md:hidden flex items-center text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/></svg>
+                        <?php echo e($pengumuman->published_at?->format('d M Y') ?? 'Baru'); ?>
+
+                    </div>
+
+                    <?php if($pengumuman->image_path): ?>
+                        <img src="<?php echo e(asset('storage/' . $pengumuman->image_path)); ?>" alt="<?php echo e($pengumuman->title); ?>" class="w-full h-64 object-cover rounded-lg mb-6">
+                    <?php endif; ?>
+
+                    <style>
+                        .prose img {
+                            max-width: 100%;
+                            max-height: 400px;
+                            height: auto;
+                            object-fit: contain;
+                            border-radius: 8px;
+                        }
+
+                        /* Excel Table Styles - Direct targeting */
+                        table, table.excel-table {
+                            width: 100% !important;
+                            border-collapse: collapse !important;
+                            margin: 1.5rem 0 !important;
+                            border: 1px solid #d1d5db !important;
+                            font-size: 14px !important;
+                            table-layout: auto !important;
+                            display: table !important;
+                        }
+
+                        table th, table.excel-table th, .excel-table th {
+                            background-color: #3b82f6 !important;
+                            color: white !important;
+                            padding: 0.75rem !important;
+                            text-align: center !important;
+                            font-weight: 700 !important;
+                            border: 1px solid #d1d5db !important;
+                            white-space: normal !important;
+                            word-wrap: break-word !important;
+                            word-break: break-word !important;
+                        }
+
+                        table td, table.excel-table td, .excel-table td {
+                            padding: 0.75rem !important;
+                            text-align: left !important;
+                            border: 1px solid #d1d5db !important;
+                            color: #374151 !important;
+                            font-weight: 400 !important;
+                            white-space: normal !important;
+                            word-wrap: break-word !important;
+                            word-break: break-word !important;
+                        }
+
+                        table tr:nth-child(odd), .excel-table tr:nth-child(odd) {
+                            background-color: #ffffff !important;
+                        }
+
+                        table tr:nth-child(even), .excel-table tr:nth-child(even) {
+                            background-color: #f0f4f8 !important;
+                        }
+
+                        table tr:hover, .excel-table tr:hover {
+                            background-color: #e0e7ff !important;
+                        }
+
+                        .excel-table {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        }
+
+                        /* Prose compatibility */
+                        .prose table {
+                            width: 100% !important;
+                            border-collapse: collapse !important;
+                            margin: 1.5rem 0 !important;
+                            border: 1px solid #d1d5db !important;
+                            font-size: 14px !important;
+                            table-layout: auto !important;
+                            display: table !important;
+                        }
+
+                        .prose table th {
+                            background-color: #3b82f6 !important;
+                            color: white !important;
+                            padding: 0.75rem !important;
+                            text-align: center !important;
+                            font-weight: 700 !important;
+                            border: 1px solid #d1d5db !important;
+                        }
+
+                        .prose table td {
+                            padding: 0.75rem !important;
+                            text-align: left !important;
+                            border: 1px solid #d1d5db !important;
+                            color: #374151 !important;
+                        }
+
+                        .prose table tr:nth-child(odd) {
+                            background-color: #ffffff !important;
+                        }
+
+                        .prose table tr:nth-child(even) {
+                            background-color: #f0f4f8 !important;
+                        }
+
+                        .prose table tr:hover {
+                            background-color: #e0e7ff !important;
+                        }
+
+                        /* Mobile responsiveness */
+                        @media (max-width: 768px) {
+                            table, table.excel-table, .prose table {
+                                font-size: 12px !important;
+                            }
+                            
+                            table td, table th, .excel-table td, .excel-table th, .prose table td, .prose table th {
+                                padding: 0.5rem !important;
+                            }
+
+                            table {
+                                display: block !important;
+                                overflow-x: auto !important;
+                                white-space: nowrap !important;
+                            }
+                        }
+                    </style>
+                    <div class="prose prose-slate max-w-none text-slate-700 text-lg leading-relaxed">
+                        <?php echo $pengumuman->description; ?>
+
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-slate-50">
+                        <div class="flex items-center space-x-2 text-slate-400 text-sm">
+                            <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                            <span>Dipublikasikan pada <?php echo e($pengumuman->published_at?->format('d F Y') ?? 'Sekarang'); ?></span>
+                            <span>Berlaku: <?php echo e($pengumuman->valid_from?->format('d/m/Y') ?? '-'); ?> - <?php echo e($pengumuman->valid_until?->format('d/m/Y') ?? '-'); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Pemustaka\Desktop\Infobase_uppjpds\resources\views/infobase/pengumuman-detail.blade.php ENDPATH**/ ?>

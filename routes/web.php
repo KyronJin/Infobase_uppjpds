@@ -238,3 +238,9 @@ Route::resource('admin/gallery', GalleryPhotoController::class)->names('admin.ga
 // Admin User Management (protected)
 Route::get('admin/users', [AdminUserController::class, 'index'])->name('admin.users.index')->middleware('auth');
 Route::post('admin/users', [AdminUserController::class, 'store'])->name('admin.users.store')->middleware('auth');
+
+// Test routes for Excel import feature
+require_once __DIR__ . '/test-routes.php';
+
+// Debug routes
+require_once __DIR__ . '/debug-routes.php';

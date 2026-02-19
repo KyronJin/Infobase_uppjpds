@@ -509,12 +509,65 @@
 </div>
 
 {{-- Search Form --}}
-@include('partials.search-form', [
-    'action' => route('infobase.profil-pegawai'),
-    'placeholder' => 'Cari pegawai berdasarkan nama, jabatan, atau deskripsi...',
-    'search' => $search ?? '',
-    'resultCount' => isset($pegawai) ? $pegawai->total() : null
-])
+<div style="max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem 1rem 1.5rem;">
+    <form method="GET" action="{{ route('infobase.profil-pegawai') }}" class="flex gap-3 mb-6 flex-wrap">
+        <div style="flex: 1; min-width: 200px;">
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Cari pegawai berdasarkan nama, jabatan, atau deskripsi..." 
+                value="{{ $search ?? '' }}"
+                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#00425A] transition duration-300"
+            >
+        </div>
+        
+        <!-- Jabatan Filter -->
+        <select 
+            name="jabatan_id"
+            class="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#00425A] transition duration-300 bg-white"
+        >
+            <option value="">Semua Jabatan</option>
+            @foreach($jabatans as $jabatan)
+                <option value="{{ $jabatan->id }}" {{ isset($jabatanFilter) && $jabatanFilter == $jabatan->id ? 'selected' : '' }}>
+                    {{ $jabatan->name }}
+                </option>
+            @endforeach
+        </select>
+        
+        <button 
+            type="submit" 
+            class="px-6 py-2 bg-[#00425A] text-white font-semibold rounded-lg hover:bg-[#003144] transition duration-300 flex items-center gap-2"
+        >
+            <i class="fas fa-search"></i>
+            Cari
+        </button>
+        @if(!empty($search) || !empty($jabatanFilter))
+            <a 
+                href="{{ route('infobase.profil-pegawai') }}" 
+                class="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition duration-300"
+            >
+                <i class="fas fa-times"></i>
+            </a>
+        @endif
+    </form>
+
+    @if(!empty($search) || !empty($jabatanFilter))
+        <div style="margin-bottom: 1.5rem; padding: 1rem; background: #e3f2fd; border-left: 4px solid #00425A; border-radius: 0.5rem;">
+            <p style="color: #00425A; font-size: 0.95rem; margin: 0;">
+                <i class="fas fa-info-circle mr-2"></i>
+                Hasil pencarian:
+                @if(!empty($search))
+                    <strong>"{{ $search }}"</strong>
+                @endif
+                @if(!empty($jabatanFilter))
+                    @php $selectedJabatan = $jabatans->find($jabatanFilter); @endphp
+                    dengan jabatan <strong>{{ $selectedJabatan->name ?? 'Tidak diketahui' }}</strong>
+                @endif
+                <strong>({{ $allPegawai->count() }} pegawai ditemukan)</strong>
+            </p>
+        </div>
+    @endif
+</div>
 
 <div class="min-h-screen bg-[#f8fafc] pt-6 pb-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -591,9 +644,25 @@
                 </div>
             @else
                 <div class="bg-white rounded-2xl p-8 sm:p-16 text-center border-2 border-dashed border-gray-200">
-                    <i class="fas fa-users-slash text-gray-300 text-4xl sm:text-5xl mb-4"></i>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">Belum ada data pegawai</h3>
-                    <p class="text-gray-500 mt-2">Data pegawai akan muncul di sini.</p>
+                    <i class="fas fa-search text-gray-300 text-4xl sm:text-5xl mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800">
+                        @if(!empty($search) || !empty($jabatanFilter))
+                            Tidak ada hasil pencarian
+                        @else
+                            Belum ada data pegawai
+                        @endif
+                    </h3>
+                    <p class="text-gray-500 mt-2">
+                        @if(!empty($search) || !empty($jabatanFilter))
+                            Coba ubah kata kunci atau filter pencarian Anda.
+                            <br>
+                            <a href="{{ route('infobase.profil-pegawai') }}" class="text-[#00425A] font-semibold hover:underline">
+                                Tampilkan semua pegawai
+                            </a>
+                        @else
+                            Data pegawai akan muncul di sini.
+                        @endif
+                    </p>
                 </div>
             @endif
         </div>

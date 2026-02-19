@@ -134,10 +134,7 @@ class StaffOfMonthController extends Controller
         $jabatans = Jabatan::orderBy('name', 'asc')->get();
 
         if (request()->expectsJson()) {
-<<<<<<< HEAD
             // Return staff data directly with all properties
-=======
->>>>>>> 6d2c88843864b0b0d416bda9b1054fe13bf5980c
             return response()->json($staffOfMonth);
         }
 

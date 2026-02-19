@@ -301,7 +301,7 @@
     <section id="announcements" class="section-shell bg-white">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-20">
-                <h2 class="section-title">Berita & Pengumuman</h2>
+                 <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">Berita dan Pengumuman</h2>
                 <div class="section-divider"></div>
                 <p class="section-subtitle">Informasi terbaru dan penting untuk Anda</p>
             </div>
@@ -365,13 +365,9 @@
     <section class="section-shell gallery-section">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
-<<<<<<< HEAD
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">Galeri Perpustakaan</h2>
-=======
-                <h2 class="section-title">Galeri Perpustakaan</h2>
                 <div class="section-divider"></div>
                 <p class="section-subtitle">Jelajahi keindahan fasilitas dan koleksi kami</p>
->>>>>>> 6d2c88843864b0b0d416bda9b1054fe13bf5980c
             </div>
 
             @if(($homePhotos ?? collect())->count())
