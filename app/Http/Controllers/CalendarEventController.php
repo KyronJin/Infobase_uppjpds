@@ -185,7 +185,27 @@ class CalendarEventController extends Controller
 
     public function destroy(CalendarEvent $calendar)
     {
-        $calendar->delete();
-        return redirect()->route('admin.calendar.index')->with('success', '✓ Event berhasil dihapus!');
+        try {
+            $title = $calendar->title;
+            $calendar->delete();
+            
+            if (request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Event berhasil dihapus!'
+                ]);
+            }
+            
+            return redirect()->route('admin.calendar.index')->with('success', '✓ Event berhasil dihapus!');
+        } catch (\Exception $e) {
+            if (request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus event: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', '✗ Gagal menghapus event');
+        }
     }
 }

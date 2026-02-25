@@ -118,6 +118,7 @@ class InfobaseController extends Controller
     {
         $search = $request->query('search', '');
         $selectedMonth = $request->query('month', null);
+        $selectedYear = $request->query('year', null);
         
         $query = StaffOfMonth::where('is_active', true);
 
@@ -131,12 +132,26 @@ class InfobaseController extends Controller
             $query->where('month', $selectedMonth);
         }
 
+        // Apply year filter if provided
+        if (!empty($selectedYear) && is_numeric($selectedYear)) {
+            $query->where('year', $selectedYear);
+        }
+
         // Get all available months
         $allMonths = StaffOfMonth::where('is_active', true)
             ->whereNotNull('month')
             ->distinct('month')
             ->pluck('month')
             ->sort()
+            ->values();
+
+        // Get all available years
+        $allYears = StaffOfMonth::where('is_active', true)
+            ->whereNotNull('year')
+            ->distinct('year')
+            ->pluck('year')
+            ->sort()
+            ->reverse()
             ->values();
 
         // Get paginated staff
@@ -163,6 +178,8 @@ class InfobaseController extends Controller
             'search' => $search,
             'selectedMonth' => $selectedMonth,
             'allMonths' => $allMonths,
+            'selectedYear' => $selectedYear,
+            'allYears' => $allYears,
         ]);
     }
 

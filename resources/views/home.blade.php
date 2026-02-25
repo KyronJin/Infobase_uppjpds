@@ -435,34 +435,6 @@
                         border-radius: 9999px;
                     }
 
-                    /* Navigation buttons */
-                    .gallery-swiper .swiper-button-prev,
-                    .gallery-swiper .swiper-button-next {
-                        color: white;
-                        width: 50px;
-                        height: 50px;
-                        background: rgba(249, 115, 22, 0.8);
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        top: 50%;
-                        transform: translateY(-50%);
-                    }
-
-                    .gallery-swiper .swiper-button-prev:hover,
-                    .gallery-swiper .swiper-button-next:hover {
-                        background: rgba(249, 115, 22, 1);
-                        transform: translateY(-50%) scale(1.1);
-                    }
-
-                    .gallery-swiper .swiper-button-prev::after,
-                    .gallery-swiper .swiper-button-next::after {
-                        font-size: 20px;
-                    }
-
                     /* Pagination */
                     .gallery-swiper .swiper-pagination {
                         bottom: 0;
@@ -502,10 +474,6 @@
                         </div>
                         @endforeach
                     </div>
-
-                    <!-- Navigation buttons -->
-                    <div class="swiper-button-prev text-orange-500"></div>
-                    <div class="swiper-button-next text-orange-500"></div>
 
                     <!-- Pagination -->
                     <div class="swiper-pagination"></div>
@@ -552,12 +520,6 @@
                                 el: '.gallery-swiper .swiper-pagination',
                                 clickable: true,
                                 dynamicBullets: false,
-                            },
-
-                            // Navigation arrows
-                            navigation: {
-                                nextEl: '.gallery-swiper .swiper-button-next',
-                                prevEl: '.gallery-swiper .swiper-button-prev',
                             },
 
                             // Touch & swipe
@@ -608,7 +570,7 @@
                     </div>
                     
                     <p class="about-summary">
-                        Perpustakaan Jakarta (UPPJPDS) adalah institusi publik yang berkomitmen menyediakan sumber daya pembelajaran, ruang kolaborasi, dan program pemberdayaan masyarakat. Kami percaya bahwa akses informasi yang mudah adalah kunci kemajuan sosial dan intelektual.
+                        Perpustakaan Jakarta Cikini merupakan perpustakaan umum milik Pemerintah Provinsi DKI Jakarta yang berlokasi di kawasan Taman Ismail Marzuki, Menteng, Jakarta Pusat. Perpustakaan ini berfungsi sebagai pusat literasi modern yang menyediakan akses informasi, pengetahuan, serta ruang belajar terbuka bagi masyarakat dari berbagai kalangan, mulai dari pelajar, mahasiswa, peneliti hingga masyarakat umum. Pengelolaannya berada di bawah Dinas Perpustakaan dan Kearsipan Provinsi DKI Jakarta sebagai perangkat daerah yang melaksanakan urusan pemerintahan di bidang perpustakaan dan kearsipan.
                     </p>
 
                     <!-- Vision & Mission -->
@@ -622,7 +584,7 @@
                             <div>
                                 <h3 class="text-xl font-bold text-gray-900 mb-2">Visi</h3>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Menjadi pusat pengetahuan yang inklusif, inovatif, dan relevan untuk mendukung literasi dan kreativitas seluruh warga Jakarta.
+                                    Menjadi Perpustakaan yang berlaku sebagai Mesin Pendorong Kreativitas Masyarakat dalam Menyongsong Era Industri 4.0
                                 </p>
                             </div>
                         </div>
@@ -636,7 +598,7 @@
                             <div>
                                 <h3 class="text-xl font-bold text-gray-900 mb-2">Misi</h3>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Menyediakan akses informasi berkualitas, mendorong budaya baca dan inovasi, serta menciptakan ekosistem pembelajaran yang memberdayakan masyarakat.
+                                    Misi ini ingin menjadikan perpustakaan sebagai tempat masyarakat berkumpul, berdiskusi, berkolaborasi dalam mengembangkan ide/gagasan dan membangun pengetahuan baru.
                                 </p>
                             </div>
                         </div>

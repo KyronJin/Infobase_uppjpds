@@ -60,7 +60,7 @@
                             @foreach($profileRuangan->images->sortBy('slot') as $image)
                                 <div class="border border-slate-200 rounded-lg p-2">
                                     <img src="{{ route('profile-ruangan.image', ['filename' => basename($image->image_path)]) }}" alt="Gambar" class="w-full h-24 object-cover rounded mb-2">
-                                    <button type="button" onclick="deleteStoredImage({{ $image->id }}, this)" class="w-full text-xs px-2 py-1 rounded bg-red-50 text-red-600 hover:bg-red-100">Hapus</button>
+                                    <button type="button" onclick="openDeleteModal('deleteProfileImageModal', 'Gambar', '/admin/profile-ruangan/image/{{ $image->id }}', function() { location.reload(); })" class="w-full text-xs px-2 py-1 rounded bg-red-50 text-red-600 hover:bg-red-100">Hapus</button>
                                 </div>
                             @endforeach
                         </div>
@@ -148,4 +148,8 @@ function deleteStoredImage(imageId, buttonElement) {
     });
 }
 </script>
+
+<!-- Delete Modal for Images -->
+@component('components.delete-modal', ['id' => 'deleteProfileImageModal', 'title' => 'Hapus Gambar?']) @endcomponent
+
 @endsection

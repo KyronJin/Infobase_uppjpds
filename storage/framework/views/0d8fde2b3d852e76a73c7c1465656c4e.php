@@ -16,7 +16,7 @@
         <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
             <p class="text-gray-700 text-center">
                 Yakin ingin menghapus <br>
-                <strong id="deleteItemName" class="text-red-600 text-lg">item</strong>?
+                <strong id="deleteItemName-<?php echo e($id ?? 'deleteModal'); ?>" class="text-red-600 text-lg">item</strong>?
             </p>
             <p class="text-sm text-gray-500 text-center mt-2">
                 <i class="fas fa-info-circle mr-1"></i>
@@ -28,14 +28,14 @@
         <div class="flex gap-2 justify-center pt-2">
             <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','onclick' => 'closeDeleteModal()']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','onclick' => 'closeDeleteModal(\''.e($id ?? 'deleteModal').'\')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary','onclick' => 'closeDeleteModal()']); ?>Batal <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'secondary','onclick' => 'closeDeleteModal(\''.e($id ?? 'deleteModal').'\')']); ?>Batal <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -69,30 +69,42 @@
 </div>
 
 <script>
-    // Initialize global deleteData if not exists
-    if (typeof window.deleteData === 'undefined') {
-        window.deleteData = {
-            modalId: '<?php echo e($id ?? "deleteModal"); ?>',
-            url: '',
-            itemName: '',
-            callback: null
-        };
+    // Global delete data store for handling multiple modals
+    if (typeof window.deleteDataStore === 'undefined') {
+        window.deleteDataStore = {};
     }
 
-    function openDeleteModal(modalId, itemName, deleteUrl, callback = null) {
+    /**
+     * Open delete modal dengan konfirmasi
+     * @param {string} modalId - ID dari modal element
+     * @param {string} itemName - Nama item yang akan dihapus (untuk ditampilkan di modal)
+     * @param {string} deleteUrl - URL untuk DELETE request
+     * @param {Function} callback - Callback function setelah delete berhasil (optional)
+     * @param {Object} formData - Additional form data (optional)
+     * @param {string} method - HTTP method, default 'DELETE' (optional)
+     */
+    function openDeleteModal(modalId, itemName, deleteUrl, callback = null, formData = null, method = 'DELETE') {
         const modal = document.getElementById(modalId);
         if (!modal) {
             console.error(`Modal dengan id "${modalId}" tidak ditemukan`);
             return;
         }
 
-        window.deleteData.modalId = modalId;
-        window.deleteData.url = deleteUrl;
-        window.deleteData.itemName = itemName;
-        window.deleteData.callback = callback;
+        // Store data for this specific modal
+        window.deleteDataStore[modalId] = {
+            modalId: modalId,
+            url: deleteUrl,
+            itemName: itemName,
+            callback: callback,
+            formData: formData,
+            method: method
+        };
 
-        const itemNameEl = document.getElementById('deleteItemName');
-        if (itemNameEl) itemNameEl.textContent = itemName;
+        // Update modal UI
+        const itemNameEl = document.getElementById('deleteItemName-' + modalId);
+        if (itemNameEl) {
+            itemNameEl.textContent = itemName;
+        }
         
         const btnText = document.getElementById('deleteBtnText-' + modalId);
         if (btnText) btnText.textContent = 'Hapus';
@@ -103,97 +115,128 @@
         modal.classList.remove('hidden');
     }
 
-    function closeDeleteModal() {
-        const modal = document.getElementById(window.deleteData.modalId);
+    /**
+     * Close delete modal
+     * @param {string} modalId - ID dari modal element yang akan ditutup
+     */
+    function closeDeleteModal(modalId) {
+        const modal = document.getElementById(modalId);
         if (modal) {
             modal.classList.add('hidden');
         }
-    }
-
-    // Close modal when clicking outside
-    function setupDeleteModalClickOutside(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    window.deleteData.modalId = modalId;
-                    closeDeleteModal();
-                }
-            });
+        // Clean up data
+        if (window.deleteDataStore[modalId]) {
+            delete window.deleteDataStore[modalId];
         }
     }
 
-    // Wait for DOM to fully load
+    /**
+     * Confirm delete action
+     * @param {string} modalId - ID dari modal yang melakukan delete
+     */
+    async function confirmDeleteAction(modalId) {
+        const data = window.deleteDataStore[modalId];
+        
+        if (!data) {
+            console.error(`Delete data untuk modal "${modalId}" tidak ditemukan`);
+            return;
+        }
+
+        if (!data.url) {
+            if (typeof window.showErrorToast === 'function') {
+                window.showErrorToast('✗ URL delete tidak dikonfigurasi');
+            } else {
+                alert('URL delete tidak dikonfigurasi');
+            }
+            return;
+        }
+
+        const confirmBtn = document.getElementById('confirmDeleteBtn-' + modalId);
+        const btn = confirmBtn;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Menghapus...</span>';
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            const requestOptions = {
+                method: data.method || 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            // Add body if POST or if formData exists
+            if ((data.method === 'POST' || data.method === 'PUT') && data.formData) {
+                requestOptions.body = JSON.stringify(data.formData);
+            }
+
+            const response = await fetch(data.url, requestOptions);
+            const responseData = await response.json();
+
+            if (response.ok && responseData.success) {
+                // Show success toast
+                if (typeof window.showSuccessToast === 'function') {
+                    window.showSuccessToast(`✓ ${data.itemName} berhasil dihapus!`);
+                } else {
+                    alert(`${data.itemName} berhasil dihapus!`);
+                }
+                
+                // Close modal
+                closeDeleteModal(modalId);
+                
+                // Execute callback or reload
+                if (typeof data.callback === 'function') {
+                    data.callback();
+                } else {
+                    // Default: reload page after 1.5 seconds
+                    setTimeout(() => window.location.reload(), 1500);
+                }
+            } else {
+                const errorMsg = responseData.message || 'Kesalahan tidak diketahui';
+                if (typeof window.showErrorToast === 'function') {
+                    window.showErrorToast(`✗ Gagal menghapus: ${errorMsg}`);
+                } else {
+                    alert(`Gagal menghapus: ${errorMsg}`);
+                }
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            if (typeof window.showErrorToast === 'function') {
+                window.showErrorToast('✗ Terjadi kesalahan saat menghapus data');
+            } else {
+                alert('Terjadi kesalahan saat menghapus data: ' + error.message);
+            }
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Setup event listeners
     function initDeleteConfirmButton() {
         const modalId = '<?php echo e($id ?? "deleteModal"); ?>';
         const confirmBtn = document.getElementById('confirmDeleteBtn-' + modalId);
         if (!confirmBtn) return;
 
-        confirmBtn.addEventListener('click', async function() {
-            if (!window.deleteData.url) {
-                alert('URL delete tidak dikonfigurasi');
-                return;
-            }
-
-            const btn = this;
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Menghapus...</span>';
-
-            try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const modalId = '<?php echo e($id ?? "deleteModal"); ?>';
-                
-                const response = await fetch(window.deleteData.url, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    // Ensure global toast functions are available
-                    if (typeof window.showSuccessToast === 'function') {
-                        window.showSuccessToast(`✓ ${window.deleteData.itemName} berhasil dihapus!`);
-                    } else {
-                        console.log('Toast function not ready, using alert:', window.deleteData.itemName);
-                        alert(`${window.deleteData.itemName} berhasil dihapus!`);
-                    }
-                    
-                    closeDeleteModal();
-                    
-                    // Call callback if provided
-                    if (typeof window.deleteData.callback === 'function') {
-                        window.deleteData.callback();
-                    } else {
-                        // Default: reload page after 1.5 seconds
-                        setTimeout(() => window.location.reload(), 1500);
-                    }
-                } else {
-                    const errorMsg = data.message || 'Kesalahan tidak diketahui';
-                    if (typeof window.showErrorToast === 'function') {
-                        window.showErrorToast(`✗ Gagal menghapus: ${errorMsg}`);
-                    } else {
-                        alert(`Gagal menghapus: ${errorMsg}`);
-                    }
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                console.error('Delete error:', error);
-                if (typeof window.showErrorToast === 'function') {
-                    window.showErrorToast('✗ Terjadi kesalahan saat menghapus data');
-                } else {
-                    alert('Terjadi kesalahan saat menghapus data');
-                }
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+        // Attach click handler
+        confirmBtn.addEventListener('click', function() {
+            confirmDeleteAction(modalId);
         });
+
+        // Setup click outside to close modal
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDeleteModal(modalId);
+                }
+            });
+        }
     }
 
     // Initialize when DOM is ready
@@ -201,13 +244,6 @@
         document.addEventListener('DOMContentLoaded', initDeleteConfirmButton);
     } else {
         initDeleteConfirmButton();
-    }
-
-    // Setup click outside for modal
-    try {
-        setupDeleteModalClickOutside('<?php echo e($id ?? "deleteModal"); ?>');
-    } catch(e) {
-        console.warn('Could not setup click outside:', e);
     }
 </script>
 <?php /**PATH C:\Users\Pemustaka\Desktop\Infobase_uppjpds\resources\views/components/delete-modal.blade.php ENDPATH**/ ?>

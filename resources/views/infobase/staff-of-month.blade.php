@@ -309,31 +309,54 @@
 <div class="container">
     <div class="content-wrapper">
         @if($staffByPosition && $staffByPosition->count())
-            <!-- Month Filter Dropdown -->
-            <div style="margin-bottom: 2rem; display: flex; justify-content: center;">
-                <form method="GET" action="{{ route('infobase.staff-of-month') }}" style="display: flex; gap: 1rem; align-items: center;">
+            <!-- Month & Year Filter Dropdown -->
+            <div style="margin-bottom: 2rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem;">
+                <form method="GET" action="{{ route('infobase.staff-of-month') }}" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
                     @if(request()->has('search'))
                         <input type="hidden" name="search" value="{{ request('search') }}">
                     @endif
-                    <label for="month-filter" style="font-weight: 600; color: #64748b;">Pilih Bulan:</label>
-                    <select id="month-filter" name="month" onchange="this.form.submit()" style="
-                        padding: 0.75rem 1.5rem;
-                        background: #f8fafc;
-                        border: 2px solid #e2e8f0;
-                        border-radius: 50px;
-                        color: #64748b;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        font-size: 0.9rem;
-                    ">
-                        <option value="">-- Semua Bulan --</option>
-                        @foreach($allMonths as $month)
-                            <option value="{{ $month }}" {{ $selectedMonth == $month ? 'selected' : '' }}>
-                                {{ DateTime::createFromFormat('!m', $month)->format('F') }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <label for="month-filter" style="font-weight: 600; color: #64748b;">Bulan:</label>
+                        <select id="month-filter" name="month" onchange="this.form.submit()" style="
+                            padding: 0.75rem 1.5rem;
+                            background: #f8fafc;
+                            border: 2px solid #e2e8f0;
+                            border-radius: 50px;
+                            color: #64748b;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 0.9rem;
+                        ">
+                            <option value="">-- Semua Bulan --</option>
+                            @foreach($allMonths as $month)
+                                <option value="{{ $month }}" {{ $selectedMonth == $month ? 'selected' : '' }}>
+                                    {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <label for="year-filter" style="font-weight: 600; color: #64748b;">Tahun:</label>
+                        <select id="year-filter" name="year" onchange="this.form.submit()" style="
+                            padding: 0.75rem 1.5rem;
+                            background: #f8fafc;
+                            border: 2px solid #e2e8f0;
+                            border-radius: 50px;
+                            color: #64748b;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 0.9rem;
+                        ">
+                            <option value="">-- Semua Tahun --</option>
+                            @foreach($allYears as $year)
+                                <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>
+                                    {{ $year }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </form>
             </div>
 

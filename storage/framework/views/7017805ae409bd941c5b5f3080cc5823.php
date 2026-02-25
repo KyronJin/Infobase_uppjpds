@@ -47,6 +47,11 @@
             <span>Gallery</span>
         </a>
 
+        <a href="<?php echo e(route('admin.about.index')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.about.*') ? 'active' : ''); ?>">
+            <i class="fas fa-info-circle w-5"></i>
+            <span>Halaman About</span>
+        </a>
+
         <a href="<?php echo e(route('admin.users.index')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>">
             <i class="fas fa-user-shield w-5"></i>
             <span>Akun Admin</span>

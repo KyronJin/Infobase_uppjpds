@@ -307,32 +307,56 @@
 <div class="container">
     <div class="content-wrapper">
         <?php if($staffByPosition && $staffByPosition->count()): ?>
-            <!-- Month Filter Dropdown -->
-            <div style="margin-bottom: 2rem; display: flex; justify-content: center;">
-                <form method="GET" action="<?php echo e(route('infobase.staff-of-month')); ?>" style="display: flex; gap: 1rem; align-items: center;">
+            <!-- Month & Year Filter Dropdown -->
+            <div style="margin-bottom: 2rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem;">
+                <form method="GET" action="<?php echo e(route('infobase.staff-of-month')); ?>" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
                     <?php if(request()->has('search')): ?>
                         <input type="hidden" name="search" value="<?php echo e(request('search')); ?>">
                     <?php endif; ?>
-                    <label for="month-filter" style="font-weight: 600; color: #64748b;">Pilih Bulan:</label>
-                    <select id="month-filter" name="month" onchange="this.form.submit()" style="
-                        padding: 0.75rem 1.5rem;
-                        background: #f8fafc;
-                        border: 2px solid #e2e8f0;
-                        border-radius: 50px;
-                        color: #64748b;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        font-size: 0.9rem;
-                    ">
-                        <option value="">-- Semua Bulan --</option>
-                        <?php $__currentLoopData = $allMonths; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $month): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($month); ?>" <?php echo e($selectedMonth == $month ? 'selected' : ''); ?>>
-                                <?php echo e(DateTime::createFromFormat('!m', $month)->format('F')); ?>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <label for="month-filter" style="font-weight: 600; color: #64748b;">Bulan:</label>
+                        <select id="month-filter" name="month" onchange="this.form.submit()" style="
+                            padding: 0.75rem 1.5rem;
+                            background: #f8fafc;
+                            border: 2px solid #e2e8f0;
+                            border-radius: 50px;
+                            color: #64748b;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 0.9rem;
+                        ">
+                            <option value="">-- Semua Bulan --</option>
+                            <?php $__currentLoopData = $allMonths; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $month): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($month); ?>" <?php echo e($selectedMonth == $month ? 'selected' : ''); ?>>
+                                    <?php echo e(DateTime::createFromFormat('!m', $month)->format('F')); ?>
 
-                            </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
+                                </option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <label for="year-filter" style="font-weight: 600; color: #64748b;">Tahun:</label>
+                        <select id="year-filter" name="year" onchange="this.form.submit()" style="
+                            padding: 0.75rem 1.5rem;
+                            background: #f8fafc;
+                            border: 2px solid #e2e8f0;
+                            border-radius: 50px;
+                            color: #64748b;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 0.9rem;
+                        ">
+                            <option value="">-- Semua Tahun --</option>
+                            <?php $__currentLoopData = $allYears; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($year); ?>" <?php echo e($selectedYear == $year ? 'selected' : ''); ?>>
+                                    <?php echo e($year); ?>
+
+                                </option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
                 </form>
             </div>
 

@@ -212,14 +212,29 @@ class StaffOfMonthController extends Controller
     {
         try {
             $staffOfMonth = StaffOfMonth::findOrFail($id);
+            $name = $staffOfMonth->name;
 
             if ($staffOfMonth->photo_path) {
                 Storage::disk('public')->delete($staffOfMonth->photo_path);
             }
 
             $staffOfMonth->delete();
+            
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Staff berhasil dihapus'
+                ]);
+            }
+            
             return redirect()->route('admin.staff-of-month.index')->with('success', '✓ Staff berhasil dihapus!');
         } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus staff: ' . $e->getMessage()
+                ], 500);
+            }
             return redirect()->back()->with('error', '✗ Gagal menghapus staff.');
         }
     }

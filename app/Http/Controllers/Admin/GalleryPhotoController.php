@@ -172,8 +172,15 @@ class GalleryPhotoController extends Controller
     {
         try {
             $gallery = GalleryPhoto::find($id);
+            $title = $gallery->title ?? 'Foto';
 
             if (!$gallery) {
+                if (request()->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Foto galeri tidak ditemukan'
+                    ], 404);
+                }
                 return redirect()->route('admin.gallery.index')
                                 ->with('error', 'Foto galeri tidak ditemukan');
             }
@@ -185,9 +192,22 @@ class GalleryPhotoController extends Controller
 
             $gallery->delete();
 
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Foto galeri berhasil dihapus'
+                ]);
+            }
+
             return redirect()->route('admin.gallery.index')
                             ->with('success', 'Foto galeri berhasil dihapus');
         } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus foto: ' . $e->getMessage()
+                ], 500);
+            }
             return redirect()->route('admin.gallery.index')
                             ->with('error', 'Gagal menghapus foto: ' . $e->getMessage());
         }

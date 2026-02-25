@@ -14,6 +14,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\GalleryPhotoController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Models\GalleryPhoto;
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\AgendaIntegrationController;
 use App\Http\Controllers\PublicAgendaController;
 
@@ -50,7 +51,15 @@ Route::get('/about', function () {
         ->whereIn('location', ['about', 'both'])
         ->orderBy('order')
         ->get();
-    return view('about', compact('aboutPhotos'));
+    
+    // Get all active about content from database
+    $allAbouts = \App\Models\About::where('active', true)->get();
+    
+    // Get specific content for sections
+    $aboutContent = $allAbouts->firstWhere('key', 'profil_institusi');
+    $visiMisiContent = $allAbouts->firstWhere('key', 'visi_misi');
+    
+    return view('about', compact('aboutPhotos', 'aboutContent', 'visiMisiContent', 'allAbouts'));
 })->name('about');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
@@ -92,6 +101,10 @@ Route::resource('admin/calendar', CalendarEventController::class)
 
 // Admin Tata Tertib CRUD
 Route::resource('admin/tata-tertib', TataTertibController::class)->names('admin.tata_tertib')->middleware('auth');
+
+// Admin About CRUD (protected)
+Route::resource('admin/about', AboutController::class)->names('admin.about')->middleware('auth');
+Route::post('admin/about/create-defaults', [AboutController::class, 'createDefaults'])->name('admin.about.create-defaults')->middleware('auth');
 
 // Route untuk serve profile ruangan images
 Route::get('/storage/profile_ruangan_images/{filename}', function ($filename) {

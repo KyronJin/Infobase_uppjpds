@@ -329,6 +329,9 @@
                 <a href="https://www.youtube.com/@perpustakaanjakarta" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
                   <i class="fab fa-youtube text-sm"></i>
                 </a>
+                <a href="https://wa.me/6285179737368" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-white text-[#00425A] rounded-full hover:bg-[#f85e38] hover:text-white transition duration-300">
+                  <i class="fab fa-whatsapp text-sm"></i>
+                </a>
               </div>
             </div>
 
@@ -431,13 +434,14 @@
                     </p>
                   </div>
                 </li>
+
                 <li class="flex gap-3">
                   <div class="flex-shrink-0 mt-1">
-                    <i class="fas fa-phone text-[#f85e38]"></i>
+                    <i class="fab fa-whatsapp text-[#f85e38]"></i>
                   </div>
                   <div>
-                    <a href="tel:+62214706295" class="text-white text-opacity-80 hover:text-white text-sm transition duration-300">
-                      (+62 21) 4706-295
+                    <a href="https://wa.me/6285179737368" target="_blank" class="text-white text-opacity-80 hover:text-white text-sm transition duration-300">
+                      +62 851-7973-7368
                     </a>
                   </div>
                 </li>
